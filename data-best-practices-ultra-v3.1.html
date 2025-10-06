@@ -135,7 +135,7 @@
               <div class="heroIcon"><i id="heroIcon" data-lucide="home"></i></div>
               <div>
                 <h2 id="heroTitle">Framework Overview</h2>
-                <p id="heroTag" class="muted">Start with questions, not data — then let disciplined evidence drive decisions.</p>
+                <p id="heroTag" class="muted">Start with questions, not data. Let evidence drive decisions.</p>
               </div>
             </div>
           </div>
@@ -216,13 +216,13 @@
     const views={
       overview: html(`
         <div class="card">
-          <p><strong>Start with questions, not data.</strong> Define what decision you're making, identify what could bias your thinking, then methodically gather and interpret evidence. This decision‑first approach prevents common analytical mistakes by forcing clear questions, hypotheses, and thresholds up front—so we collect the right evidence and let that evidence drive (and, when needed, overturn) our decisions. If the same decision would be made regardless of the results, the question was likely framed incorrectly.</p>
-          <p>Rather than jumping straight to dashboards, this framework ensures every analysis follows a disciplined process that minimizes bias, maximizes accuracy, and leads to better operational outcomes.</p>
+          <p><strong>Start with questions, not data.</strong> Define what decision you're making, identify what could bias your thinking, then gather and interpret evidence. This approach prevents common mistakes by forcing clear questions, hypotheses, and thresholds up front—so we collect the right evidence and let that evidence drive (and, when needed, overturn) our decisions.</p>
+          <p>Rather than jumping straight to dashboards, this framework ensures less bias, maximizes accuracy, and leads to better operational outcomes.</p>
         </div>
         <div class="card">
           <h3>Audience</h3>
           <p><strong>For Business Users & Managers</strong><br>
-          Your primary focus is on Phases 1, 3, and 5—framing questions, interpreting insights, and making decisions.<br>
+          Primary focus is on Phases 1, 3, and 5—framing questions, interpreting insights, and making decisions.<br>
           However, you should still understand and validate Phases 2 and 4 at a high level: confirm data sources are certified and bias checks are considered before acting.</p>
           <p><strong>For Analysts & Consultants</strong><br>
           Engage deeply with all five phases to ensure rigor throughout the decision process.</p>
@@ -230,7 +230,7 @@
         <div class="card">
           <h3>The Five Phases at a Glance</h3>
           <ol>
-            <li><strong>Frame the Decision</strong>: Define SMART questions before touching data</li>
+            <li><strong>Frame the Decision</strong>: Define SMART (Specific · Measurable · Action‑oriented · Relevant · Time‑bound) questions before touching data</li>
             <li><strong>Extract Data Systematically</strong>: Use certified datasets and consistent methods</li>
             <li><strong>Interpret with Rigor</strong>: Apply context, statistical significance, and seasonality</li>
             <li><strong>Apply Bias Detection</strong>: Actively identify and mitigate cognitive biases</li>
@@ -253,7 +253,7 @@
               </ul>
             </li>
             <li><span class="danger">Too vague:</span> “Are we staffed appropriately?”</li>
-            <li><span class="ok">✓ Better:</span> “Do we have sufficient <strong>specialists</strong> to maintain 95% claims processed within 30 days given Q4 volume patterns?”</li>
+            <li><span class="ok">✓ Better:</span> “Do we have sufficient <strong>specialists</strong> to maintain X% claims processed within X days given Q4 volume patterns?”</li>
           </ul>
           <h4>Measurable</h4>
           <ul>
@@ -335,9 +335,9 @@
         <div class="card">
           <h3>Common Extraction Errors</h3>
           <ul>
-            <li><strong>Mixing Date Fields:</strong> Be explicit about claim submission date vs decision date</li>
-            <li><strong>Ignoring Claim Status:</strong> Including pending claims in accuracy calculations inflates error rates</li>
-            <li><strong>Overlooking Client Rules:</strong> Client implementations may have custom workflows that affect aggregate metrics</li>
+            <li><strong>Mixing Date Fields:</strong> Be explicit about claim submission date vs triage date</li>
+            <li><strong>Ignoring Claim Status:</strong> Including pending claims or marked-up-error in calculation can distort analysis </li>
+            <li><strong>Overlooking Client Rules:</strong> Client implementations/customizations may affect aggregate metrics</li>
           </ul>
         </div>
       `),
@@ -356,46 +356,46 @@
           </ul>
         </div>
         <div class="card">
-          <h3>Principle 2: Statistical vs Practical Significance</h3>
+          <h3>Principle 2: Statistical vs Practical Significance </h3>
           <h4>Sample Size Minimums by Metric</h4>
           <table class="table">
             <thead><tr><th>Metric Type</th><th>Minimum Sample</th></tr></thead>
             <tbody>
-              <tr><td>Claims processing (TAT, AHT)</td><td>100 claims/<strong>specialist</strong>/period</td></tr>
-              <tr><td>Client performance</td><td>30 claims/month or 3 months data</td></tr>
-              <tr><td>A/B testing</td><td>350 claims per variant</td></tr>
-              <tr><td>Return‑to‑work metrics</td><td>50 completed episodes</td></tr>
+              <tr><td>Claims processing (TAT, AHT)</td><td># claims/<strong>specialist</strong>/period</td></tr>
+              <tr><td>Client performance</td><td># claims/month or # months data</td></tr>
+              <tr><td>A/B testing</td><td># claims per variant</td></tr>
+              <tr><td>Return‑to‑work metrics</td><td># completed episodes</td></tr>
             </tbody>
           </table>
           <p><em>When sample sizes are below minimums:</em> Report descriptively only. Use language like “Early indicators suggest…” and flag that additional data is needed.</p>
           <h4>Practical Significance Thresholds</h4>
-          <p><strong>Staffing & Capacity (example)</strong></p>
+          <p><strong>Staffing & Capacity (Example)</strong></p>
           <ul>
             <li>Claims/<strong>specialist</strong> variance: ±5% normal, 10%+ requires action</li>
             <li>Utilization changes: ±3% may be noise, 5%+ warrants investigation</li>
             <li>Turnover: 10%+ annualized rate signals problem</li>
           </ul>
-          <p><strong>Process Performance (example)</strong></p>
+          <p><strong>Process Performance (Example)</strong></p>
           <ul>
             <li>TAT: ±1 day may not be meaningful, 2+ days requires investigation</li>
             <li>AHT: ±2 minutes typical, 10%+ change indicates process shift</li>
             <li>Accuracy: Even 1–2% change can be significant given 95%+ baseline</li>
           </ul>
-          <p><strong>Financial Metrics (example)</strong></p>
+          <p><strong>Financial Metrics (Example)</strong></p>
           <ul>
             <li>Benefit payment variance: ±2% normal, 5%+ requires validation</li>
             <li>Cost per claim: ±$5 likely normal, $10+ warrants analysis</li>
           </ul>
         </div>
         <div class="card">
-          <h3>Principle 3: Account for Seasonality</h3>
+          <h3>Principle 3: Account for Seasonality (Trend Examples Below)</h3>
           <ul style="display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding-left:0;">
             <li class="kbd">January — New year surge</li>
-            <li class="kbd">Mar–Apr — Spring increase</li>
+            <li class="kbd">Mar–Apr — Spring normalization</li>
             <li class="kbd">May–Jun — Baseline</li>
-            <li class="kbd">Jul–Aug — Summer decline</li>
+            <li class="kbd">Jul–Aug — Summer uptick</li>
             <li class="kbd">Sep–Oct — Return to baseline</li>
-            <li class="kbd">November — Holiday decline</li>
+            <li class="kbd">November — Holiday uptick</li>
             <li class="kbd">December — Year‑end low</li>
           </ul>
           <h4> Red Flags</h4>
