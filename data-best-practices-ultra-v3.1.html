@@ -252,7 +252,7 @@
                 <li>The standard (e.g., 95%)</li>
               </ul>
             </li>
-            <li><span class="danger">❌ Too vague:</span> “Are we staffed appropriately?”</li>
+            <li><span class="danger">Too vague:</span> “Are we staffed appropriately?”</li>
             <li><span class="ok">✓ Better:</span> “Do we have sufficient <strong>specialists</strong> to maintain 95% claims processed within 30 days given Q4 volume patterns?”</li>
           </ul>
           <h4>Measurable</h4>
@@ -266,7 +266,7 @@
                 <li><strong>Specialist</strong> utilization rate</li>
               </ul>
             </li>
-            <li>💡 <em>Write these down to prevent cherry‑picking favorable metrics later.</em></li>
+            <li><em>Write these down to prevent cherry‑picking favorable metrics later.</em></li>
           </ul>
           <h4>Action‑Oriented</h4>
           <p>Connect your question to a decision with consequences: “Will we hire additional <strong>specialists</strong>, redistribute workload, or maintain current staffing?” <span class="danger">If no action will result, question whether the analysis is necessary.</span></p>
@@ -284,7 +284,7 @@
           <ul>
             <li>Define comparison periods explicitly:
               <ul>
-                <li><span class="danger">❌</span> “Compare October 2025 to September 2025” (risks seasonality errors)</li>
+                <li><span class="danger"></span> “Compare October 2025 to September 2025” (risks seasonality errors)</li>
                 <li><span class="ok">✓</span> “Compare Q3 2025 to Q3 2024 and Q3 2023” (accounts for seasonal patterns)</li>
               </ul>
             </li>
@@ -317,7 +317,7 @@
             <li><strong>Minimum Analysis Period:</strong> Never analyze less than one complete month. Weekly comparisons are unreliable due to within‑month patterns.</li>
             <li><strong>Seasonal Adjustments:</strong> For trending, use 12‑month moving averages or seasonal indices maintained by your data team.</li>
           </ul>
-          <h4>📋 Data Extraction Checklist</h4>
+          <h4> Data Extraction Checklist</h4>
           <ul>
             <li>Verified most recent data refresh timestamp</li>
             <li>Documented exact filters applied</li>
@@ -328,8 +328,8 @@
           <h4>Custom View Guidelines</h4>
           <ul>
             <li><span class="ok">✓</span> Limit to <strong>2–3 visualizations</strong> per dashboard (more creates cognitive overload)</li>
-            <li><span class="danger">⚠️</span> Use filters appropriately (each filter requires a query; excessive filtering degrades performance)</li>
-            <li><span class="danger">⚠️</span> Mind the data volume (dashboards with &gt;1M data points will load slowly)</li>
+            <li><span class="danger"></span> Use filters appropriately (each filter requires a query; excessive filtering degrades performance)</li>
+            <li><span class="danger"></span> Mind the data volume (dashboards with &gt;1M data points will load slowly)</li>
           </ul>
         </div>
         <div class="card">
@@ -367,7 +367,7 @@
               <tr><td>Return‑to‑work metrics</td><td>50 completed episodes</td></tr>
             </tbody>
           </table>
-          <p>📊 <em>When sample sizes are below minimums:</em> Report descriptively only. Use language like “Early indicators suggest…” and flag that additional data is needed.</p>
+          <p><em>When sample sizes are below minimums:</em> Report descriptively only. Use language like “Early indicators suggest…” and flag that additional data is needed.</p>
           <h4>Practical Significance Thresholds</h4>
           <p><strong>Staffing & Capacity (example)</strong></p>
           <ul>
@@ -398,7 +398,7 @@
             <li class="kbd">November — Holiday decline</li>
             <li class="kbd">December — Year‑end low</li>
           </ul>
-          <h4>🚨 Red Flags</h4>
+          <h4> Red Flags</h4>
           <ul>
             <li>Comparing consecutive months without mentioning seasonality</li>
             <li>Declaring “improvement” or “decline” based on a single month</li>
@@ -413,7 +413,7 @@
           <p><strong>Critical Checkpoint:</strong> Use this checklist for any significant decision or client communication to prevent cognitive biases from undermining your analysis.</p>
         </div>
         <div class="card">
-          <h3>🎯 Cherry‑Picking Detection</h3>
+          <h3> Cherry‑Picking Detection</h3>
           <ul>
             <li>Did I examine all relevant time periods or only favorable ones?</li>
             <li>Am I reporting all key metrics or only positive performance?</li>
@@ -423,7 +423,7 @@
           <p><strong>Example:</strong> <span class="danger">Wrong:</span> “Q3 accuracy rate of 97.2% looks strong.” <span class="ok">Honest:</span> “Declining accuracy trend from 97.8% (Q1) to 96.9% (Q4), with Q3 at 97.2%.”</p>
         </div>
         <div class="card">
-          <h3>🔎 Confirmation Bias Detection</h3>
+          <h3> Confirmation Bias Detection</h3>
           <ul>
             <li>Did I define my hypothesis before seeing the data?</li>
             <li>Have I actively sought disconfirming evidence?</li>
@@ -433,7 +433,7 @@
           <p><strong>Mitigation:</strong> Document alternative hypotheses (training effectiveness, reduction in claim complexity, system improvements, selection bias, random variation) and evaluate each systematically.</p>
         </div>
         <div class="card">
-          <h3>📈 Sample Size Bias Detection</h3>
+          <h3> Sample Size Bias Detection</h3>
           <ul>
             <li>Does my sample meet minimum thresholds?</li>
             <li>Am I analyzing subgroups with insufficient sample?</li>
@@ -443,7 +443,7 @@
           <p><strong>Example:</strong> Client A: 2,400 claims (96.5%); Client B: 45 claims (100%). <span class="danger">⚠️</span> Client B's confidence interval is ±13% (true accuracy could be 87–100%). Statistically indistinguishable.</p>
         </div>
         <div class="card">
-          <h3>⏰ Recency Bias Detection</h3>
+          <h3> Recency Bias Detection</h3>
           <ul>
             <li>Am I overweighting recent experiences?</li>
             <li>Am I extrapolating short‑term fluctuations?</li>
@@ -453,7 +453,7 @@
           <p><strong>Signal vs Noise:</strong> 1 week/month poor performance = Noise; 3 consecutive months exceeding thresholds = Signal.</p>
         </div>
         <div class="card">
-          <h3>⚓ Anchoring Bias Detection</h3>
+          <h3> Anchoring Bias Detection</h3>
           <ul>
             <li>Am I overly influenced by historical baselines?</li>
             <li>Have I questioned whether historical performance is right?</li>
@@ -507,10 +507,10 @@
         <div class="card">
           <h3>Core Competencies</h3>
           <ul>
-            <li>📊 Reading Visualizations — understand chart types and insight extraction</li>
-            <li>🚨 Recognizing Warning Signs — know when something “looks wrong”</li>
-            <li>❓ Asking Good Questions — frame questions analysts can translate to data</li>
-            <li>📈 Understanding Context — metrics, benchmarks, and comparisons</li>
+            <li> Reading Visualizations — understand chart types and insight extraction</li>
+            <li> Recognizing Warning Signs — know when something “looks wrong”</li>
+            <li> Asking Good Questions — frame questions analysts can translate to data</li>
+            <li> Understanding Context — metrics, benchmarks, and comparisons</li>
           </ul>
         </div>
         <div class="card">
@@ -522,7 +522,7 @@
             <li>Basic filtering in dashboards</li>
             <li>Standard report generation</li>
           </ul>
-          <h4>⚠️ Escalate When</h4>
+          <h4> Escalate When</h4>
           <ul>
             <li>Need custom analysis</li>
             <li>Unsure about sample sizes</li>
@@ -535,11 +535,11 @@
         <div class="card">
           <h3>Red Flags</h3>
           <ul>
-            <li>🚩 Small samples (&lt; 50–100)</li>
-            <li>🚩 Surprising/counterintuitive findings</li>
-            <li>🚩 High‑stakes decisions (client, SLA)</li>
-            <li>🚩 Conflicting metrics</li>
-            <li>🚩 Data quality concerns</li>
+            <li> Small samples (&lt; 50–100)</li>
+            <li> Surprising/counterintuitive findings</li>
+            <li> High‑stakes decisions (client, SLA)</li>
+            <li> Conflicting metrics</li>
+            <li> Data quality concerns</li>
           </ul>
         </div>
       `),
@@ -551,29 +551,29 @@
         <div class="card">
           <h3>Advanced Competencies</h3>
           <ul>
-            <li>📊 Statistical reasoning (CI, tests, SPC)</li>
-            <li>🛠️ Data modeling (relationships, performance, quality)</li>
-            <li>🔎 Bias detection & mitigation</li>
-            <li>💬 Communication: translate, recommend, document</li>
+            <li> Statistical reasoning (CI, tests, SPC)</li>
+            <li> Data modeling (relationships, performance, quality)</li>
+            <li> Bias detection & mitigation</li>
+            <li> Communication: translate, recommend, document</li>
           </ul>
         </div>
         <div class="card">
           <h3>Workflow</h3>
-          <h4>📋 Before</h4>
+          <h4> Before</h4>
           <ul>
             <li>Understand decision context</li>
             <li>Document question, success criteria, usage</li>
             <li>Identify likely biases</li>
             <li>Plan data sources & validation</li>
           </ul>
-          <h4>🔬 During</h4>
+          <h4> During</h4>
           <ul>
             <li>Follow the Five‑Phase Framework</li>
             <li>Document assumptions & decisions</li>
             <li>Seek disconfirming evidence</li>
             <li>Peer review interpretations</li>
           </ul>
-          <h4>📈 Presenting</h4>
+          <h4> Presenting</h4>
           <ul>
             <li>Lead with implications</li>
             <li>Show uncertainty (CIs)</li>
@@ -601,28 +601,28 @@
         </div>
         <div class="card">
           <h3>Strategic Responsibilities</h3>
-          <h4>🏛️ Governance & Standards</h4>
+          <h4> Governance & Standards</h4>
           <ul>
             <li>Certified datasets with lineage</li>
             <li>Data quality rules & naming conventions</li>
             <li>Semantic layer for safe self‑service</li>
             <li>Business glossary</li>
           </ul>
-          <h4>⚡ Platform Optimization</h4>
+          <h4> Platform Optimization</h4>
           <ul>
             <li>Monitor BI performance; optimize queries</li>
             <li>Model design: flexibility × performance</li>
             <li>Incremental refresh</li>
             <li>Guardrails for performance/quality</li>
           </ul>
-          <h4>🚀 Advanced Analytics Enablement</h4>
+          <h4> Advanced Analytics Enablement</h4>
           <ul>
             <li>Forecasting & capacity models</li>
             <li>SPC for quality metrics</li>
             <li>Anomaly detection & alerting</li>
             <li>Embedded methodology guidance</li>
           </ul>
-          <h4>🛡️ Bias Mitigation by Design</h4>
+          <h4> Bias Mitigation by Design</h4>
           <ul>
             <li>Bias checks in templates</li>
             <li>Visualizations with YoY defaults & CIs</li>
@@ -647,7 +647,7 @@
         </div>
         <div class="card">
           <h3>When Sample Size is Insufficient</h3>
-          <h4>❌ Don't</h4>
+          <h4> Don't</h4>
           <ul>
             <li>Draw definitive conclusions</li>
             <li>Make resource decisions</li>
@@ -693,7 +693,7 @@
             <li><strong>Limit to 2–3 visualizations</strong> per dashboard</li>
             <li><strong>Apply glossary definitions</strong> — consistency</li>
           </ul>
-          <h3>❌ DON'T</h3>
+          <h3> DON'T</h3>
           <ul>
             <li>Build custom extractions solo</li>
             <li>Mix date fields (submission vs decision)</li>
