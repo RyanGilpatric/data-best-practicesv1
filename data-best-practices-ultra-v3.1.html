@@ -2,132 +2,498 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Data Best Practices — Interactive Guide (Ultra v3.1)</title>
+  <title>Data Best Practices — Interactive Guide (Ultra v4.0)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark light">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{ --bg:#0b1020; --bg-2:#0e1427; --panel:#0f172a; --glass: rgba(255,255,255,.06);
-      --text:#e6e9f0; --muted:#9aa4b2; --brand:#60a5fa; --brand-2:#22d3ee; --accent:#22c55e; --danger:#ef4444; --amber:#f59e0b; --border:#1f2937;
-      --shadow-lg: 0 30px 60px rgba(0,0,0,.35); --shadow-md: 0 10px 30px rgba(0,0,0,.25); --max: 1220px; }
-    :root[data-theme='light']{ --bg:#f6f8fc; --bg-2:#eef2f7; --panel:#ffffff; --glass: rgba(10,10,10,.06); --text:#0e172a; --muted:#495569; --border:#e5e7eb; --shadow-lg:0 30px 60px rgba(2,6,23,.12); --shadow-md:0 10px 30px rgba(2,6,23,.10); }
-    *{ box-sizing: border-box; } html, body{ height:100%; }
-    body{ margin:0; color:var(--text); background:
-      radial-gradient(1200px 800px at 10% -10%, rgba(34,211,238,.15), transparent 60%),
-      radial-gradient(800px 600px at 110% 10%, rgba(96,165,250,.12), transparent 50%), var(--bg);
-      font-family:'Inter',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; line-height:1.55; letter-spacing:.2px; overflow-y:overlay; }
-    ::selection{ background: rgba(96,165,250,.35); } a{ color:inherit; text-decoration:none; }
-    .shell{ min-height:100dvh; display:grid; grid-template-columns: 320px 1fr 340px; }
-    .left{ position: sticky; top:0; height:100dvh; overflow:auto; background:linear-gradient(180deg,var(--panel),var(--bg-2)); border-right:1px solid var(--border); }
+    :root{ 
+      --bg:#080c14; --bg-2:#0a1019; --panel:#0d1520; --glass: rgba(255,255,255,.04);
+      --text:#e8ecf4; --muted:#7a8599; --brand:#3b82f6; --brand-2:#06b6d4; --accent:#10b981; --danger:#ef4444; --amber:#f59e0b; --purple:#8b5cf6; --border:#1e293b;
+      --shadow-lg: 0 25px 50px -12px rgba(0,0,0,.5); --shadow-md: 0 10px 25px rgba(0,0,0,.3); --max: 1280px;
+      --font-display: 'Outfit', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    :root[data-theme='light']{ 
+      --bg:#f8fafc; --bg-2:#f1f5f9; --panel:#ffffff; --glass: rgba(15,23,42,.04); 
+      --text:#0f172a; --muted:#64748b; --border:#e2e8f0; 
+      --shadow-lg:0 25px 50px -12px rgba(15,23,42,.15); --shadow-md:0 10px 25px rgba(15,23,42,.08); 
+    }
+    *{ box-sizing: border-box; margin:0; } html, body{ height:100%; }
+    body{ 
+      color:var(--text); 
+      background: var(--bg);
+      font-family: var(--font-display); 
+      font-weight: 400;
+      line-height:1.6; 
+      letter-spacing:.01em; 
+      overflow-y:overlay; 
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 20% -20%, rgba(59,130,246,.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 10%, rgba(6,182,212,.12), transparent),
+        radial-gradient(ellipse 50% 50% at 50% 100%, rgba(139,92,246,.08), transparent);
+      pointer-events: none;
+      z-index: -1;
+    }
+    ::selection{ background: rgba(59,130,246,.35); } 
+    a{ color:inherit; text-decoration:none; }
+    
+    /* Layout */
+    .shell{ min-height:100dvh; display:grid; grid-template-columns: 300px 1fr; }
+    .left{ 
+      position: sticky; top:0; height:100dvh; overflow:auto; 
+      background: var(--panel);
+      border-right:1px solid var(--border); 
+      display: flex;
+      flex-direction: column;
+    }
     .center{ min-width:0; display:flex; flex-direction:column; }
-    .right{ position: sticky; top:0; height:100dvh; overflow:auto; border-left:1px solid var(--border); background:linear-gradient(180deg,var(--bg-2),transparent); }
-    .container{ width:100%; max-width: var(--max); margin:0 auto; padding: 0 24px; }
-    .brand{ display:flex; align-items:center; gap:12px; padding: 18px 18px 8px; } .brand h1{ font-size:18px; margin:0; font-weight:700; }
-    .note{ color:var(--muted); font-size:12px; padding:0 18px 8px; }
-    .search{ margin:8px 12px 14px; display:flex; align-items:center; gap:8px; background:var(--glass); border:1px solid var(--border); padding:10px 12px; border-radius:12px; box-shadow:var(--shadow-md); }
-    .search input{ flex:1; background:transparent; border:0; color:var(--text); outline:none; }
-    .navlink{ display:flex; align-items:center; gap:10px; padding:10px 14px; margin:2px 8px; border-radius:10px; border:1px solid transparent; color:var(--text); }
-    .navlink:hover{ background: rgba(96,165,250,.10); } .navlink.active{ background: linear-gradient(180deg, rgba(96,165,250,.20), rgba(96,165,250,.10)); border-color: rgba(96,165,250,.25); box-shadow: inset 0 0 0 1px rgba(96,165,250,.25); }
-    .section{ margin:12px 8px; border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-md); }
-    .section > button{ width:100%; text-align:left; background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0)); border:0; color:var(--text); padding:12px 14px; display:flex; align-items:center; gap:10px; cursor:pointer; }
-    .section > button:hover{ background: rgba(96,165,250,.08); }
-    .subnav{ display:none; background:linear-gradient(180deg,var(--bg-2),transparent); }
-    .subnav a{ display:block; padding:10px 40px; border-top:1px solid var(--border); color:var(--muted); }
-    .subnav a:hover{ background: rgba(96,165,250,.08); color:var(--text); }
-    .side-cta{ display:flex; gap:8px; padding:6px 12px 16px; }
-    .btn{ display:inline-flex; align-items:center; gap:8px; background: rgba(96,165,250,.15); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:8px 12px; cursor:pointer; }
-    .btn.ghost{ background:transparent; }
-    .kbd{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; padding:1px 6px; border:1px solid var(--border); border-bottom-width:2px; border-radius:6px; background: rgba(255,255,255,.05); color:var(--muted); }
-    .top{ position: sticky; top:0; z-index:10; backdrop-filter:saturate(140%) blur(8px); background: linear-gradient(180deg, rgba(2,6,23,.55), rgba(2,6,23,0)); border-bottom:1px solid var(--border); }
-    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 20px; }
-    .crumbs{ display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; }
-    .hero{ position:relative; padding:28px 0 10px; }
-    .heroCard{ border:1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border-radius:18px; padding:18px; box-shadow:var(--shadow-lg); display:flex; align-items:center; gap:14px; }
-    .heroIcon{ width:46px; height:46px; border-radius:12px; display:grid; place-items:center; background: radial-gradient(100% 100% at 0% 0%, rgba(34,211,238,.35), rgba(96,165,250,.15)); border:1px solid var(--border); }
-    .hero h2{ margin:0; font-size: clamp(22px, 3.4vw, 34px); letter-spacing:.3px; }
-    .hero p{ margin:4px 0 0; color:var(--muted); }
-    .main{ padding:16px 0 56px; } .content{ display:grid; grid-template-columns:1fr; gap:18px; }
-    .card{ background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(2,6,23,.10)); border:1px solid var(--border); border-radius:14px; padding:16px; box-shadow:var(--shadow-md); }
-    .callout{ border-left:4px solid var(--amber); padding:12px 14px; background: rgba(245,158,11,.08); border-radius:10px; }
-    h3{ margin:18px 0 8px; color:var(--brand-2); letter-spacing:.04em; text-transform:uppercase; font-size:15px; }
-    h4{ margin:12px 0 6px; font-size:15px; }
-    ol, ul{ padding-left:18px; }
-    .table{ width:100%; border-collapse:collapse; border:1px solid var(--border); }
-    .table th, .table td{ border:1px solid var(--border); padding:8px 10px; text-align:left; }
-    .muted{ color:var(--muted); } .ok{ color:var(--accent); } .danger{ color:var(--danger); } mark{ background:#fde68a; color:#1f2937; padding:0 2px; border-radius:3px; }
-    .rail{ padding:16px; } .rail .panel{ border:1px solid var(--border); border-radius:14px; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); padding:14px; margin-bottom:12px; box-shadow:var(--shadow-md); }
-    .rail h5{ margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--brand-2); }
-    .progress{ position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,var(--brand),var(--brand-2)); width:0%; z-index:50; }
-    .fab{ position:fixed; bottom:18px; right:18px; display:flex; gap:8px; z-index:40; } .fab .btn{ backdrop-filter: blur(6px); background: var(--glass); }
-    .cmdk{ position:fixed; inset:0; display:none; place-items:center; backdrop-filter:blur(6px); background:rgba(2,6,23,.45); z-index:60; }
+    
+    /* Sidebar */
+    .brand{ display:flex; align-items:center; gap:12px; padding: 20px 20px 6px; } 
+    .brand h1{ font-size:17px; margin:0; font-weight:600; letter-spacing:-.01em; }
+    .note{ color:var(--muted); font-size:12px; padding:0 20px 12px; line-height:1.5; }
+    .search{ 
+      margin:4px 14px 16px; display:flex; align-items:center; gap:10px; 
+      background:var(--bg); border:1px solid var(--border); 
+      padding:10px 14px; border-radius:10px; 
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .search:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
+    .search input{ flex:1; background:transparent; border:0; color:var(--text); outline:none; font-family: inherit; font-size:14px; }
+    .search input::placeholder { color: var(--muted); }
+    
+    .nav-section { padding: 0 8px; margin-bottom: 8px; }
+    .nav-label { 
+      font-size: 11px; 
+      font-weight: 600; 
+      text-transform: uppercase; 
+      letter-spacing: .08em; 
+      color: var(--muted); 
+      padding: 12px 12px 6px;
+    }
+    .navlink{ 
+      display:flex; align-items:center; gap:10px; 
+      padding:9px 12px; margin:2px 0; border-radius:8px; 
+      border:1px solid transparent; color:var(--text); 
+      font-size: 14px;
+      transition: all .15s;
+    }
+    .navlink:hover{ background: var(--glass); color: var(--brand); }
+    .navlink.active{ 
+      background: linear-gradient(135deg, rgba(59,130,246,.15), rgba(6,182,212,.1)); 
+      border-color: rgba(59,130,246,.2);
+      color: var(--brand);
+    }
+    .navlink i { width: 18px; height: 18px; opacity: .7; }
+    .navlink.active i { opacity: 1; }
+    
+    .section{ margin:2px 8px; border-radius:8px; overflow:hidden; }
+    .section > button{ 
+      width:100%; text-align:left; background:transparent; 
+      border:0; color:var(--text); padding:9px 12px; 
+      display:flex; align-items:center; gap:10px; 
+      cursor:pointer; font-family: inherit; font-size: 14px;
+      border-radius: 8px;
+      transition: all .15s;
+    }
+    .section > button:hover{ background: var(--glass); }
+    .section > button i { width: 18px; height: 18px; opacity: .7; }
+    .subnav{ display:none; padding: 2px 0 6px; }
+    .subnav a{ 
+      display:block; padding:7px 12px 7px 40px; 
+      color:var(--muted); font-size: 13px;
+      border-radius: 6px;
+      margin: 1px 4px;
+      transition: all .15s;
+    }
+    .subnav a:hover{ background: var(--glass); color:var(--text); }
+    .subnav a.active { background: rgba(59,130,246,.1); color: var(--brand); }
+    
+    .side-footer { margin-top: auto; padding: 16px; border-top: 1px solid var(--border); }
+    .side-cta{ display:flex; gap:6px; margin-bottom: 12px; }
+    .btn{ 
+      display:inline-flex; align-items:center; justify-content: center; gap:6px; 
+      background: var(--glass); color:var(--text); 
+      border:1px solid var(--border); border-radius:8px; 
+      padding:7px 12px; cursor:pointer; 
+      font-family: inherit; font-size: 13px; font-weight: 500;
+      transition: all .15s;
+    }
+    .btn:hover { background: var(--bg); border-color: var(--brand); }
+    .btn.primary { background: var(--brand); border-color: var(--brand); color: white; }
+    .btn.primary:hover { background: #2563eb; }
+    .btn.success { background: var(--accent); border-color: var(--accent); color: white; }
+    .btn.ghost{ background:transparent; border-color: transparent; }
+    .btn.ghost:hover { background: var(--glass); border-color: var(--border); }
+    .btn i { width: 16px; height: 16px; }
+    
+    .kbd{ 
+      font-family: var(--font-mono); font-size:11px; 
+      padding:2px 6px; border:1px solid var(--border); 
+      border-bottom-width:2px; border-radius:5px; 
+      background: var(--bg); color:var(--muted); 
+    }
+    
+    /* Top bar */
+    .top{ 
+      position: sticky; top:0; z-index:10; 
+      backdrop-filter:saturate(140%) blur(12px); 
+      background: linear-gradient(180deg, rgba(8,12,20,.9), rgba(8,12,20,.7));
+      border-bottom:1px solid var(--border); 
+    }
+    :root[data-theme='light'] .top { background: linear-gradient(180deg, rgba(248,250,252,.95), rgba(248,250,252,.8)); }
+    .container{ width:100%; max-width: var(--max); margin:0 auto; padding: 0 28px; }
+    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; }
+    .crumbs{ display:flex; align-items:center; gap:8px; color:var(--muted); font-size:13px; }
+    .crumbs i { width: 14px; height: 14px; }
+    
+    /* Hero */
+    .hero{ padding:24px 0 8px; }
+    .heroCard{ 
+      background: linear-gradient(135deg, var(--glass), transparent);
+      border:1px solid var(--border); 
+      border-radius:16px; padding:20px; 
+      display:flex; align-items:center; gap:16px; 
+    }
+    .heroIcon{ 
+      width:52px; height:52px; border-radius:14px; 
+      display:grid; place-items:center; 
+      background: linear-gradient(135deg, rgba(59,130,246,.2), rgba(6,182,212,.15));
+      border:1px solid rgba(59,130,246,.25); 
+    }
+    .heroIcon i { width: 24px; height: 24px; color: var(--brand); }
+    .hero h2{ margin:0; font-size: clamp(22px, 3vw, 30px); font-weight: 600; letter-spacing:-.02em; }
+    .hero p{ margin:4px 0 0; color:var(--muted); font-size: 14px; }
+    
+    /* Main content */
+    .main{ padding:20px 0 60px; } 
+    .content{ display:grid; gap:20px; }
+    
+    /* Cards */
+    .card{ 
+      background: var(--panel);
+      border:1px solid var(--border); 
+      border-radius:14px; padding:20px; 
+      box-shadow: var(--shadow-md);
+    }
+    .card.tool { 
+      background: linear-gradient(135deg, rgba(59,130,246,.05), rgba(139,92,246,.03));
+      border-color: rgba(59,130,246,.15);
+    }
+    .card.result {
+      background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(6,182,212,.05));
+      border-color: rgba(16,185,129,.2);
+    }
+    .card.warning {
+      background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(239,68,68,.05));
+      border-color: rgba(245,158,11,.2);
+    }
+    
+    .callout{ 
+      border-left:3px solid var(--amber); 
+      padding:14px 16px; 
+      background: rgba(245,158,11,.08); 
+      border-radius:0 10px 10px 0; 
+      font-size: 14px;
+    }
+    .callout.info { border-left-color: var(--brand); background: rgba(59,130,246,.08); }
+    .callout.success { border-left-color: var(--accent); background: rgba(16,185,129,.08); }
+    .callout.danger { border-left-color: var(--danger); background: rgba(239,68,68,.08); }
+    
+    h3{ margin:20px 0 10px; color:var(--brand-2); letter-spacing:.03em; text-transform:uppercase; font-size:13px; font-weight: 600; }
+    h3:first-child { margin-top: 0; }
+    h4{ margin:16px 0 8px; font-size:15px; font-weight: 600; }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    
+    ol, ul{ padding-left:20px; margin: 8px 0; }
+    li { margin: 4px 0; }
+    li::marker { color: var(--muted); }
+    
+    .table{ width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius: 8px; overflow: hidden; font-size: 14px; }
+    .table th, .table td{ border:1px solid var(--border); padding:10px 12px; text-align:left; }
+    .table th { background: var(--bg); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .table td { background: var(--panel); }
+    
+    .muted{ color:var(--muted); } 
+    .ok{ color:var(--accent); } 
+    .danger{ color:var(--danger); } 
+    .brand { color: var(--brand); }
+    mark{ background: rgba(245,158,11,.3); color: inherit; padding:1px 4px; border-radius:3px; }
+    code { font-family: var(--font-mono); font-size: .9em; background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+    
+    /* Progress bar */
+    .progress{ position:fixed; top:0; left:0; height:2px; background:linear-gradient(90deg,var(--brand),var(--brand-2),var(--purple)); width:0%; z-index:50; }
+    
+    /* FAB */
+    .fab{ position:fixed; bottom:20px; right:20px; display:flex; gap:8px; z-index:40; } 
+    .fab .btn{ backdrop-filter: blur(8px); box-shadow: var(--shadow-md); }
+    
+    /* Command palette */
+    .cmdk{ position:fixed; inset:0; display:none; place-items:center; backdrop-filter:blur(8px); background:rgba(8,12,20,.6); z-index:60; }
+    :root[data-theme='light'] .cmdk { background: rgba(248,250,252,.7); }
     .cmdk.open{ display:grid; }
-    .cmd{ width:min(760px,calc(100% - 32px)); border:1px solid var(--border); border-radius:16px; overflow:hidden; background:var(--panel); box-shadow:var(--shadow-lg); }
-    .cmdHead{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid var(--border); background:var(--bg-2); }
-    .cmdHead input{ flex:1; background:transparent; border:0; outline:none; color:var(--text); font-size:15px; }
+    .cmd{ width:min(640px,calc(100% - 32px)); border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--panel); box-shadow:var(--shadow-lg); }
+    .cmdHead{ display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--border); background:var(--bg); }
+    .cmdHead input{ flex:1; background:transparent; border:0; outline:none; color:var(--text); font-size:15px; font-family: inherit; }
     .cmdList{ max-height:50vh; overflow:auto; }
-    .cmdItem{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid var(--border); cursor:pointer; }
-    .cmdItem:hover, .cmdItem.active{ background: rgba(96,165,250,.12); }
-    .hamb{ position:fixed; top:10px; left:10px; z-index:70; display:none; }
-    @media (max-width:1200px){ .shell{ grid-template-columns:300px 1fr; } .right{ display:none; } }
-    @media (max-width:900px){ .hamb{ display:block; } .left{ position:fixed; left:0; top:0; transform:translateX(-100%); transition: transform .25s; z-index:80; width:88vw; max-width:360px; } .left.open{ transform:translateX(0); } .shell{ grid-template-columns:1fr; } .top{ padding-left:48px; } }
-    @media print{ .left,.right,.top,.fab,.progress,.hamb{ display:none !important; } .container{ padding:0; } body{ background:white; color:#111; } }
+    .cmdItem{ display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--border); cursor:pointer; font-size: 14px; }
+    .cmdItem:hover, .cmdItem.active{ background: rgba(59,130,246,.1); }
+    .cmdItem i { width: 18px; height: 18px; color: var(--muted); }
+    
+    /* Mobile */
+    .hamb{ position:fixed; top:12px; left:12px; z-index:70; display:none; }
+    @media (max-width:900px){ 
+      .hamb{ display:block; } 
+      .left{ position:fixed; left:0; top:0; transform:translateX(-100%); transition: transform .25s ease; z-index:80; width:88vw; max-width:320px; } 
+      .left.open{ transform:translateX(0); } 
+      .shell{ grid-template-columns:1fr; } 
+      .top{ padding-left:52px; }
+      .container { padding: 0 16px; }
+    }
+    @media print{ 
+      .left,.top,.fab,.progress,.hamb{ display:none !important; } 
+      .container{ padding:0; } 
+      body{ background:white; color:#111; } 
+      .card { box-shadow: none; border: 1px solid #ddd; }
+    }
+    
+    /* Forms for tools */
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+    .form-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .form-input, .form-select, .form-textarea { 
+      width: 100%; 
+      padding: 10px 14px; 
+      background: var(--bg); 
+      border: 1px solid var(--border); 
+      border-radius: 8px; 
+      color: var(--text); 
+      font-family: inherit; 
+      font-size: 14px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { 
+      outline: none; 
+      border-color: var(--brand); 
+      box-shadow: 0 0 0 3px rgba(59,130,246,.15); 
+    }
+    .form-textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    
+    /* Checkbox list */
+    .check-list { list-style: none; padding: 0; margin: 0; }
+    .check-item { 
+      display: flex; align-items: flex-start; gap: 12px; 
+      padding: 12px 14px; 
+      border: 1px solid var(--border); 
+      border-radius: 10px; 
+      margin-bottom: 8px;
+      background: var(--bg);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .check-item:hover { border-color: var(--brand); }
+    .check-item.checked { 
+      background: rgba(16,185,129,.08); 
+      border-color: rgba(16,185,129,.3); 
+    }
+    .check-item input[type="checkbox"] { 
+      width: 20px; height: 20px; 
+      accent-color: var(--accent);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .check-item label { flex: 1; cursor: pointer; }
+    .check-item .check-title { font-weight: 500; display: block; margin-bottom: 2px; }
+    .check-item .check-desc { font-size: 13px; color: var(--muted); display: block; }
+    
+    /* Score indicator */
+    .score-ring { 
+      width: 120px; height: 120px; 
+      position: relative; 
+      margin: 0 auto 16px;
+    }
+    .score-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .score-ring circle { fill: none; stroke-width: 8; }
+    .score-ring .bg { stroke: var(--border); }
+    .score-ring .fill { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .5s ease; }
+    .score-ring .score-text { 
+      position: absolute; 
+      inset: 0; 
+      display: flex; 
+      flex-direction: column;
+      align-items: center; 
+      justify-content: center; 
+      font-size: 32px; 
+      font-weight: 700; 
+    }
+    .score-ring .score-label { font-size: 12px; color: var(--muted); font-weight: 400; }
+    
+    /* Result panels */
+    .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
+    .result-stat { 
+      background: var(--bg); 
+      border: 1px solid var(--border); 
+      border-radius: 10px; 
+      padding: 14px; 
+      text-align: center; 
+    }
+    .result-stat .stat-value { font-size: 24px; font-weight: 700; color: var(--brand); }
+    .result-stat .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    
+    /* Challenge questions */
+    .challenge-list { list-style: none; padding: 0; margin: 0; }
+    .challenge-item { 
+      padding: 14px 16px; 
+      border-left: 3px solid var(--purple); 
+      background: rgba(139,92,246,.08); 
+      border-radius: 0 10px 10px 0; 
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .challenge-item strong { color: var(--purple); }
+    
+    /* Export buttons */
+    .export-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    
+    /* Traffic light */
+    .traffic { display: flex; gap: 8px; align-items: center; }
+    .traffic-light { width: 16px; height: 16px; border-radius: 50%; opacity: .3; }
+    .traffic-light.active { opacity: 1; box-shadow: 0 0 8px currentColor; }
+    .traffic-light.red { background: var(--danger); color: var(--danger); }
+    .traffic-light.yellow { background: var(--amber); color: var(--amber); }
+    .traffic-light.green { background: var(--accent); color: var(--accent); }
+    
     .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn .3s ease; }
   </style>
 </head>
 <body>
   <div class="progress" id="progress"></div>
   <button class="hamb btn" aria-label="Open menu" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+  
   <div class="shell">
     <aside class="left" id="leftNav" aria-label="Primary">
-      <div class="brand"><i data-lucide="book-open" style="color:var(--brand)"></i><h1>Data Best Practices</h1></div>
-      <p class="note">Modern decision‑first framework with bias checks & quick references.</p>
-      <div class="search"><i data-lucide="search" aria-hidden="true"></i><input id="q" placeholder="Search topics or content…" oninput="onSearch(this.value)"></div>
-      <a class="navlink" data-target="overview" href="#overview"><i data-lucide="home"></i>Framework Overview</a>
-      <div class="section">
-        <button type="button" aria-expanded="false" aria-controls="nav-phases" onclick="toggleSection(this)"><i data-lucide="trending-up"></i>The Five‑Phase Framework<i class="chev" data-lucide="chevron-right" style="margin-left:auto;"></i></button>
-        <nav id="nav-phases" class="subnav">
-          <a data-target="phase1" href="#phase1">Phase 1: Frame the Decision</a>
-          <a data-target="phase2" href="#phase2">Phase 2: Extract Data</a>
-          <a data-target="phase3" href="#phase3">Phase 3: Interpret with Rigor</a>
-          <a data-target="phase4" href="#phase4">Phase 4: Bias Detection</a>
-          <a data-target="phase5" href="#phase5">Phase 5: Translate to Decisions</a>
-        </nav>
+      <div class="brand">
+        <i data-lucide="sparkles" style="color:var(--brand)"></i>
+        <h1>Data Best Practices</h1>
       </div>
-      <div class="section">
-        <button type="button" aria-expanded="false" aria-controls="nav-guides" onclick="toggleSection(this)"><i data-lucide="users"></i>User Level Guidelines<i class="chev" data-lucide="chevron-right" style="margin-left:auto;"></i></button>
-        <nav id="nav-guides" class="subnav">
-          <a data-target="businessUsers" href="#businessUsers">Business Users & Managers</a>
-          <a data-target="analysts" href="#analysts">Analysts & Consultants</a>
-          <a data-target="dataPros" href="#dataPros">Data Professionals</a>
-        </nav>
+      <p class="note">Decision-first framework with bias checks, calculators & interactive tools.</p>
+      
+      <div class="search">
+        <i data-lucide="search" aria-hidden="true"></i>
+        <input id="q" placeholder="Search…" oninput="onSearch(this.value)">
       </div>
-      <div class="section">
-        <button type="button" aria-expanded="false" aria-controls="nav-ref" onclick="toggleSection(this)"><i data-lucide="file-text"></i>Quick Reference<i class="chev" data-lucide="chevron-right" style="margin-left:auto;"></i></button>
-        <nav id="nav-ref" class="subnav">
-          <a data-target="sampleSize" href="#sampleSize">Sample Size Guide</a>
-          <a data-target="biasCheck" href="#biasCheck">Bias Self‑Check</a>
-          <a data-target="dosDonts" href="#dosDonts">Do’s & Don’ts</a>
-        </nav>
+      
+      <nav class="nav-section">
+        <a class="navlink" data-target="overview" href="#overview"><i data-lucide="home"></i>Framework Overview</a>
+      </nav>
+      
+      <div class="nav-section">
+        <div class="nav-label">The Five Phases</div>
+        <div class="section">
+          <button type="button" aria-expanded="false" onclick="toggleSection(this)">
+            <i data-lucide="target"></i>Phase 1: Frame Decision
+            <i class="chev" data-lucide="chevron-right" style="margin-left:auto;"></i>
+          </button>
+          <nav class="subnav">
+            <a data-target="phase1" href="#phase1">SMART Questions</a>
+          </nav>
+        </div>
+        <div class="section">
+          <button type="button" aria-expanded="false" onclick="toggleSection(this)">
+            <i data-lucide="database"></i>Phase 2: Extract Data
+            <i class="chev" data-lucide="chevron-right" style="margin-left:auto;"></i>
+          </button>
+          <nav class="subnav">
+            <a data-target="phase2" href="#phase2">Best Practices</a>
+          </nav>
+        </div>
+        <div class="section">
+          <button type="button" aria-expanded="false" onclick="toggleSection(this)">
+            <i data-lucide="line-chart"></i>Phase 3: Interpret
+            <i class="chev" data-lucide="chevron-right" style="margin-left:auto;"></i>
+          </button>
+          <nav class="subnav">
+            <a data-target="phase3" href="#phase3">Rigorous Analysis</a>
+          </nav>
+        </div>
+        <div class="section">
+          <button type="button" aria-expanded="false" onclick="toggleSection(this)">
+            <i data-lucide="shield-check"></i>Phase 4: Bias Detection
+            <i class="chev" data-lucide="chevron-right" style="margin-left:auto;"></i>
+          </button>
+          <nav class="subnav">
+            <a data-target="phase4" href="#phase4">Detection Methods</a>
+          </nav>
+        </div>
+        <div class="section">
+          <button type="button" aria-expanded="false" onclick="toggleSection(this)">
+            <i data-lucide="file-check-2"></i>Phase 5: Decisions
+            <i class="chev" data-lucide="chevron-right" style="margin-left:auto;"></i>
+          </button>
+          <nav class="subnav">
+            <a data-target="phase5" href="#phase5">Documentation</a>
+          </nav>
+        </div>
       </div>
-      <div class="side-cta">
-        <button class="btn" onclick="expandAll()"><i data-lucide="chevron-down"></i>Expand</button>
-        <button class="btn ghost" onclick="collapseAll()"><i data-lucide="chevron-right"></i>Collapse</button>
+      
+      <div class="nav-section">
+        <div class="nav-label">Interactive Tools</div>
+        <a class="navlink" data-target="biasChecker" href="#biasChecker"><i data-lucide="check-circle"></i>Bias Self-Check</a>
+        <a class="navlink" data-target="sampleCalc" href="#sampleCalc"><i data-lucide="calculator"></i>Sample Size Calculator</a>
+        <a class="navlink" data-target="decisionTemplate" href="#decisionTemplate"><i data-lucide="file-text"></i>Decision Template</a>
+        <a class="navlink" data-target="challengeMode" href="#challengeMode"><i data-lucide="swords"></i>Challenge My Analysis</a>
       </div>
-      <p class="note" style="padding: 0 18px 24px;">Shortcuts: <span class="kbd">Ctrl/⌘+K</span> command · <span class="kbd">/</span> search · <span class="kbd">t</span> theme · <span class="kbd">[</span>/<span class="kbd">]</span> prev/next</p>
+      
+      <div class="nav-section">
+        <div class="nav-label">Role Guidelines</div>
+        <a class="navlink" data-target="businessUsers" href="#businessUsers"><i data-lucide="briefcase"></i>Business Users</a>
+        <a class="navlink" data-target="analysts" href="#analysts"><i data-lucide="flask-conical"></i>Analysts</a>
+        <a class="navlink" data-target="dataPros" href="#dataPros"><i data-lucide="settings-2"></i>Data Professionals</a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-label">Quick Reference</div>
+        <a class="navlink" data-target="sampleSize" href="#sampleSize"><i data-lucide="ruler"></i>Sample Size Guide</a>
+        <a class="navlink" data-target="dosDonts" href="#dosDonts"><i data-lucide="list-checks"></i>Do's & Don'ts</a>
+      </div>
+      
+      <div class="side-footer">
+        <div class="side-cta">
+          <button class="btn" onclick="expandAll()"><i data-lucide="chevrons-down"></i>Expand</button>
+          <button class="btn ghost" onclick="collapseAll()"><i data-lucide="chevrons-right"></i>Collapse</button>
+        </div>
+        <p class="note" style="padding:0; margin:0;">
+          <span class="kbd">⌘K</span> command · <span class="kbd">/</span> search · <span class="kbd">t</span> theme
+        </p>
+      </div>
     </aside>
+    
     <section class="center">
       <div class="top" id="topbar">
         <div class="container">
           <div class="topbar">
             <div class="crumbs" id="crumbs"><i data-lucide="bookmark"></i><span>Overview</span></div>
-            <div style="display:flex; gap:8px;">
+            <div style="display:flex; gap:6px;">
               <button class="btn ghost" onclick="copyLink()" title="Copy link"><i data-lucide="link-2"></i></button>
               <button class="btn ghost" onclick="toggleTheme()" title="Toggle theme"><i id="themeIcon" data-lucide="sun"></i></button>
               <button class="btn ghost" onclick="window.print()" title="Print"><i data-lucide="printer"></i></button>
-              <button class="btn" onclick="openCmd()" title="Command (Ctrl/⌘+K)"><i data-lucide="command"></i></button>
+              <button class="btn" onclick="openCmd()" title="Command (⌘K)"><i data-lucide="command"></i></button>
             </div>
           </div>
           <div class="hero">
@@ -141,57 +507,79 @@
           </div>
         </div>
       </div>
+      
       <div class="container main">
         <div id="content" class="content" tabindex="-1"></div>
       </div>
     </section>
-    <aside class="right">
-      <div class="rail container">
-        <div class="panel"><h5>Quick Tips</h5><ul id="tips"></ul></div>
-        <div class="panel"><h5>Keyboard</h5>
-          <ul style="list-style:none; padding-left:0; margin:0; color:var(--muted)">
-            <li><span class="kbd">Ctrl/⌘+K</span> Command</li>
-            <li><span class="kbd">/</span> Search</li>
-            <li><span class="kbd">t</span> Theme</li>
-            <li><span class="kbd">[</span>/<span class="kbd">]</span> Prev/Next</li>
-          </ul>
-        </div>
-      </div>
-    </aside>
   </div>
+  
   <div class="fab">
     <button class="btn" onclick="scrollTo({top:0, behavior:'smooth'})" title="Back to top"><i data-lucide="arrow-up"></i></button>
-    <button class="btn" onclick="copyLink()" title="Copy link"><i data-lucide="link-2"></i></button>
   </div>
+  
   <div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
     <div class="cmd" role="document">
       <div class="cmdHead"><i data-lucide="search"></i><input id="cmdInput" placeholder="Jump to any section…" /></div>
       <div class="cmdList" id="cmdList"></div>
     </div>
   </div>
+  
   <script>
-    // Icons
+    // ===============================
+    // CORE UTILITIES
+    // ===============================
     function renderIcons(){ window.lucide && window.lucide.createIcons(); }
+    function html(markup){ const div=document.createElement('div'); div.innerHTML=markup.trim(); return div; }
 
-    // Theme
+    // ===============================
+    // THEME
+    // ===============================
     const themeKey='dbp-theme';
-    function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); const icon = (t==='light'?'moon':'sun'); document.getElementById('themeIcon').setAttribute('data-lucide', icon); renderIcons(); }
-    function toggleTheme(){ const cur=document.documentElement.getAttribute('data-theme')||'dark'; const nxt=cur==='light'?'dark':'light'; localStorage.setItem(themeKey,nxt); applyTheme(nxt); }
+    function applyTheme(t){ 
+      document.documentElement.setAttribute('data-theme', t); 
+      const icon = (t==='light'?'moon':'sun'); 
+      document.getElementById('themeIcon').setAttribute('data-lucide', icon); 
+      renderIcons(); 
+    }
+    function toggleTheme(){ 
+      const cur=document.documentElement.getAttribute('data-theme')||'dark'; 
+      const nxt=cur==='light'?'dark':'light'; 
+      localStorage.setItem(themeKey,nxt); 
+      applyTheme(nxt); 
+    }
 
-    // Mobile menu
+    // ===============================
+    // NAVIGATION
+    // ===============================
     function toggleMenu(){ document.getElementById('leftNav').classList.toggle('open'); }
-
-    // Accordion
-    function toggleSection(btn){ const nav=btn.nextElementSibling; const chev=btn.querySelector('.chev'); const exp=btn.getAttribute('aria-expanded')==='true'; btn.setAttribute('aria-expanded',!exp); nav.style.display=exp?'none':'block'; if(chev) chev.setAttribute('data-lucide', exp?'chevron-right':'chevron-down'); renderIcons(); }
+    
+    function toggleSection(btn){ 
+      const nav=btn.nextElementSibling; 
+      const chev=btn.querySelector('.chev'); 
+      const exp=btn.getAttribute('aria-expanded')==='true'; 
+      btn.setAttribute('aria-expanded',!exp); 
+      nav.style.display=exp?'none':'block'; 
+      if(chev) chev.setAttribute('data-lucide', exp?'chevron-right':'chevron-down'); 
+      renderIcons(); 
+    }
     function expandAll(){ document.querySelectorAll('.section > button').forEach(b=>{ if(b.getAttribute('aria-expanded')==='false') toggleSection(b); }); }
     function collapseAll(){ document.querySelectorAll('.section > button').forEach(b=>{ if(b.getAttribute('aria-expanded')==='true') toggleSection(b); }); }
 
-    // Progress bar
-    function onScroll(){ const doc=document.scrollingElement; const pct=(doc.scrollTop)/(doc.scrollHeight-doc.clientHeight)*100; document.getElementById('progress').style.width=pct+'%'; }
+    function onScroll(){ 
+      const doc=document.scrollingElement; 
+      const pct=(doc.scrollTop)/(doc.scrollHeight-doc.clientHeight)*100; 
+      document.getElementById('progress').style.width=pct+'%'; 
+    }
     document.addEventListener('scroll', onScroll, {passive:true});
 
-    // Command palette
-    const cmdk=document.getElementById('cmdk'); const cmdInput=document.getElementById('cmdInput'); const cmdList=document.getElementById('cmdList');
+    // ===============================
+    // COMMAND PALETTE
+    // ===============================
+    const cmdk=document.getElementById('cmdk'); 
+    const cmdInput=document.getElementById('cmdInput'); 
+    const cmdList=document.getElementById('cmdList');
+    
     function openCmd(){ cmdk.classList.add('open'); cmdInput.value=''; renderCmd(''); cmdInput.focus(); }
     function closeCmd(){ cmdk.classList.remove('open'); }
     cmdk.addEventListener('click',(e)=>{ if(e.target===cmdk) closeCmd(); });
@@ -200,124 +588,770 @@
     document.addEventListener('keydown',(e)=>{
       if((e.key.toLowerCase()==='k'&&(e.metaKey||e.ctrlKey))){ e.preventDefault(); openCmd(); }
       if(e.key==='Escape'&&cmdk.classList.contains('open')) closeCmd();
-      if(e.key.toLowerCase()==='t'&&!cmdk.classList.contains('open')) toggleTheme();
+      if(e.key.toLowerCase()==='t'&&!cmdk.classList.contains('open')&&document.activeElement.tagName!=='INPUT') toggleTheme();
       if(e.key==='/'){ const a=document.activeElement; if(!a||a.tagName!=='INPUT'){ e.preventDefault(); document.getElementById('q').focus(); } }
-      if(e.key==='['){ e.preventDefault(); stepNav(-1); }
-      if(e.key===']'){ e.preventDefault(); stepNav(1); }
     });
 
-    function renderCmd(q){ const items=navItems().map(it=>({key:it.getAttribute('data-target'), label: it.textContent.trim()})); const t=(q||'').toLowerCase(); const filtered=items.filter(x=>!t||x.label.toLowerCase().includes(t)); cmdList.innerHTML=''; filtered.forEach(x=>{ const row=document.createElement('div'); row.className='cmdItem'; row.tabIndex=0; row.innerHTML=`<i data-lucide="hash"></i><div>${x.label}</div>`; row.addEventListener('click',()=>{ navigateTo(x.key); closeCmd(); }); row.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ navigateTo(x.key); closeCmd(); } }); cmdList.appendChild(row); }); renderIcons(); }
+    function renderCmd(q){ 
+      const items=navItems().map(it=>({key:it.getAttribute('data-target'), label: it.textContent.trim()})); 
+      const t=(q||'').toLowerCase(); 
+      const filtered=items.filter(x=>!t||x.label.toLowerCase().includes(t)); 
+      cmdList.innerHTML=''; 
+      filtered.forEach(x=>{ 
+        const row=document.createElement('div'); 
+        row.className='cmdItem'; 
+        row.tabIndex=0; 
+        row.innerHTML=`<i data-lucide="hash"></i><div>${x.label}</div>`; 
+        row.addEventListener('click',()=>{ navigateTo(x.key); closeCmd(); }); 
+        row.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ navigateTo(x.key); closeCmd(); } }); 
+        cmdList.appendChild(row); 
+      }); 
+      renderIcons(); 
+    }
 
-    // Search
-    function onSearch(text){ const t=(text||'').toLowerCase(); document.querySelectorAll('.navlink, .subnav a').forEach(a=>{ a.style.display=!t||a.textContent.toLowerCase().includes(t)?'':'none'; }); highlight(t); }
-    function highlight(term){ const root=document.getElementById('content'); root.querySelectorAll('mark').forEach(m=>{ const p=m.parentNode; p.replaceChild(document.createTextNode(m.textContent), m); p.normalize(); }); if(!term) return; const w=document.createTreeWalker(root, NodeFilter.SHOW_TEXT); const nodes=[]; while(w.nextNode()) nodes.push(w.currentNode); const re=new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'); nodes.forEach(n=>{ const text=n.nodeValue; if(!text.trim()) return; const frag=document.createDocumentFragment(); let last=0, m; while((m=re.exec(text))){ if(m.index>last) frag.appendChild(document.createTextNode(text.slice(last,m.index))); const mark=document.createElement('mark'); mark.textContent=m[0]; frag.appendChild(mark); last=m.index+m[0].length; } if(last<text.length) frag.appendChild(document.createTextNode(text.slice(last))); if(frag.childNodes.length) n.parentNode.replaceChild(frag,n); }); }
+    // ===============================
+    // SEARCH
+    // ===============================
+    function onSearch(text){ 
+      const t=(text||'').toLowerCase(); 
+      document.querySelectorAll('.navlink, .subnav a').forEach(a=>{ 
+        a.style.display=!t||a.textContent.toLowerCase().includes(t)?'':'none'; 
+      }); 
+      highlight(t); 
+    }
+    
+    function highlight(term){ 
+      const root=document.getElementById('content'); 
+      root.querySelectorAll('mark').forEach(m=>{ const p=m.parentNode; p.replaceChild(document.createTextNode(m.textContent), m); p.normalize(); }); 
+      if(!term) return; 
+      const w=document.createTreeWalker(root, NodeFilter.SHOW_TEXT); 
+      const nodes=[]; 
+      while(w.nextNode()) nodes.push(w.currentNode); 
+      const re=new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'); 
+      nodes.forEach(n=>{ 
+        const text=n.nodeValue; 
+        if(!text.trim()) return; 
+        const frag=document.createDocumentFragment(); 
+        let last=0, m; 
+        while((m=re.exec(text))){ 
+          if(m.index>last) frag.appendChild(document.createTextNode(text.slice(last,m.index))); 
+          const mark=document.createElement('mark'); 
+          mark.textContent=m[0]; 
+          frag.appendChild(mark); 
+          last=m.index+m[0].length; 
+        } 
+        if(last<text.length) frag.appendChild(document.createTextNode(text.slice(last))); 
+        if(frag.childNodes.length) n.parentNode.replaceChild(frag,n); 
+      }); 
+    }
 
-    // Content registry (using your v3 content with specialists + audience clarification)
-    const views={
-      overview: html(`
-        <div class="card">
-          <p><strong>Start with questions, not data.</strong> Define what decision you're making, identify what could bias your thinking, then gather and interpret evidence. This approach prevents common mistakes by forcing clear questions, hypotheses, and thresholds up front—so we collect the right evidence and let that evidence drive (and, when needed, overturn) our decisions.</p>
-          <p>Rather than jumping straight to dashboards, this framework ensures less bias, maximizes accuracy, and leads to better operational outcomes.</p>
+    // ===============================
+    // INTERACTIVE TOOLS - BIAS CHECKER
+    // ===============================
+    const biasChecks = [
+      { id: 'cherry', title: 'Cherry-Picking Check', desc: 'Did I examine ALL relevant time periods and metrics, not just favorable ones?' },
+      { id: 'confirm', title: 'Confirmation Bias Check', desc: 'Did I define my hypothesis BEFORE seeing data and actively seek disconfirming evidence?' },
+      { id: 'sample', title: 'Sample Size Check', desc: 'Is my sample large enough for statistically valid conclusions?' },
+      { id: 'recency', title: 'Recency Bias Check', desc: 'Am I overweighting recent events while undervaluing historical patterns?' },
+      { id: 'anchor', title: 'Anchoring Bias Check', desc: 'Am I overly attached to historical baselines that may no longer apply?' },
+      { id: 'season', title: 'Seasonality Check', desc: 'Have I compared appropriate periods (YoY) and accounted for seasonal patterns?' }
+    ];
+    
+    function getBiasState() {
+      try { return JSON.parse(localStorage.getItem('dbp-bias-state') || '{}'); } 
+      catch { return {}; }
+    }
+    function setBiasState(state) {
+      localStorage.setItem('dbp-bias-state', JSON.stringify(state));
+    }
+    
+    function renderBiasChecker() {
+      const state = getBiasState();
+      const checked = Object.values(state).filter(Boolean).length;
+      const total = biasChecks.length;
+      const pct = Math.round((checked / total) * 100);
+      const circumference = 2 * Math.PI * 52;
+      const offset = circumference - (pct / 100) * circumference;
+      
+      let status, statusClass;
+      if (pct === 100) { status = 'Ready to Proceed'; statusClass = 'ok'; }
+      else if (pct >= 50) { status = 'Review Remaining'; statusClass = 'brand'; }
+      else { status = 'Needs Attention'; statusClass = 'danger'; }
+      
+      return `
+        <div class="card tool">
+          <h3>Interactive Bias Self-Check</h3>
+          <p>Complete each checkpoint before finalizing any analysis. Your progress is saved automatically.</p>
+          
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-top: 20px;">
+            <div style="text-align: center;">
+              <div class="score-ring">
+                <svg viewBox="0 0 120 120">
+                  <circle class="bg" cx="60" cy="60" r="52"/>
+                  <circle class="fill" cx="60" cy="60" r="52" 
+                    stroke-dasharray="${circumference}" 
+                    stroke-dashoffset="${offset}"
+                    style="stroke: ${pct === 100 ? 'var(--accent)' : pct >= 50 ? 'var(--brand)' : 'var(--danger)'}"/>
+                </svg>
+                <div class="score-text">
+                  <span>${checked}/${total}</span>
+                  <span class="score-label">Checks</span>
+                </div>
+              </div>
+              <div class="traffic" style="justify-content: center; margin-bottom: 8px;">
+                <div class="traffic-light red ${pct < 50 ? 'active' : ''}"></div>
+                <div class="traffic-light yellow ${pct >= 50 && pct < 100 ? 'active' : ''}"></div>
+                <div class="traffic-light green ${pct === 100 ? 'active' : ''}"></div>
+              </div>
+              <strong class="${statusClass}">${status}</strong>
+            </div>
+            
+            <ul class="check-list">
+              ${biasChecks.map(c => `
+                <li class="check-item ${state[c.id] ? 'checked' : ''}" onclick="toggleBiasCheck('${c.id}')">
+                  <input type="checkbox" ${state[c.id] ? 'checked' : ''} onchange="toggleBiasCheck('${c.id}')" onclick="event.stopPropagation()">
+                  <label>
+                    <span class="check-title">${c.title}</span>
+                    <span class="check-desc">${c.desc}</span>
+                  </label>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+          
+          <div class="export-bar">
+            <button class="btn" onclick="resetBiasCheck()"><i data-lucide="rotate-ccw"></i>Reset All</button>
+            <button class="btn primary" onclick="exportBiasCheck()"><i data-lucide="download"></i>Export Summary</button>
+          </div>
         </div>
+        
+        <div class="callout ${pct === 100 ? 'success' : pct >= 50 ? 'info' : ''}">
+          <strong>${pct === 100 ? '✓ All checks complete!' : pct >= 50 ? 'Making progress...' : '⚠️ Important:'}</strong> 
+          ${pct === 100 
+            ? 'Your analysis has passed all bias checks. Document your findings with confidence.' 
+            : pct >= 50 
+              ? `${total - checked} check${total - checked > 1 ? 's' : ''} remaining. Review carefully before proceeding.`
+              : 'If you cannot confidently check all items, consult an analyst before proceeding with your analysis.'}
+        </div>
+      `;
+    }
+    
+    function toggleBiasCheck(id) {
+      const state = getBiasState();
+      state[id] = !state[id];
+      setBiasState(state);
+      renderView('biasChecker');
+    }
+    
+    function resetBiasCheck() {
+      if (confirm('Reset all bias checks? This cannot be undone.')) {
+        setBiasState({});
+        renderView('biasChecker');
+      }
+    }
+    
+    function exportBiasCheck() {
+      const state = getBiasState();
+      const date = new Date().toLocaleDateString();
+      const time = new Date().toLocaleTimeString();
+      let text = `BIAS SELF-CHECK SUMMARY\n`;
+      text += `Generated: ${date} at ${time}\n`;
+      text += `${'='.repeat(50)}\n\n`;
+      
+      biasChecks.forEach(c => {
+        text += `[${state[c.id] ? '✓' : ' '}] ${c.title}\n`;
+        text += `    ${c.desc}\n\n`;
+      });
+      
+      const checked = Object.values(state).filter(Boolean).length;
+      text += `${'='.repeat(50)}\n`;
+      text += `RESULT: ${checked}/${biasChecks.length} checks passed\n`;
+      text += checked === biasChecks.length ? 'STATUS: Ready to proceed\n' : 'STATUS: Review required\n';
+      
+      downloadText(text, 'bias-check-summary.txt');
+    }
+
+    // ===============================
+    // INTERACTIVE TOOLS - SAMPLE SIZE CALCULATOR
+    // ===============================
+    function renderSampleCalc() {
+      return `
+        <div class="card tool">
+          <h3>Sample Size & Confidence Calculator</h3>
+          <p>Input your analysis parameters to calculate statistical confidence and determine if your sample is sufficient.</p>
+          
+          <div class="form-row" style="margin-top: 20px;">
+            <div class="form-group">
+              <label class="form-label">Sample Size (n)</label>
+              <input type="number" class="form-input" id="calc-n" placeholder="e.g., 500" value="500" onchange="calculateCI()">
+              <p class="form-hint">Number of observations in your sample</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Observed Rate (%)</label>
+              <input type="number" class="form-input" id="calc-rate" placeholder="e.g., 95" value="95" min="0" max="100" step="0.1" onchange="calculateCI()">
+              <p class="form-hint">Your measured percentage (0-100)</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confidence Level</label>
+              <select class="form-select" id="calc-conf" onchange="calculateCI()">
+                <option value="1.645">90%</option>
+                <option value="1.96" selected>95%</option>
+                <option value="2.576">99%</option>
+              </select>
+              <p class="form-hint">Statistical confidence level</p>
+            </div>
+          </div>
+          
+          <div id="calc-results" style="margin-top: 20px;"></div>
+        </div>
+        
+        <div class="card">
+          <h3>Sample Size Minimums by Context</h3>
+          <table class="table">
+            <thead>
+              <tr><th>Analysis Type</th><th>Minimum Sample</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Claims processing metrics</td><td>100+ claims</td><td>Per specialist, per period</td></tr>
+              <tr><td>Client performance comparison</td><td>200+ claims or 3+ months</td><td>Smaller clients need longer timeframes</td></tr>
+              <tr><td>A/B testing</td><td>500+ per variant</td><td>More for small effect sizes</td></tr>
+              <tr><td>Accuracy rates (95%+ baseline)</td><td>300+ claims</td><td>High baselines need larger n</td></tr>
+              <tr><td>Return-to-work metrics</td><td>50+ completed episodes</td><td>Full episode completion required</td></tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="callout info">
+          <strong>Rule of thumb:</strong> If your confidence interval is wider than the difference you're trying to detect, your sample is too small to draw conclusions.
+        </div>
+      `;
+    }
+    
+    function calculateCI() {
+      const n = parseInt(document.getElementById('calc-n').value) || 0;
+      const rate = parseFloat(document.getElementById('calc-rate').value) / 100 || 0;
+      const z = parseFloat(document.getElementById('calc-conf').value) || 1.96;
+      
+      if (n <= 0 || rate < 0 || rate > 1) {
+        document.getElementById('calc-results').innerHTML = `
+          <div class="callout danger">Please enter valid values: sample size > 0 and rate between 0-100%.</div>
+        `;
+        return;
+      }
+      
+      // Wilson score interval (more accurate for proportions)
+      const p = rate;
+      const q = 1 - p;
+      const denominator = 1 + (z * z) / n;
+      const center = (p + (z * z) / (2 * n)) / denominator;
+      const margin = (z * Math.sqrt((p * q) / n + (z * z) / (4 * n * n))) / denominator;
+      
+      const lower = Math.max(0, (center - margin) * 100);
+      const upper = Math.min(100, (center + margin) * 100);
+      const width = upper - lower;
+      
+      // Standard error
+      const se = Math.sqrt((rate * (1 - rate)) / n) * 100;
+      
+      // Assessment
+      let assessment, assessClass;
+      if (width <= 3) { assessment = 'Excellent precision'; assessClass = 'ok'; }
+      else if (width <= 5) { assessment = 'Good precision'; assessClass = 'brand'; }
+      else if (width <= 10) { assessment = 'Moderate precision'; assessClass = 'muted'; }
+      else { assessment = 'Low precision - increase sample size'; assessClass = 'danger'; }
+      
+      document.getElementById('calc-results').innerHTML = `
+        <div class="card result">
+          <h4 style="margin-top:0;">Results</h4>
+          <div class="result-grid">
+            <div class="result-stat">
+              <div class="stat-value">${lower.toFixed(1)}%</div>
+              <div class="stat-label">Lower Bound</div>
+            </div>
+            <div class="result-stat">
+              <div class="stat-value">${(rate * 100).toFixed(1)}%</div>
+              <div class="stat-label">Observed Rate</div>
+            </div>
+            <div class="result-stat">
+              <div class="stat-value">${upper.toFixed(1)}%</div>
+              <div class="stat-label">Upper Bound</div>
+            </div>
+            <div class="result-stat">
+              <div class="stat-value">±${(width/2).toFixed(1)}%</div>
+              <div class="stat-label">Margin of Error</div>
+            </div>
+          </div>
+          <p style="margin-top:16px;"><strong>Interpretation:</strong> With ${n.toLocaleString()} observations, the true rate is between <strong>${lower.toFixed(1)}%</strong> and <strong>${upper.toFixed(1)}%</strong> with the selected confidence level.</p>
+          <p><strong class="${assessClass}">Assessment: ${assessment}</strong></p>
+        </div>
+      `;
+      renderIcons();
+    }
+
+    // ===============================
+    // INTERACTIVE TOOLS - DECISION TEMPLATE
+    // ===============================
+    function renderDecisionTemplate() {
+      return `
+        <div class="card tool">
+          <h3>Decision Documentation Generator</h3>
+          <p>Complete this template before any significant operational decision. Export as a professional document when done.</p>
+          
+          <div style="margin-top: 20px;">
+            <h4 style="margin-top:0;">Decision Summary</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Decision Title</label>
+                <input type="text" class="form-input" id="dec-title" placeholder="e.g., Add 2 FTE specialists to STD team">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Decision Maker</label>
+                <input type="text" class="form-input" id="dec-maker" placeholder="Name and role">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Decision Date</label>
+                <input type="date" class="form-input" id="dec-date" value="${new Date().toISOString().split('T')[0]}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Implementation Timeline</label>
+                <input type="text" class="form-input" id="dec-timeline" placeholder="e.g., December 1, 2025">
+              </div>
+            </div>
+            
+            <h4>Analysis Foundation</h4>
+            <div class="form-group">
+              <label class="form-label">Primary Finding</label>
+              <textarea class="form-textarea" id="dec-finding" placeholder="What is the main insight driving this decision?"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Supporting Evidence</label>
+              <textarea class="form-textarea" id="dec-evidence" placeholder="List key metrics and data points (e.g., Claims per specialist: 195 → 212, TAT: 23.2 → 26.8 days)"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confidence Level</label>
+              <select class="form-select" id="dec-confidence">
+                <option value="High">High - Strong evidence, large sample, multiple confirming sources</option>
+                <option value="Medium" selected>Medium - Reasonable evidence with some uncertainty</option>
+                <option value="Low">Low - Limited data, small samples, or conflicting signals</option>
+              </select>
+            </div>
+            
+            <h4>Decision Rationale</h4>
+            <div class="form-group">
+              <label class="form-label">Why this decision? Why now?</label>
+              <textarea class="form-textarea" id="dec-rationale" placeholder="Explain the reasoning behind this specific choice and timing"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Alternatives Considered</label>
+              <textarea class="form-textarea" id="dec-alternatives" placeholder="What other options were evaluated and why were they rejected?"></textarea>
+            </div>
+            
+            <h4>Risks & Monitoring</h4>
+            <div class="form-group">
+              <label class="form-label">Key Risks</label>
+              <textarea class="form-textarea" id="dec-risks" placeholder="What could go wrong? What assumptions might be incorrect?"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Success Metrics & Monitoring Plan</label>
+              <textarea class="form-textarea" id="dec-monitoring" placeholder="How will you measure success? What leading indicators will you track?"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expected Impact</label>
+              <textarea class="form-textarea" id="dec-impact" placeholder="What outcomes do you expect? By when? (e.g., TAT back to 23-24 days by Feb 2026)"></textarea>
+            </div>
+          </div>
+          
+          <div class="export-bar">
+            <button class="btn" onclick="clearDecisionForm()"><i data-lucide="trash-2"></i>Clear Form</button>
+            <button class="btn" onclick="exportDecisionMarkdown()"><i data-lucide="file-text"></i>Export Markdown</button>
+            <button class="btn primary" onclick="exportDecisionHTML()"><i data-lucide="file-down"></i>Export Document</button>
+          </div>
+        </div>
+      `;
+    }
+    
+    function getDecisionData() {
+      return {
+        title: document.getElementById('dec-title')?.value || '',
+        maker: document.getElementById('dec-maker')?.value || '',
+        date: document.getElementById('dec-date')?.value || '',
+        timeline: document.getElementById('dec-timeline')?.value || '',
+        finding: document.getElementById('dec-finding')?.value || '',
+        evidence: document.getElementById('dec-evidence')?.value || '',
+        confidence: document.getElementById('dec-confidence')?.value || 'Medium',
+        rationale: document.getElementById('dec-rationale')?.value || '',
+        alternatives: document.getElementById('dec-alternatives')?.value || '',
+        risks: document.getElementById('dec-risks')?.value || '',
+        monitoring: document.getElementById('dec-monitoring')?.value || '',
+        impact: document.getElementById('dec-impact')?.value || ''
+      };
+    }
+    
+    function clearDecisionForm() {
+      if (confirm('Clear all form fields? This cannot be undone.')) {
+        document.querySelectorAll('#content input, #content textarea, #content select').forEach(el => {
+          if (el.type === 'date') el.value = new Date().toISOString().split('T')[0];
+          else if (el.tagName === 'SELECT') el.selectedIndex = 1;
+          else el.value = '';
+        });
+      }
+    }
+    
+    function exportDecisionMarkdown() {
+      const d = getDecisionData();
+      let md = `# Decision Document: ${d.title || 'Untitled'}\n\n`;
+      md += `**Decision Maker:** ${d.maker || 'N/A'}  \n`;
+      md += `**Date:** ${d.date || 'N/A'}  \n`;
+      md += `**Implementation:** ${d.timeline || 'N/A'}  \n`;
+      md += `**Confidence Level:** ${d.confidence}\n\n`;
+      md += `---\n\n`;
+      md += `## Primary Finding\n\n${d.finding || 'Not specified'}\n\n`;
+      md += `## Supporting Evidence\n\n${d.evidence || 'Not specified'}\n\n`;
+      md += `## Decision Rationale\n\n${d.rationale || 'Not specified'}\n\n`;
+      md += `## Alternatives Considered\n\n${d.alternatives || 'Not specified'}\n\n`;
+      md += `## Risks\n\n${d.risks || 'Not specified'}\n\n`;
+      md += `## Monitoring Plan\n\n${d.monitoring || 'Not specified'}\n\n`;
+      md += `## Expected Impact\n\n${d.impact || 'Not specified'}\n\n`;
+      md += `---\n\n*Generated by Data Best Practices Framework on ${new Date().toLocaleDateString()}*\n`;
+      
+      downloadText(md, `decision-${d.title?.replace(/\s+/g,'-').toLowerCase() || 'document'}.md`);
+    }
+    
+    function exportDecisionHTML() {
+      const d = getDecisionData();
+      const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Decision Document - ${d.title || 'Untitled'}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #1f2937; }
+    h1 { color: #111827; border-bottom: 2px solid #3b82f6; padding-bottom: 12px; }
+    h2 { color: #374151; margin-top: 32px; font-size: 18px; }
+    .meta { background: #f3f4f6; padding: 16px; border-radius: 8px; margin: 20px 0; }
+    .meta p { margin: 4px 0; }
+    .confidence { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 600; }
+    .confidence.High { background: #d1fae5; color: #065f46; }
+    .confidence.Medium { background: #dbeafe; color: #1e40af; }
+    .confidence.Low { background: #fee2e2; color: #991b1b; }
+    .section { margin: 24px 0; padding: 16px; background: #fafafa; border-left: 4px solid #e5e7eb; border-radius: 0 8px 8px 0; }
+    .section.risks { border-left-color: #f59e0b; background: #fffbeb; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
+    @media print { body { margin: 0; } }
+  </style>
+</head>
+<body>
+  <h1>Decision Document</h1>
+  <h2 style="margin-top:0; border:none; color:#3b82f6;">${d.title || 'Untitled Decision'}</h2>
+  
+  <div class="meta">
+    <p><strong>Decision Maker:</strong> ${d.maker || 'N/A'}</p>
+    <p><strong>Date:</strong> ${d.date || 'N/A'}</p>
+    <p><strong>Implementation Timeline:</strong> ${d.timeline || 'N/A'}</p>
+    <p><strong>Confidence Level:</strong> <span class="confidence ${d.confidence}">${d.confidence}</span></p>
+  </div>
+  
+  <h2>Primary Finding</h2>
+  <div class="section">${d.finding?.replace(/\n/g, '<br>') || '<em>Not specified</em>'}</div>
+  
+  <h2>Supporting Evidence</h2>
+  <div class="section">${d.evidence?.replace(/\n/g, '<br>') || '<em>Not specified</em>'}</div>
+  
+  <h2>Decision Rationale</h2>
+  <div class="section">${d.rationale?.replace(/\n/g, '<br>') || '<em>Not specified</em>'}</div>
+  
+  <h2>Alternatives Considered</h2>
+  <div class="section">${d.alternatives?.replace(/\n/g, '<br>') || '<em>Not specified</em>'}</div>
+  
+  <h2>Risks</h2>
+  <div class="section risks">${d.risks?.replace(/\n/g, '<br>') || '<em>Not specified</em>'}</div>
+  
+  <h2>Monitoring Plan</h2>
+  <div class="section">${d.monitoring?.replace(/\n/g, '<br>') || '<em>Not specified</em>'}</div>
+  
+  <h2>Expected Impact</h2>
+  <div class="section">${d.impact?.replace(/\n/g, '<br>') || '<em>Not specified</em>'}</div>
+  
+  <div class="footer">
+    Generated by Data Best Practices Framework on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}
+  </div>
+</body>
+</html>`;
+      
+      downloadText(html, `decision-${d.title?.replace(/\s+/g,'-').toLowerCase() || 'document'}.html`, 'text/html');
+    }
+
+    // ===============================
+    // INTERACTIVE TOOLS - CHALLENGE MODE
+    // ===============================
+    function renderChallengeMode() {
+      return `
+        <div class="card tool">
+          <h3>Challenge My Analysis</h3>
+          <p>Enter your analysis parameters below. This tool will generate devil's advocate questions to stress-test your conclusions before you present them.</p>
+          
+          <div style="margin-top: 20px;">
+            <div class="form-group">
+              <label class="form-label">Your Conclusion</label>
+              <textarea class="form-textarea" id="chal-conclusion" placeholder="e.g., We need to hire 2 additional specialists because TAT is trending toward SLA threshold"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Key Metric(s)</label>
+                <input type="text" class="form-input" id="chal-metrics" placeholder="e.g., TAT increased from 23 to 27 days">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Time Period Analyzed</label>
+                <input type="text" class="form-input" id="chal-period" placeholder="e.g., Q3 2025 vs Q3 2024">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Sample Size</label>
+                <input type="text" class="form-input" id="chal-sample" placeholder="e.g., 4,200 claims">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Analysis Type</label>
+                <select class="form-select" id="chal-type">
+                  <option value="staffing">Staffing/Capacity Decision</option>
+                  <option value="performance">Performance Assessment</option>
+                  <option value="process">Process Change</option>
+                  <option value="client">Client Communication</option>
+                  <option value="forecast">Forecasting/Projection</option>
+                </select>
+              </div>
+            </div>
+            
+            <button class="btn primary" style="width:100%; margin-top:16px;" onclick="generateChallenges()">
+              <i data-lucide="swords"></i>Generate Challenge Questions
+            </button>
+          </div>
+          
+          <div id="challenge-results" style="margin-top: 20px;"></div>
+        </div>
+        
+        <div class="callout info">
+          <strong>Why challenge yourself?</strong> Research shows that actively seeking disconfirming evidence dramatically improves decision quality. This tool helps you anticipate objections and strengthen your analysis before stakeholders raise them.
+        </div>
+      `;
+    }
+    
+    function generateChallenges() {
+      const conclusion = document.getElementById('chal-conclusion').value;
+      const metrics = document.getElementById('chal-metrics').value;
+      const period = document.getElementById('chal-period').value;
+      const sample = document.getElementById('chal-sample').value;
+      const type = document.getElementById('chal-type').value;
+      
+      if (!conclusion) {
+        document.getElementById('challenge-results').innerHTML = `
+          <div class="callout danger">Please enter your conclusion to generate challenge questions.</div>
+        `;
+        return;
+      }
+      
+      // Generate context-aware challenges based on analysis type
+      const challenges = {
+        staffing: [
+          { category: 'Alternative Explanations', q: 'Could the metric changes be explained by factors other than staffing (e.g., claim complexity, system issues, training gaps)?' },
+          { category: 'Seasonality', q: 'Have you compared to the same period in prior years? Is this pattern consistent historically?' },
+          { category: 'Threshold Validity', q: 'Is your performance threshold still appropriate? When was it last validated against industry benchmarks?' },
+          { category: 'Leading Indicators', q: 'Are there leading indicators that predict whether this trend will continue or reverse?' },
+          { category: 'Cost-Benefit', q: 'What is the cost of this decision vs. the cost of inaction? Have you quantified both?' },
+          { category: 'Reversibility', q: 'If this decision proves wrong, how easily can it be reversed? What is the exit strategy?' }
+        ],
+        performance: [
+          { category: 'Cherry-Picking', q: 'Are you showing all relevant metrics, or only the ones that support your narrative?' },
+          { category: 'Comparison Validity', q: 'Are the groups/periods you\'re comparing truly equivalent? What confounding factors exist?' },
+          { category: 'Statistical Significance', q: 'Is the observed difference statistically significant, or could it be random variation?' },
+          { category: 'Practical Significance', q: 'Even if statistically significant, is the difference large enough to matter operationally?' },
+          { category: 'Data Quality', q: 'Are there known data quality issues that could affect these results?' },
+          { category: 'Survivorship Bias', q: 'Are you only analyzing successful/completed cases and missing important failure patterns?' }
+        ],
+        process: [
+          { category: 'Root Cause', q: 'Are you addressing the root cause or just symptoms? Have you done proper root cause analysis?' },
+          { category: 'Unintended Consequences', q: 'What could go wrong? What unintended consequences might this process change create?' },
+          { category: 'Baseline Validity', q: 'Is your "before" measurement actually representative, or was it an anomaly?' },
+          { category: 'Implementation Risk', q: 'What assumptions are you making about implementation that might not hold?' },
+          { category: 'Scale Effects', q: 'Will results from a pilot or limited sample hold at full scale?' },
+          { category: 'Measurement Bias', q: 'Could the act of measuring or monitoring be influencing the results?' }
+        ],
+        client: [
+          { category: 'Client Context', q: 'Are you accounting for client-specific factors that might explain their unique patterns?' },
+          { category: 'Benchmark Fairness', q: 'Is the comparison benchmark fair for this client\'s specific situation?' },
+          { category: 'Selection Bias', q: 'Are you selectively presenting information that paints a particular picture?' },
+          { category: 'Trend vs. Point', q: 'Are you presenting a single point in time, or showing the full trend with context?' },
+          { category: 'Confidence Communication', q: 'Are you appropriately communicating uncertainty and confidence intervals?' },
+          { category: 'Actionability', q: 'Does your analysis lead to clear, actionable recommendations the client can implement?' }
+        ],
+        forecast: [
+          { category: 'Historical Reliability', q: 'How accurate have similar forecasts been in the past? What\'s your track record?' },
+          { category: 'Assumption Testing', q: 'What key assumptions is your forecast based on? What happens if they\'re wrong?' },
+          { category: 'Scenario Planning', q: 'Have you modeled best-case, worst-case, and most-likely scenarios?' },
+          { category: 'External Factors', q: 'What external factors could invalidate your forecast that aren\'t captured in historical data?' },
+          { category: 'Overconfidence', q: 'Are your confidence intervals appropriately wide? Forecasters typically underestimate uncertainty.' },
+          { category: 'Feedback Loops', q: 'Could actions based on this forecast change the outcome itself?' }
+        ]
+      };
+      
+      // Universal challenges that apply to all types
+      const universalChallenges = [
+        { category: 'Confirmation Bias', q: 'Did you form this conclusion before or after looking at the data? Have you sought disconfirming evidence?' },
+        { category: 'Sample Size', q: `Is ${sample || 'your sample'} large enough to draw this conclusion with confidence?` },
+        { category: 'Recency Bias', q: 'Are you overweighting recent events while undervaluing longer-term patterns?' }
+      ];
+      
+      const typeSpecific = challenges[type] || challenges.performance;
+      const allChallenges = [...typeSpecific.slice(0, 4), ...universalChallenges, ...typeSpecific.slice(4)];
+      
+      document.getElementById('challenge-results').innerHTML = `
+        <div class="card warning">
+          <h4 style="margin-top:0;"><i data-lucide="alert-triangle" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i>Devil's Advocate Questions</h4>
+          <p class="muted">Answer each question thoroughly before presenting your analysis. If you can't answer confidently, your analysis may need more work.</p>
+          
+          <ul class="challenge-list" style="margin-top:16px;">
+            ${allChallenges.map(c => `
+              <li class="challenge-item">
+                <strong>${c.category}:</strong> ${c.q}
+              </li>
+            `).join('')}
+          </ul>
+          
+          <div class="export-bar">
+            <button class="btn" onclick="exportChallenges()"><i data-lucide="download"></i>Export Questions</button>
+          </div>
+        </div>
+      `;
+      renderIcons();
+    }
+    
+    function exportChallenges() {
+      const conclusion = document.getElementById('chal-conclusion').value;
+      const metrics = document.getElementById('chal-metrics').value;
+      const period = document.getElementById('chal-period').value;
+      const sample = document.getElementById('chal-sample').value;
+      
+      const questions = Array.from(document.querySelectorAll('.challenge-item')).map(el => el.textContent.trim());
+      
+      let text = `ANALYSIS CHALLENGE WORKSHEET\n`;
+      text += `Generated: ${new Date().toLocaleDateString()}\n`;
+      text += `${'='.repeat(60)}\n\n`;
+      text += `CONCLUSION UNDER REVIEW:\n${conclusion || 'Not specified'}\n\n`;
+      text += `KEY METRICS: ${metrics || 'Not specified'}\n`;
+      text += `TIME PERIOD: ${period || 'Not specified'}\n`;
+      text += `SAMPLE SIZE: ${sample || 'Not specified'}\n\n`;
+      text += `${'='.repeat(60)}\n\n`;
+      text += `CHALLENGE QUESTIONS:\n\n`;
+      questions.forEach((q, i) => {
+        text += `${i + 1}. ${q}\n\n   YOUR RESPONSE:\n   _________________________________\n\n`;
+      });
+      
+      downloadText(text, 'analysis-challenge-worksheet.txt');
+    }
+
+    // ===============================
+    // DOWNLOAD UTILITY
+    // ===============================
+    function downloadText(content, filename, type = 'text/plain') {
+      const blob = new Blob([content], { type: `${type};charset=utf-8` });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast(`Downloaded ${filename}`);
+    }
+
+    // ===============================
+    // CONTENT VIEWS
+    // ===============================
+    const views = {
+      overview: () => `
+        <div class="card">
+          <p><strong>Start with questions, not data.</strong> Define what decision you're making, identify what could bias your thinking, then gather and interpret evidence. This approach prevents common mistakes by forcing clear questions, hypotheses, and thresholds up front—so you collect the right evidence and let that evidence drive decisions.</p>
+        </div>
+        
         <div class="card">
           <h3>Audience</h3>
-          <p><strong>For Business Users & Managers</strong><br>
-          Primary focus is on Phases 1, 3, and 5—framing questions, interpreting insights, and making decisions.<br>
-          However, you should still understand and validate Phases 2 and 4 at a high level: confirm data sources are certified and bias checks are considered before acting.</p>
-          <p><strong>For Analysts & Consultants</strong><br>
-          Engage deeply with all five phases to ensure rigor throughout the decision process.</p>
+          <p><strong>Business Users & Managers</strong> — Focus on Phases 1, 3, and 5. Understand and validate Phases 2 and 4 at a high level.</p>
+          <p><strong>Analysts & Consultants</strong> — Engage deeply with all five phases to ensure rigor throughout.</p>
         </div>
+        
         <div class="card">
-          <h3>The Five Phases at a Glance</h3>
+          <h3>The Five Phases</h3>
           <ol>
-            <li><strong>Frame the Decision</strong>: Define SMART (Specific · Measurable · Action‑oriented · Relevant · Time‑bound) questions before touching data</li>
-            <li><strong>Extract Data Systematically</strong>: Use certified datasets and consistent methods</li>
-            <li><strong>Interpret with Rigor</strong>: Apply context, statistical significance, and seasonality</li>
-            <li><strong>Apply Bias Detection</strong>: Actively identify and mitigate cognitive biases</li>
-            <li><strong>Translate to Decisions</strong>: Document rationale and monitoring plans</li>
+            <li><strong>Frame the Decision</strong> — Define SMART questions before touching data</li>
+            <li><strong>Extract Data Systematically</strong> — Use certified datasets and consistent methods</li>
+            <li><strong>Interpret with Rigor</strong> — Apply context, statistical significance, and seasonality</li>
+            <li><strong>Apply Bias Detection</strong> — Actively identify and mitigate cognitive biases</li>
+            <li><strong>Translate to Decisions</strong> — Document rationale and monitoring plans</li>
           </ol>
         </div>
-      `),
-      phase1: html(`
+        
+        <div class="card tool">
+          <h3>New: Interactive Tools</h3>
+          <p>This guide now includes four interactive tools to make your analysis more rigorous:</p>
+          <ul>
+            <li><strong>Bias Self-Check</strong> — Interactive checklist with progress tracking and export</li>
+            <li><strong>Sample Size Calculator</strong> — Calculate confidence intervals and assess statistical precision</li>
+            <li><strong>Decision Template</strong> — Generate professional decision documentation</li>
+            <li><strong>Challenge My Analysis</strong> — Devil's advocate questions tailored to your analysis type</li>
+          </ul>
+        </div>
+      `,
+      
+      phase1: () => `
         <div class="callout"><strong>Why it matters:</strong> Poor framing leads to wasted analysis, misleading conclusions, and bad decisions. Invest <strong>10–15 minutes</strong> here to save hours later.</div>
+        
         <div class="card">
           <h3>SMART Questions Framework</h3>
+          
           <h4>Specific</h4>
-          <ul>
-            <li>Define exactly what you're trying to decide, including:
-              <ul>
-                <li>The metric that matters (e.g., TAT)</li>
-                <li>The threshold that matters (e.g., 30 days)</li>
-                <li>The timeframe (e.g., Q4)</li>
-                <li>The standard (e.g., 95%)</li>
-              </ul>
-            </li>
-            <li><span class="danger">Too vague:</span> “Are we staffed appropriately?”</li>
-            <li><span class="ok">✓ Better:</span> “Do we have sufficient <strong>specialists</strong> to maintain X% claims processed within X days given Q4 volume patterns?”</li>
-          </ul>
+          <p>Define exactly what you're trying to decide, including the metric, threshold, timeframe, and standard.</p>
+          <p><span class="danger">Too vague:</span> "Are we staffed appropriately?"</p>
+          <p><span class="ok">✓ Better:</span> "Do we have sufficient specialists to maintain 95% claims processed within 30 days given Q4 volume patterns?"</p>
+          
           <h4>Measurable</h4>
-          <ul>
-            <li>Identify specific metrics before analysis:
-              <ul>
-                <li>Current claims per <strong>specialist</strong></li>
-                <li>Average handling time</li>
-                <li>Queue depth</li>
-                <li>TAT performance</li>
-                <li><strong>Specialist</strong> utilization rate</li>
-              </ul>
-            </li>
-            <li><em>Write these down to prevent cherry‑picking favorable metrics later.</em></li>
-          </ul>
-          <h4>Action‑Oriented</h4>
-          <p>Connect your question to a decision with consequences: “Will we hire additional <strong>specialists</strong>, redistribute workload, or maintain current staffing?” <span class="danger">If no action will result, question whether the analysis is necessary.</span></p>
+          <p>Identify specific metrics before analysis: claims per specialist, average handling time, queue depth, TAT performance, utilization rate. Write these down to prevent cherry-picking favorable metrics later.</p>
+          
+          <h4>Action-Oriented</h4>
+          <p>Connect your question to a decision with consequences. If no action will result, question whether the analysis is necessary.</p>
+          
           <h4>Relevant</h4>
-          <ul>
-            <li>Ensure the question matters to business outcomes. Document:
-              <ul>
-                <li>Why this question matters now</li>
-                <li>Who needs the answer</li>
-                <li>Impact on TAT, customer satisfaction, costs, quality</li>
-              </ul>
-            </li>
-          </ul>
-          <h4>Time‑Bound</h4>
-          <ul>
-            <li>Define comparison periods explicitly:
-              <ul>
-                <li><span class="danger"></span> “Compare October 2025 to September 2025” (risks seasonality errors)</li>
-                <li><span class="ok">✓</span> “Compare Q3 2025 to Q3 2024 and Q3 2023” (accounts for seasonal patterns)</li>
-              </ul>
-            </li>
-          </ul>
+          <p>Ensure the question matters to business outcomes. Document why it matters now, who needs the answer, and the impact.</p>
+          
+          <h4>Time-Bound</h4>
+          <p>Define comparison periods explicitly. Prefer "Compare Q3 2025 to Q3 2024" over "Compare October to September" to account for seasonal patterns.</p>
         </div>
+        
         <div class="card">
           <h3>Document Before Analysis</h3>
-          <h4>Hypotheses & Assumptions</h4>
-          <p>Write down what you expect to find and why: “I expect Q4 claim volume to increase 15–20% based on historical patterns, which would require 3–4 additional <strong>specialists</strong> to maintain TAT.”</p>
-          <h4>Potential Biases</h4>
-          <ul>
-            <li>Anchoring: on last year's headcount</li>
-            <li>Recency: from recent difficult weeks</li>
-            <li>Availability: if challenging claims are top of mind</li>
-            <li>Confirmation: toward standard processes</li>
-            <li>Sunflower: where junior team members defer to senior leaders</li>
-          </ul>
+          <p><strong>Hypotheses:</strong> Write down what you expect to find and why.</p>
+          <p><strong>Potential Biases:</strong> Anchoring on last year's headcount, recency from difficult weeks, availability if challenging claims are top of mind, confirmation toward standard processes, sunflower bias where junior team members defer to senior leaders.</p>
         </div>
-      `),
-      phase2: html(`
+      `,
+      
+      phase2: () => `
         <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">Phase 2: Extract Data Systematically</h2>
           <p><strong>Key Principle:</strong> Always start with certified, governed datasets rather than creating custom extractions. These have been validated for accuracy and include proper quality controls.</p>
         </div>
+        
         <div class="card">
           <h3>Best Practices</h3>
-          <h4>✓ Use Consistent Time Periods</h4>
+          
+          <h4>Use Consistent Time Periods</h4>
           <ul>
-            <li><strong>Year‑over‑Year Comparisons:</strong> Always compare identical periods (e.g., Q3 2025 vs Q3 2024) to account for seasonality.</li>
-            <li><strong>Minimum Analysis Period:</strong> Never analyze less than one complete month. Weekly comparisons are unreliable due to within‑month patterns.</li>
-            <li><strong>Seasonal Adjustments:</strong> For trending, use 12‑month moving averages or seasonal indices maintained by your data team.</li>
+            <li><strong>Year-over-Year:</strong> Always compare identical periods (Q3 2025 vs Q3 2024)</li>
+            <li><strong>Minimum Period:</strong> Never analyze less than one complete month</li>
+            <li><strong>Seasonal Adjustments:</strong> Use 12-month moving averages when trending</li>
           </ul>
-          <h4> Data Extraction Checklist</h4>
+          
+          <h4>Data Extraction Checklist</h4>
           <ul>
             <li>Verified most recent data refresh timestamp</li>
             <li>Documented exact filters applied</li>
@@ -325,439 +1359,387 @@
             <li>Noted data quality warnings</li>
             <li>Saved extraction parameters</li>
           </ul>
-          <h4>Custom View Guidelines</h4>
-          <ul>
-            <li><span class="ok">✓</span> Limit to <strong>2–3 visualizations</strong> per dashboard (more creates cognitive overload)</li>
-            <li><span class="danger"></span> Use filters appropriately (each filter requires a query; excessive filtering degrades performance)</li>
-            <li><span class="danger"></span> Mind the data volume (dashboards with &gt;1M data points will load slowly)</li>
-          </ul>
         </div>
+        
         <div class="card">
           <h3>Common Extraction Errors</h3>
           <ul>
             <li><strong>Mixing Date Fields:</strong> Be explicit about claim submission date vs triage date</li>
-            <li><strong>Ignoring Claim Status:</strong> Including pending claims or marked-up-error in calculation can distort analysis </li>
-            <li><strong>Overlooking Client Rules:</strong> Client implementations/customizations may affect aggregate metrics</li>
+            <li><strong>Ignoring Claim Status:</strong> Including pending claims can distort analysis</li>
+            <li><strong>Overlooking Client Rules:</strong> Client implementations may affect aggregate metrics</li>
           </ul>
         </div>
-      `),
-      phase3: html(`
+      `,
+      
+      phase3: () => `
         <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">Phase 3: Interpret Data with Rigor</h2>
-          <p><strong>Core Goal:</strong> Not to confirm what you expected but to understand what is true. Three principles guide sound interpretation.</p>
+          <p><strong>Core Goal:</strong> Not to confirm what you expected but to understand what is true.</p>
         </div>
+        
         <div class="card">
           <h3>Principle 1: Context is Mandatory</h3>
           <ul>
-            <li><strong>Historical Context:</strong> “AHT increased 10% from 28 to 30.8 minutes, the highest level since Q1 2024.”</li>
-            <li><strong>Benchmark Context:</strong> “AHT of 30.8 minutes exceeds our 28‑minute target but remains within industry standard of 32 minutes.”</li>
-            <li><strong>Causal Context:</strong> “AHT increase coincides with implementation of three new clients requiring complex medical records review.”</li>
-            <li><strong>Comparative Context:</strong> “AHT increased 10% while claim complexity increased 15%.”</li>
+            <li><strong>Historical:</strong> "AHT increased 10% from 28 to 30.8 minutes, the highest since Q1 2024."</li>
+            <li><strong>Benchmark:</strong> "AHT of 30.8 minutes exceeds our 28-minute target but remains within industry standard of 32 minutes."</li>
+            <li><strong>Causal:</strong> "AHT increase coincides with three new clients requiring complex medical records review."</li>
+            <li><strong>Comparative:</strong> "AHT increased 10% while claim complexity increased 15%."</li>
           </ul>
         </div>
+        
         <div class="card">
-          <h3>Principle 2: Statistical vs Practical Significance </h3>
-          <h4>Sample Size Minimums by Metric</h4>
-          <table class="table">
-            <thead><tr><th>Metric Type</th><th>Minimum Sample</th></tr></thead>
-            <tbody>
-              <tr><td>Claims processing (TAT, AHT)</td><td># claims/<strong>specialist</strong>/period</td></tr>
-              <tr><td>Client performance</td><td># claims/month or # months data</td></tr>
-              <tr><td>A/B testing</td><td># claims per variant</td></tr>
-              <tr><td>Return‑to‑work metrics</td><td># completed episodes</td></tr>
-            </tbody>
-          </table>
-          <p><em>When sample sizes are below minimums:</em> Report descriptively only. Use language like “Early indicators suggest…” and flag that additional data is needed.</p>
-          <h4>Practical Significance Thresholds</h4>
-          <p><strong>Staffing & Capacity (Example)</strong></p>
+          <h3>Principle 2: Statistical vs Practical Significance</h3>
+          <p>Use the <a href="#sampleCalc" onclick="navigateTo('sampleCalc')" style="color:var(--brand)">Sample Size Calculator</a> to determine if your sample supports your conclusions.</p>
+          
+          <h4>Practical Significance Thresholds (Examples)</h4>
           <ul>
-            <li>Claims/<strong>specialist</strong> variance: ±5% normal, 10%+ requires action</li>
-            <li>Utilization changes: ±3% may be noise, 5%+ warrants investigation</li>
-            <li>Turnover: 10%+ annualized rate signals problem</li>
-          </ul>
-          <p><strong>Process Performance (Example)</strong></p>
-          <ul>
-            <li>TAT: ±1 day may not be meaningful, 2+ days requires investigation</li>
-            <li>AHT: ±2 minutes typical, 10%+ change indicates process shift</li>
-            <li>Accuracy: Even 1–2% change can be significant given 95%+ baseline</li>
-          </ul>
-          <p><strong>Financial Metrics (Example)</strong></p>
-          <ul>
-            <li>Benefit payment variance: ±2% normal, 5%+ requires validation</li>
-            <li>Cost per claim: ±$5 likely normal, $10+ warrants analysis</li>
+            <li><strong>Claims/specialist variance:</strong> ±5% normal, 10%+ requires action</li>
+            <li><strong>TAT:</strong> ±1 day may not be meaningful, 2+ days requires investigation</li>
+            <li><strong>Accuracy:</strong> Even 1-2% change can be significant given 95%+ baseline</li>
           </ul>
         </div>
+        
         <div class="card">
-          <h3>Principle 3: Account for Seasonality (Trend Examples Below)</h3>
-          <ul style="display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding-left:0;">
-            <li class="kbd">January — New year surge</li>
-            <li class="kbd">Mar–Apr — Spring normalization</li>
-            <li class="kbd">May–Jun — Baseline</li>
-            <li class="kbd">Jul–Aug — Summer uptick</li>
-            <li class="kbd">Sep–Oct — Return to baseline</li>
-            <li class="kbd">November — Holiday uptick</li>
-            <li class="kbd">December — Year‑end low</li>
-          </ul>
-          <h4> Red Flags</h4>
-          <ul>
-            <li>Comparing consecutive months without mentioning seasonality</li>
-            <li>Declaring “improvement” or “decline” based on a single month</li>
-            <li>Using month‑to‑date metrics before month‑end without normalizing</li>
-            <li>Not accounting for expected seasonal patterns in your organization</li>
-          </ul>
+          <h3>Principle 3: Account for Seasonality</h3>
+          <p style="display:flex; flex-wrap:wrap; gap:6px;">
+            <code>Jan — New year surge</code>
+            <code>Mar–Apr — Spring normalization</code>
+            <code>May–Jun — Baseline</code>
+            <code>Jul–Aug — Summer uptick</code>
+            <code>Sep–Oct — Return to baseline</code>
+            <code>Nov — Holiday uptick</code>
+            <code>Dec — Year-end low</code>
+          </p>
         </div>
-      `),
-      phase4: html(`
+      `,
+      
+      phase4: () => `
+        <div class="callout info">For an interactive version of this checklist with progress tracking, use the <a href="#biasChecker" onclick="navigateTo('biasChecker')" style="color:var(--brand)">Bias Self-Check Tool</a>.</div>
+        
         <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">Phase 4: Apply Bias Detection and Mitigation</h2>
-          <p><strong>Critical Checkpoint:</strong> Use this checklist for any significant decision or client communication to prevent cognitive biases from undermining your analysis.</p>
-        </div>
-        <div class="card">
-          <h3> Cherry‑Picking Detection</h3>
+          <h3>Cherry-Picking Detection</h3>
           <ul>
             <li>Did I examine all relevant time periods or only favorable ones?</li>
             <li>Am I reporting all key metrics or only positive performance?</li>
             <li>Have I included data that contradicts my hypothesis?</li>
-            <li>Would I reach the same conclusion with the full dataset?</li>
           </ul>
-          <p><strong>Example:</strong> <span class="danger">Wrong:</span> “Q3 accuracy rate of 97.2% looks strong.” <span class="ok">Honest:</span> “Declining accuracy trend from 97.8% (Q1) to 96.9% (Q4), with Q3 at 97.2%.”</p>
         </div>
+        
         <div class="card">
-          <h3> Confirmation Bias Detection</h3>
+          <h3>Confirmation Bias Detection</h3>
           <ul>
             <li>Did I define my hypothesis before seeing the data?</li>
             <li>Have I actively sought disconfirming evidence?</li>
             <li>Have I considered alternative explanations?</li>
-            <li>Would I accept this conclusion if it contradicted my belief?</li>
           </ul>
-          <p><strong>Mitigation:</strong> Document alternative hypotheses (training effectiveness, reduction in claim complexity, system improvements, selection bias, random variation) and evaluate each systematically.</p>
         </div>
+        
         <div class="card">
-          <h3> Sample Size Bias Detection</h3>
+          <h3>Sample Size Bias Detection</h3>
           <ul>
             <li>Does my sample meet minimum thresholds?</li>
-            <li>Am I analyzing subgroups with insufficient sample?</li>
             <li>Have I calculated confidence intervals?</li>
             <li>Am I comparing groups with vastly different sizes?</li>
           </ul>
-          <p><strong>Example:</strong> Client A: 2,400 claims (96.5%); Client B: 45 claims (100%). <span class="danger">⚠️</span> Client B's confidence interval is ±13% (true accuracy could be 87–100%). Statistically indistinguishable.</p>
         </div>
+        
         <div class="card">
-          <h3> Recency Bias Detection</h3>
+          <h3>Recency & Anchoring Bias</h3>
           <ul>
             <li>Am I overweighting recent experiences?</li>
-            <li>Am I extrapolating short‑term fluctuations?</li>
-            <li>Have I examined sufficient historical context?</li>
-            <li>Could recent events be outliers?</li>
-          </ul>
-          <p><strong>Signal vs Noise:</strong> 1 week/month poor performance = Noise; 3 consecutive months exceeding thresholds = Signal.</p>
-        </div>
-        <div class="card">
-          <h3> Anchoring Bias Detection</h3>
-          <ul>
             <li>Am I overly influenced by historical baselines?</li>
-            <li>Have I questioned whether historical performance is right?</li>
-            <li>Am I resistant to significantly different conclusions?</li>
-            <li>Have I considered external benchmarks?</li>
+            <li>Have I questioned whether historical performance is appropriate?</li>
           </ul>
         </div>
-      `),
-      phase5: html(`
-        <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">Phase 5: Translate Insights into Decisions</h2>
-          <p><strong>Decision Documentation Framework:</strong> Complete this before any significant operational decision. It creates accountability, enables learning from outcomes, and ensures rigorous thinking.</p>
-        </div>
+      `,
+      
+      phase5: () => `
+        <div class="callout info">Use the <a href="#decisionTemplate" onclick="navigateTo('decisionTemplate')" style="color:var(--brand)">Decision Template Generator</a> to create professional documentation.</div>
+        
         <div class="card">
           <h3>Decision Documentation Template</h3>
+          
           <h4>Decision Summary</h4>
-          <ul>
-            <li>Decision:</li>
-            <li>Decision‑Maker:</li>
-            <li>Date:</li>
-            <li>Implementation Timeline:</li>
-          </ul>
+          <p>Decision, Decision-Maker, Date, Implementation Timeline</p>
+          
           <h4>Analysis Foundation</h4>
-          <h4>Findings</h4>
-          <p>Confidence Level: <strong>High</strong> / <strong>Medium</strong> / <strong>Low</strong></p>
+          <p>Primary Finding, Supporting Evidence, Confidence Level (High/Medium/Low)</p>
+          
           <h4>Decision Rationale</h4>
+          <p>Why this decision? Why now? Alternatives considered?</p>
+          
           <h4>Risks and Monitoring</h4>
+          <p>Key risks, success metrics, monitoring plan, expected impact</p>
         </div>
+        
         <div class="card">
-          <h3>Example: Staffing Addition Decision</h3>
+          <h3>Example: Staffing Decision</h3>
           <ul>
-            <li><strong>Decision:</strong> Add 2 FTE <strong>specialists</strong> to the STD team effective December 1, 2025</li>
+            <li><strong>Decision:</strong> Add 2 FTE specialists to STD team effective December 1, 2025</li>
             <li><strong>Primary Finding:</strong> Capacity insufficient for sustained growth; TAT trending toward SLA threshold</li>
-            <li><strong>Evidence:</strong>
-              <ul>
-                <li>Claims per <strong>specialist</strong>: 195 → 212 (8.7% ↑)</li>
-                <li>Monthly volume: 3,800 → 4,200+</li>
-                <li>TAT: 23.2 → 26.8 days (near 30‑day threshold)</li>
-                <li><strong>Specialist</strong> utilization: 94% (no buffer)</li>
-              </ul>
-            </li>
-            <li><strong>Expected Impact:</strong> TAT back to 23–24 days by Feb 2026; sustain ≥95% within 30‑day standard through Q1 surge</li>
+            <li><strong>Evidence:</strong> Claims per specialist: 195 → 212 (8.7% ↑), TAT: 23.2 → 26.8 days, Utilization: 94%</li>
+            <li><strong>Expected Impact:</strong> TAT back to 23–24 days by Feb 2026</li>
           </ul>
         </div>
-      `),
-      businessUsers: html(`
+      `,
+      
+      biasChecker: renderBiasChecker,
+      sampleCalc: renderSampleCalc,
+      decisionTemplate: renderDecisionTemplate,
+      challengeMode: renderChallengeMode,
+      
+      businessUsers: () => `
         <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">Guidelines for Business Users & Managers</h2>
-          <p><strong>Your Primary Role:</strong> Consume reports and dashboards to inform day‑to‑day operational decisions. Interpret accurately and know when to escalate.</p>
+          <p><strong>Your Primary Role:</strong> Consume reports and dashboards to inform day-to-day operational decisions. Interpret accurately and know when to escalate.</p>
         </div>
+        
         <div class="card">
-          <h3>Core Competencies</h3>
-          <ul>
-            <li> Reading Visualizations — understand chart types and insight extraction</li>
-            <li> Recognizing Warning Signs — know when something “looks wrong”</li>
-            <li> Asking Good Questions — frame questions analysts can translate to data</li>
-            <li> Understanding Context — metrics, benchmarks, and comparisons</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>When to Self‑Serve vs Escalate</h3>
-          <h4>✓ Self‑Serve</h4>
+          <h3>When to Self-Serve</h3>
           <ul>
             <li>Routine KPI monitoring</li>
             <li>Compare to targets or prior periods</li>
             <li>Basic filtering in dashboards</li>
             <li>Standard report generation</li>
           </ul>
-          <h4> Escalate When</h4>
+          
+          <h3>When to Escalate</h3>
           <ul>
             <li>Need custom analysis</li>
             <li>Unsure about sample sizes</li>
             <li>Need statistical validation</li>
-            <li>Resource‑impacting decisions</li>
+            <li>Resource-impacting decisions</li>
             <li>Inconsistent or conflicting metrics</li>
-            <li>Distinguishing variation vs changes</li>
           </ul>
         </div>
+      `,
+      
+      analysts: () => `
         <div class="card">
-          <h3>Red Flags</h3>
-          <ul>
-            <li> Small samples (&lt; 50–100)</li>
-            <li> Surprising/counterintuitive findings</li>
-            <li> High‑stakes decisions (client, SLA)</li>
-            <li> Conflicting metrics</li>
-            <li> Data quality concerns</li>
-          </ul>
-        </div>
-      `),
-      analysts: html(`
-        <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">Guidelines for Analysts & Consultants</h2>
           <p><strong>Your Primary Role:</strong> Conduct analyses, support business questions, design reports, and ensure rigor in team decisions.</p>
         </div>
+        
         <div class="card">
           <h3>Advanced Competencies</h3>
           <ul>
-            <li> Statistical reasoning (CI, tests, SPC)</li>
-            <li> Data modeling (relationships, performance, quality)</li>
-            <li> Bias detection & mitigation</li>
-            <li> Communication: translate, recommend, document</li>
+            <li>Statistical reasoning (CI, hypothesis tests, SPC)</li>
+            <li>Data modeling (relationships, performance, quality)</li>
+            <li>Bias detection & mitigation</li>
+            <li>Communication: translate, recommend, document</li>
           </ul>
         </div>
+        
         <div class="card">
-          <h3>Workflow</h3>
-          <h4> Before</h4>
+          <h3>Presenting Results</h3>
           <ul>
-            <li>Understand decision context</li>
-            <li>Document question, success criteria, usage</li>
-            <li>Identify likely biases</li>
-            <li>Plan data sources & validation</li>
-          </ul>
-          <h4> During</h4>
-          <ul>
-            <li>Follow the Five‑Phase Framework</li>
-            <li>Document assumptions & decisions</li>
-            <li>Seek disconfirming evidence</li>
-            <li>Peer review interpretations</li>
-          </ul>
-          <h4> Presenting</h4>
-          <ul>
-            <li>Lead with implications</li>
-            <li>Show uncertainty (CIs)</li>
+            <li>Lead with implications, not methods</li>
+            <li>Show uncertainty (confidence intervals)</li>
             <li>Actionable recommendations</li>
-            <li>Anticipate alternatives</li>
-            <li>Executive summary + appendix</li>
+            <li>Anticipate alternative explanations</li>
+            <li>Executive summary + detailed appendix</li>
           </ul>
         </div>
+      `,
+      
+      dataPros: () => `
         <div class="card">
-          <h3>AI Decision‑Assist Monitoring</h3>
-          <ul>
-            <li>Model vs human vs ground truth</li>
-            <li>Outcome parity across cohorts</li>
-            <li>Confidence calibration</li>
-            <li>Override reasons & impact</li>
-            <li>Performance drift</li>
-            <li>Explainability</li>
-          </ul>
+          <p><strong>Your Primary Role:</strong> Architecture, advanced analytics, governance, and enabling self-service at scale.</p>
         </div>
-      `),
-      dataPros: html(`
-        <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">Guidelines for Data‑Savvy Professionals</h2>
-          <p><strong>Your Primary Role:</strong> Architecture, advanced analytics, governance, and enabling self‑service at scale.</p>
-        </div>
-        <div class="card">
-          <h3>Strategic Responsibilities</h3>
-          <h4> Governance & Standards</h4>
-          <ul>
-            <li>Certified datasets with lineage</li>
-            <li>Data quality rules & naming conventions</li>
-            <li>Semantic layer for safe self‑service</li>
-            <li>Business glossary</li>
-          </ul>
-          <h4> Platform Optimization</h4>
-          <ul>
-            <li>Monitor BI performance; optimize queries</li>
-            <li>Model design: flexibility × performance</li>
-            <li>Incremental refresh</li>
-            <li>Guardrails for performance/quality</li>
-          </ul>
-          <h4> Advanced Analytics Enablement</h4>
-          <ul>
-            <li>Forecasting & capacity models</li>
-            <li>SPC for quality metrics</li>
-            <li>Anomaly detection & alerting</li>
-            <li>Embedded methodology guidance</li>
-          </ul>
-          <h4> Bias Mitigation by Design</h4>
-          <ul>
-            <li>Bias checks in templates</li>
-            <li>Visualizations with YoY defaults & CIs</li>
-            <li>Alerts for small samples/unusual patterns</li>
-            <li>Workflows enforcing the Five‑Phase Framework</li>
-          </ul>
-        </div>
+        
         <div class="card">
           <h3>Implementation Priorities</h3>
           <ol>
-            <li><strong>Make the right thing the easy thing</strong> — YoY defaults, auto CIs, surface data quality warnings</li>
-            <li><strong>Build guardrails, not roadblocks</strong> — flexibility with safe defaults, alternatives for risky patterns</li>
+            <li><strong>Make the right thing easy</strong> — YoY defaults, auto CIs, surface data quality warnings</li>
+            <li><strong>Build guardrails, not roadblocks</strong> — flexibility with safe defaults</li>
             <li><strong>Enable learning through doing</strong> — contextual help, celebrate good examples</li>
             <li><strong>Monitor & optimize</strong> — usage analytics, pain points, iteration</li>
           </ol>
         </div>
-      `),
-      sampleSize: html(`
-        <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">Sample Size Quick Reference</h2>
-          <p><strong>Core Principles:</strong> Larger samples = more confidence. Smaller samples = more uncertainty. Higher stakes require larger samples.</p>
-        </div>
+      `,
+      
+      sampleSize: () => `
+        <div class="callout info">For interactive calculations, use the <a href="#sampleCalc" onclick="navigateTo('sampleCalc')" style="color:var(--brand)">Sample Size Calculator</a>.</div>
+        
         <div class="card">
           <h3>When Sample Size is Insufficient</h3>
-          <h4> Don't</h4>
+          
+          <h4>Don't</h4>
           <ul>
             <li>Draw definitive conclusions</li>
             <li>Make resource decisions</li>
             <li>Report to clients as fact</li>
             <li>Compare groups with vastly different sizes</li>
           </ul>
-          <h4>✓ Do</h4>
+          
+          <h4>Do</h4>
           <ul>
             <li>Report descriptively only</li>
-            <li>Use language like “Early indicators…”</li>
-            <li>Calculate/report confidence intervals</li>
+            <li>Use language like "Early indicators suggest…"</li>
+            <li>Calculate and report confidence intervals</li>
             <li>Flag need for additional data</li>
           </ul>
         </div>
-      `),
-      biasCheck: html(`
+      `,
+      
+      dosDonts: () => `
         <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">Bias Self‑Check</h2>
-          <p>Before finalizing any analysis or recommendation, ask yourself:</p>
-          <ol>
-            <li><strong>Cherry‑picking</strong> — Am I showing all relevant data or only favorable metrics?</li>
-            <li><strong>Confirmation</strong> — Did I define my hypothesis before seeing data? Sought contradicting evidence?</li>
-            <li><strong>Sample size</strong> — Is my sample large enough for this conclusion?</li>
-            <li><strong>Recency</strong> — Overweighting recent events? Undervaluing history?</li>
-            <li><strong>Anchoring</strong> — Attached to historical baselines that may no longer apply?</li>
-            <li><strong>Seasonality</strong> — Compared appropriate periods and considered seasonal patterns?</li>
-          </ol>
-          <div class="callout"><strong>Important:</strong> If you can't confidently answer “yes” to all six, consult an analyst before proceeding.</div>
-        </div>
-      `),
-      dosDonts: html(`
-        <div class="card">
-          <h2 style="margin:0 0 6px; font-size:22px">BI Tool Do's and Don'ts</h2>
-          <p><em>Guidelines to ensure accurate, efficient, reproducible analysis.</em></p>
-        </div>
-        <div class="card">
-          <h3>✓ DO</h3>
+          <h3>✓ Do</h3>
           <ul>
             <li><strong>Document filters</strong> — date ranges, segments, other filters</li>
             <li><strong>Check refresh timestamp</strong> — use most recent data</li>
             <li><strong>Save extraction parameters</strong> — reproducibility</li>
             <li><strong>Use YoY comparisons</strong> — avoid seasonality traps</li>
             <li><strong>Limit to 2–3 visualizations</strong> per dashboard</li>
-            <li><strong>Apply glossary definitions</strong> — consistency</li>
           </ul>
-          <h3> DON'T</h3>
+        </div>
+        
+        <div class="card">
+          <h3>✗ Don't</h3>
           <ul>
             <li>Build custom extractions solo</li>
             <li>Mix date fields (submission vs decision)</li>
-            <li>Compare non‑equivalent periods (MoM without seasonal adj.)</li>
-            <li>Include pending claims in accuracy</li>
-            <li>Only analyze adjudicated claims for quality</li>
-            <li>Load &gt;1M points per dashboard</li>
+            <li>Compare non-equivalent periods without adjustment</li>
+            <li>Include pending claims in accuracy calculations</li>
+            <li>Load >1M data points per dashboard</li>
             <li>Use excessive filters (each = query)</li>
           </ul>
         </div>
-      `)
+      `
     };
 
-    // Right-rail tips (same as before)
-    const tipsByView={ overview:['How to use: Pick your role, then navigate the Five Phases.','Default comparisons: year‑over‑year beats month‑to‑month.','Write hypotheses before opening a dashboard.'], phase1:['SMART: Specific · Measurable · Action‑oriented · Relevant · Time‑bound','If no action follows from the answer, reframe the question.','List potential biases before you start (anchoring, recency, availability…).'], phase2:['Prefer certified datasets over ad‑hoc pulls.','Never analyze less than a full month unless statistically justified.','Document filters and refresh timestamps.'], phase3:['Always add historical, benchmark, and causal context.','Report CIs when samples are small.','Separate statistical from practical significance.'], phase4:['Actively seek disconfirming evidence.','Check sample sizes before asserting differences.','Visualize time series to avoid recency traps.'], phase5:['Write the decision like a headline; defend with evidence.','Document monitoring plan and leading indicators.','Capture expected impact and timeline upfront.'], businessUsers:['Self‑serve for routine KPIs; escalate for custom or high‑stakes.','Beware MoM comparisons without seasonality.','Ask for confidence intervals on surprising results.'], analysts:['Lead with business implications, not methods.','Track override outcomes for AI recommendations.','Peer review interpretations before publishing.'], dataPros:['Guardrails > roadblocks: make the right thing the easy thing.','Instrument usage and iterate on pain points.','Bake bias checks into templates and semantic models.'], sampleSize:['High‑stakes ⇒ larger samples.','Use CIs and descriptive language when small.','Avoid comparing groups with very different n.'], biasCheck:['If you can’t say “yes” to all six, pause and consult.','Write your hypothesis before viewing data.','YoY > MoM for pattern detection.'], dosDonts:['Save parameters for reproducibility.','Limit visuals to reduce cognitive load.','Avoid mixing non‑equivalent periods.'] };
+    // ===============================
+    // HERO METADATA
+    // ===============================
+    const heroMeta = {
+      overview: { icon: 'home', title: 'Framework Overview', tag: 'Start with questions, not data — let evidence drive decisions.' },
+      phase1: { icon: 'target', title: 'Phase 1 · Frame the Decision', tag: 'SMART questions and bias awareness set the path.' },
+      phase2: { icon: 'database', title: 'Phase 2 · Extract Data', tag: 'Certified sources, consistent periods, documented filters.' },
+      phase3: { icon: 'line-chart', title: 'Phase 3 · Interpret with Rigor', tag: 'Context, significance, and seasonality — always.' },
+      phase4: { icon: 'shield-check', title: 'Phase 4 · Bias Detection', tag: 'Seek disconfirming evidence and challenge anchors.' },
+      phase5: { icon: 'file-check-2', title: 'Phase 5 · Decisions', tag: 'Document rationale, risks, and monitoring.' },
+      biasChecker: { icon: 'check-circle', title: 'Bias Self-Check', tag: 'Interactive checklist with progress tracking.' },
+      sampleCalc: { icon: 'calculator', title: 'Sample Size Calculator', tag: 'Calculate confidence intervals and assess precision.' },
+      decisionTemplate: { icon: 'file-text', title: 'Decision Template', tag: 'Generate professional decision documentation.' },
+      challengeMode: { icon: 'swords', title: 'Challenge My Analysis', tag: 'Devil\'s advocate questions to stress-test conclusions.' },
+      businessUsers: { icon: 'briefcase', title: 'Business Users', tag: 'Know when to self-serve and when to escalate.' },
+      analysts: { icon: 'flask-conical', title: 'Analysts', tag: 'Analysis craft and bias-aware workflows.' },
+      dataPros: { icon: 'settings-2', title: 'Data Professionals', tag: 'Governance, performance, and bias-resistant defaults.' },
+      sampleSize: { icon: 'ruler', title: 'Sample Size Guide', tag: 'Confidence scales with n — mind your intervals.' },
+      dosDonts: { icon: 'list-checks', title: "Do's & Don'ts", tag: 'Clarity, consistency, performance.' }
+    };
 
-    const heroMeta={ overview:{icon:'home', title:'Framework Overview', tag:'Start with questions, not data — let disciplined evidence drive decisions.'}, phase1:{icon:'target', title:'Phase 1 · Frame the Decision', tag:'SMART questions and bias awareness set the path to truth.'}, phase2:{icon:'database', title:'Phase 2 · Extract Data', tag:'Use certified sources, consistent periods, and documented filters.'}, phase3:{icon:'line-chart', title:'Phase 3 · Interpret with Rigor', tag:'Context, significance, and seasonality — always together.'}, phase4:{icon:'shield-check', title:'Phase 4 · Bias Detection', tag:'Seek disconfirming evidence and challenge anchors.'}, phase5:{icon:'file-check-2', title:'Phase 5 · Decisions', tag:'Write the decision, rationale, risks, and monitoring plan.'}, businessUsers:{icon:'briefcase', title:'Business Users & Managers', tag:'Know when to self‑serve and when to escalate.'}, analysts:{icon:'beaker', title:'Analysts & Consultants', tag:'Analysis craft, communication, and bias‑aware workflows.'}, dataPros:{icon:'settings-2', title:'Data Professionals', tag:'Governance, performance, and bias‑resistant defaults.'}, sampleSize:{icon:'ruler', title:'Sample Size', tag:'Confidence scales with n — mind your intervals.'}, biasCheck:{icon:'search-check', title:'Bias Self‑Check', tag:'A six‑point pause before you hit send.'}, dosDonts:{icon:'list-checks', title:"Do's & Don'ts", tag:'Clarity, consistency, performance.'} };
-
-    function navItems(){ return Array.from(document.querySelectorAll('[data-target]')); }
-    function setActive(key){ document.querySelectorAll('[data-target]').forEach(a=> a.classList.remove('active')); const el=document.querySelector(`[data-target="${key}"]`); if(el){ el.classList.add('active'); ensureOpen(el); } }
-    function ensureOpen(link){ const nav=link.closest('.subnav'); if(nav){ const btn=nav.previousElementSibling; if(btn.getAttribute('aria-expanded')==='false') toggleSection(btn); } }
-
-    function setHero(key){ const meta=heroMeta[key]||heroMeta['overview']; document.getElementById('heroTitle').textContent=meta.title; document.getElementById('heroTag').textContent=meta.tag; const hi=document.getElementById('heroIcon'); hi.setAttribute('data-lucide', meta.icon); renderIcons(); document.getElementById('crumbs').lastElementChild.textContent=meta.title; }
-
-    function setTips(key){ const tips=tipsByView[key]||tipsByView['overview']; const ul=document.getElementById('tips'); ul.innerHTML=''; tips.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); }); }
-
-    // Precise scroll alignment so the first meaningful element is visible under the sticky header
-    function scrollToContentTop(){
-      const topbar = document.getElementById('topbar');
-      const offset = (topbar?.offsetHeight || 0) + 8; // add a small breathing space
-      const root = document.getElementById('content');
-      const target = root.querySelector('.callout') || root.querySelector('.card') || root; // prefer callout if present
-      const y = target.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({ top: Math.max(0, y), behavior: 'auto' });
+    // ===============================
+    // NAVIGATION & RENDERING
+    // ===============================
+    function navItems() { return Array.from(document.querySelectorAll('[data-target]')); }
+    
+    function setActive(key) {
+      document.querySelectorAll('[data-target]').forEach(a => a.classList.remove('active'));
+      const el = document.querySelector(`[data-target="${key}"]`);
+      if (el) {
+        el.classList.add('active');
+        // Ensure parent section is open
+        const nav = el.closest('.subnav');
+        if (nav) {
+          const btn = nav.previousElementSibling;
+          if (btn?.getAttribute('aria-expanded') === 'false') toggleSection(btn);
+        }
+      }
     }
 
-    function renderView(key){
-      const content=document.getElementById('content');
-      content.innerHTML='';
-      const section=document.createElement('section'); section.setAttribute('role','region'); section.className='fade'; section.append(views[key]||views['overview']);
-      content.append(section);
-      setHero(key); setTips(key); setActive(key);
-      if(history.pushState){ history.pushState(null,'','#'+key); } else { location.hash='#'+key; }
-
-      // Accessibility focus first, then perform final scroll alignment after layout settles
-      content.focus(); renderIcons();
-      const q=document.getElementById('q'); if(q&&q.value) highlight(q.value.toLowerCase());
-      // double rAF ensures DOM + fonts settle before scrolling
-      requestAnimationFrame(()=>{ requestAnimationFrame(scrollToContentTop); });
+    function setHero(key) {
+      const meta = heroMeta[key] || heroMeta['overview'];
+      document.getElementById('heroTitle').textContent = meta.title;
+      document.getElementById('heroTag').textContent = meta.tag;
+      document.getElementById('heroIcon').setAttribute('data-lucide', meta.icon);
+      document.getElementById('crumbs').lastElementChild.textContent = meta.title;
+      renderIcons();
     }
 
-    function navigateTo(key){ renderView(key); }
-    function linearList(){ return navItems().filter(el=> el.offsetParent!==null); }
-    function currentKey(){ return (location.hash||'#overview').slice(1); }
-    function stepNav(dir){ const list=linearList(); const key=currentKey(); const idx=list.findIndex(x=> x.getAttribute('data-target')===key); const next=list[Math.max(0,Math.min(list.length-1,idx+dir))]; if(next) navigateTo(next.getAttribute('data-target')); }
+    function renderView(key) {
+      const content = document.getElementById('content');
+      const viewFn = views[key] || views['overview'];
+      const markup = typeof viewFn === 'function' ? viewFn() : viewFn;
+      
+      content.innerHTML = '';
+      const section = document.createElement('section');
+      section.className = 'fade-in';
+      section.innerHTML = markup;
+      content.appendChild(section);
+      
+      setHero(key);
+      setActive(key);
+      
+      if (history.pushState) history.pushState(null, '', '#' + key);
+      else location.hash = '#' + key;
+      
+      content.focus();
+      renderIcons();
+      
+      // Initialize calculator if on that page
+      if (key === 'sampleCalc') {
+        setTimeout(calculateCI, 50);
+      }
+      
+      // Re-highlight search if active
+      const q = document.getElementById('q');
+      if (q?.value) highlight(q.value.toLowerCase());
+      
+      // Scroll to top
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        });
+      });
+    }
 
-    function copyLink(){ const url=location.origin+location.pathname+location.search+location.hash; navigator.clipboard?.writeText(url).then(()=> toast('Link copied')).catch(()=>{}); }
-    function toast(msg){ const t=document.createElement('div'); t.textContent=msg; Object.assign(t.style,{position:'fixed',bottom:'18px',right:'18px',background:'rgba(2,6,23,.85)',color:'#fff',padding:'8px 12px',border:'1px solid var(--border)',borderRadius:'10px',boxShadow:'var(--shadow-md)',zIndex:99}); document.body.appendChild(t); setTimeout(()=>{ t.style.transition='opacity .25s'; t.style.opacity='0'; setTimeout(()=> t.remove(),300); },900); }
-    function html(markup){ const div=document.createElement('div'); div.innerHTML=markup.trim(); return div.firstChild?div:div; }
+    function navigateTo(key) {
+      renderView(key);
+      document.getElementById('leftNav').classList.remove('open');
+    }
 
-    function wireNav(){ navItems().forEach(el=> el.addEventListener('click',(e)=>{ e.preventDefault(); navigateTo(el.getAttribute('data-target')); document.getElementById('leftNav').classList.remove('open'); })); }
+    function copyLink() {
+      const url = location.origin + location.pathname + location.search + location.hash;
+      navigator.clipboard?.writeText(url).then(() => toast('Link copied')).catch(() => {});
+    }
+    
+    function toast(msg) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      Object.assign(t.style, {
+        position: 'fixed', bottom: '20px', right: '20px',
+        background: 'var(--panel)', color: 'var(--text)',
+        padding: '10px 16px', border: '1px solid var(--border)',
+        borderRadius: '10px', boxShadow: 'var(--shadow-md)', zIndex: 99,
+        fontFamily: 'var(--font-display)', fontSize: '14px'
+      });
+      document.body.appendChild(t);
+      setTimeout(() => {
+        t.style.transition = 'opacity .25s';
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 1500);
+    }
 
-    function init(){ const saved=localStorage.getItem(themeKey); applyTheme(saved||'dark'); wireNav(); renderIcons(); const initial=(location.hash||'#overview').slice(1); navigateTo(initial in views ? initial : 'overview'); }
-    window.addEventListener('hashchange', ()=>{ const k=(location.hash||'#overview').replace('#',''); if(k in views) navigateTo(k); });
+    function wireNav() {
+      navItems().forEach(el => el.addEventListener('click', (e) => {
+        e.preventDefault();
+        navigateTo(el.getAttribute('data-target'));
+      }));
+    }
+
+    function init() {
+      const saved = localStorage.getItem(themeKey);
+      applyTheme(saved || 'dark');
+      wireNav();
+      renderIcons();
+      const initial = (location.hash || '#overview').slice(1);
+      navigateTo(initial in views ? initial : 'overview');
+    }
+    
+    window.addEventListener('hashchange', () => {
+      const k = (location.hash || '#overview').replace('#', '');
+      if (k in views) navigateTo(k);
+    });
+    
     init();
   </script>
 </body>
