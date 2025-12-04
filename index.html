@@ -588,8 +588,8 @@
     document.addEventListener('keydown',(e)=>{
       if((e.key.toLowerCase()==='k'&&(e.metaKey||e.ctrlKey))){ e.preventDefault(); openCmd(); }
       if(e.key==='Escape'&&cmdk.classList.contains('open')) closeCmd();
-      if(e.key.toLowerCase()==='t'&&!cmdk.classList.contains('open')&&document.activeElement.tagName!=='INPUT') toggleTheme();
-      if(e.key==='/'){ const a=document.activeElement; if(!a||a.tagName!=='INPUT'){ e.preventDefault(); document.getElementById('q').focus(); } }
+      if(e.key.toLowerCase()==='t'&&!cmdk.classList.contains('open')&&document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA') toggleTheme();
+      if(e.key==='/'){ const a=document.activeElement; if(!a||(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA')){ e.preventDefault(); document.getElementById('q').focus(); } }
     });
 
     function renderCmd(q){ 
