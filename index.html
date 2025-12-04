@@ -453,6 +453,12 @@
       </div>
       
       <div class="nav-section">
+        <div class="nav-label">Lean Six Sigma Tools</div>
+        <a class="navlink" data-target="ctqBuilder" href="#ctqBuilder"><i data-lucide="git-branch"></i>CTQ Tree Builder</a>
+        <a class="navlink" data-target="fiveWhys" href="#fiveWhys"><i data-lucide="help-circle"></i>5 Whys Analysis</a>
+      </div>
+
+      <div class="nav-section">
         <div class="nav-label">Interactive Tools</div>
         <a class="navlink" data-target="biasChecker" href="#biasChecker"><i data-lucide="check-circle"></i>Bias Self-Check</a>
         <a class="navlink" data-target="sampleCalc" href="#sampleCalc"><i data-lucide="calculator"></i>Sample Size Calculator</a>
@@ -1252,6 +1258,363 @@
     }
 
     // ===============================
+    // INTERACTIVE TOOLS - CTQ TREE BUILDER (Lean Six Sigma)
+    // ===============================
+    function getCTQState() {
+      try { return JSON.parse(localStorage.getItem('dbp-ctq-state') || '{}'); }
+      catch { return {}; }
+    }
+    function setCTQState(state) {
+      localStorage.setItem('dbp-ctq-state', JSON.stringify(state));
+    }
+
+    function renderCTQBuilder() {
+      const state = getCTQState();
+      return \`
+        <div class="card tool">
+          <h3>CTQ Tree Builder</h3>
+          <p>Use this Lean Six Sigma tool to translate Voice of Customer (VOC) into measurable Critical-to-Quality (CTQ) requirements. Complete this BEFORE starting your analysis to ensure you measure what truly matters.</p>
+
+          <div style="margin-top: 20px;">
+            <h4 style="margin-top:0;">Step 1: Voice of Customer (VOC)</h4>
+            <p class="muted">What is the stakeholder's need or concern in their own words?</p>
+            <div class="form-group">
+              <label class="form-label">Stakeholder Need Statement</label>
+              <textarea class="form-textarea" id="ctq-voc" placeholder="e.g., 'Claims are taking too long to process' or 'We need better accuracy on complex cases'">\${state.voc || ''}</textarea>
+              <p class="form-hint">Capture the raw voice of the customer without interpretation</p>
+            </div>
+
+            <h4>Step 2: CTQ Drivers</h4>
+            <p class="muted">What quality characteristics would satisfy this need? (Usually 2-4 drivers)</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Driver 1</label>
+                <input type="text" class="form-input" id="ctq-driver1" placeholder="e.g., Processing Speed" value="\${state.driver1 || ''}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Driver 2</label>
+                <input type="text" class="form-input" id="ctq-driver2" placeholder="e.g., Decision Accuracy" value="\${state.driver2 || ''}">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Driver 3</label>
+                <input type="text" class="form-input" id="ctq-driver3" placeholder="e.g., Communication Clarity" value="\${state.driver3 || ''}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Driver 4</label>
+                <input type="text" class="form-input" id="ctq-driver4" placeholder="Optional" value="\${state.driver4 || ''}">
+              </div>
+            </div>
+
+            <h4>Step 3: CTQ Specifications</h4>
+            <p class="muted">Define measurable specifications for each driver with Upper Spec Limit (USL) and Lower Spec Limit (LSL)</p>
+            <table class="table" style="margin-top:12px;">
+              <thead>
+                <tr><th>CTQ Driver</th><th>Metric</th><th>LSL (Min)</th><th>Target</th><th>USL (Max)</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span id="ctq-label1">Driver 1</span></td>
+                  <td><input type="text" class="form-input" id="ctq-metric1" placeholder="e.g., TAT days" value="\${state.metric1 || ''}" style="padding:6px 10px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-lsl1" placeholder="e.g., -" value="\${state.lsl1 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-target1" placeholder="e.g., 23" value="\${state.target1 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-usl1" placeholder="e.g., 30" value="\${state.usl1 || ''}" style="padding:6px 10px; width:80px;"></td>
+                </tr>
+                <tr>
+                  <td><span id="ctq-label2">Driver 2</span></td>
+                  <td><input type="text" class="form-input" id="ctq-metric2" placeholder="e.g., Accuracy %" value="\${state.metric2 || ''}" style="padding:6px 10px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-lsl2" placeholder="e.g., 95%" value="\${state.lsl2 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-target2" placeholder="e.g., 98%" value="\${state.target2 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-usl2" placeholder="e.g., -" value="\${state.usl2 || ''}" style="padding:6px 10px; width:80px;"></td>
+                </tr>
+                <tr>
+                  <td><span id="ctq-label3">Driver 3</span></td>
+                  <td><input type="text" class="form-input" id="ctq-metric3" placeholder="e.g., Response time" value="\${state.metric3 || ''}" style="padding:6px 10px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-lsl3" placeholder="" value="\${state.lsl3 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-target3" placeholder="" value="\${state.target3 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-usl3" placeholder="" value="\${state.usl3 || ''}" style="padding:6px 10px; width:80px;"></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Step 4: Defect Definition</h4>
+            <p class="muted">What constitutes a defect? (When does output fail to meet CTQ?)</p>
+            <div class="form-group">
+              <label class="form-label">Defect Definition</label>
+              <textarea class="form-textarea" id="ctq-defect" placeholder="e.g., 'A defect occurs when TAT exceeds 30 days OR accuracy falls below 95%'">\${state.defect || ''}</textarea>
+            </div>
+          </div>
+
+          <div class="export-bar">
+            <button class="btn" onclick="saveCTQState()"><i data-lucide="save"></i>Save Progress</button>
+            <button class="btn" onclick="clearCTQState()"><i data-lucide="trash-2"></i>Clear</button>
+            <button class="btn primary" onclick="exportCTQ()"><i data-lucide="download"></i>Export CTQ Tree</button>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <strong>Why CTQ matters:</strong> Without clear CTQ specifications, you risk measuring the wrong things or setting arbitrary thresholds. CTQ ensures your analysis addresses what the customer actually values and provides objective success criteria.
+        </div>
+
+        <div class="card">
+          <h3>CTQ Tree Visualization</h3>
+          <p class="muted">Your CTQ tree flows from Voice of Customer to measurable specifications:</p>
+          <div style="background:var(--bg); border-radius:10px; padding:20px; margin-top:12px; font-family:var(--font-mono); font-size:13px;">
+            <div style="color:var(--brand);">VOC: "<span id="ctq-viz-voc">Stakeholder need...</span>"</div>
+            <div style="margin-left:20px; margin-top:8px; border-left:2px solid var(--border); padding-left:16px;">
+              <div style="color:var(--accent);">CTQ Driver: <span id="ctq-viz-d1">-</span></div>
+              <div style="margin-left:20px; color:var(--muted);">Metric: <span id="ctq-viz-m1">-</span> | Target: <span id="ctq-viz-t1">-</span></div>
+            </div>
+            <div style="margin-left:20px; margin-top:8px; border-left:2px solid var(--border); padding-left:16px;">
+              <div style="color:var(--accent);">CTQ Driver: <span id="ctq-viz-d2">-</span></div>
+              <div style="margin-left:20px; color:var(--muted);">Metric: <span id="ctq-viz-m2">-</span> | Target: <span id="ctq-viz-t2">-</span></div>
+            </div>
+            <div style="margin-left:20px; margin-top:8px; border-left:2px solid var(--border); padding-left:16px;">
+              <div style="color:var(--accent);">CTQ Driver: <span id="ctq-viz-d3">-</span></div>
+              <div style="margin-left:20px; color:var(--muted);">Metric: <span id="ctq-viz-m3">-</span> | Target: <span id="ctq-viz-t3">-</span></div>
+            </div>
+          </div>
+        </div>
+      \`;
+    }
+
+    function saveCTQState() {
+      const state = {
+        voc: document.getElementById('ctq-voc')?.value || '',
+        driver1: document.getElementById('ctq-driver1')?.value || '',
+        driver2: document.getElementById('ctq-driver2')?.value || '',
+        driver3: document.getElementById('ctq-driver3')?.value || '',
+        driver4: document.getElementById('ctq-driver4')?.value || '',
+        metric1: document.getElementById('ctq-metric1')?.value || '',
+        metric2: document.getElementById('ctq-metric2')?.value || '',
+        metric3: document.getElementById('ctq-metric3')?.value || '',
+        lsl1: document.getElementById('ctq-lsl1')?.value || '',
+        lsl2: document.getElementById('ctq-lsl2')?.value || '',
+        lsl3: document.getElementById('ctq-lsl3')?.value || '',
+        target1: document.getElementById('ctq-target1')?.value || '',
+        target2: document.getElementById('ctq-target2')?.value || '',
+        target3: document.getElementById('ctq-target3')?.value || '',
+        usl1: document.getElementById('ctq-usl1')?.value || '',
+        usl2: document.getElementById('ctq-usl2')?.value || '',
+        usl3: document.getElementById('ctq-usl3')?.value || '',
+        defect: document.getElementById('ctq-defect')?.value || ''
+      };
+      setCTQState(state);
+      toast('CTQ progress saved');
+    }
+
+    function clearCTQState() {
+      if (confirm('Clear all CTQ data? This cannot be undone.')) {
+        setCTQState({});
+        renderView('ctqBuilder');
+      }
+    }
+
+    function exportCTQ() {
+      saveCTQState();
+      const s = getCTQState();
+      const date = new Date().toLocaleDateString();
+
+      let text = \`CTQ TREE ANALYSIS\n\`;
+      text += \`Generated: \${date}\n\`;
+      text += \`\${'='.repeat(60)}\n\n\`;
+      text += \`VOICE OF CUSTOMER (VOC)\n\`;
+      text += \`\${'-'.repeat(40)}\n\`;
+      text += \`\${s.voc || 'Not specified'}\n\n\`;
+      text += \`CTQ DRIVERS\n\`;
+      text += \`\${'-'.repeat(40)}\n\`;
+      if (s.driver1) text += \`1. \${s.driver1}\n\`;
+      if (s.driver2) text += \`2. \${s.driver2}\n\`;
+      if (s.driver3) text += \`3. \${s.driver3}\n\`;
+      if (s.driver4) text += \`4. \${s.driver4}\n\`;
+      text += \`\n\`;
+      text += \`CTQ SPECIFICATIONS\n\`;
+      text += \`\${'-'.repeat(40)}\n\`;
+      text += \`Driver 1: \${s.driver1 || '-'}\n\`;
+      text += \`  Metric: \${s.metric1 || '-'}\n\`;
+      text += \`  LSL: \${s.lsl1 || '-'} | Target: \${s.target1 || '-'} | USL: \${s.usl1 || '-'}\n\n\`;
+      text += \`Driver 2: \${s.driver2 || '-'}\n\`;
+      text += \`  Metric: \${s.metric2 || '-'}\n\`;
+      text += \`  LSL: \${s.lsl2 || '-'} | Target: \${s.target2 || '-'} | USL: \${s.usl2 || '-'}\n\n\`;
+      text += \`Driver 3: \${s.driver3 || '-'}\n\`;
+      text += \`  Metric: \${s.metric3 || '-'}\n\`;
+      text += \`  LSL: \${s.lsl3 || '-'} | Target: \${s.target3 || '-'} | USL: \${s.usl3 || '-'}\n\n\`;
+      text += \`DEFECT DEFINITION\n\`;
+      text += \`\${'-'.repeat(40)}\n\`;
+      text += \`\${s.defect || 'Not specified'}\n\n\`;
+      text += \`\${'='.repeat(60)}\n\`;
+      text += \`Use these CTQ specifications to guide your Phase 1 framing.\n\`;
+
+      downloadText(text, 'ctq-tree-analysis.txt');
+    }
+
+    // ===============================
+    // INTERACTIVE TOOLS - 5 WHYS ANALYSIS (Lean Six Sigma)
+    // ===============================
+    function getFiveWhysState() {
+      try { return JSON.parse(localStorage.getItem('dbp-5whys-state') || '{}'); }
+      catch { return {}; }
+    }
+    function setFiveWhysState(state) {
+      localStorage.setItem('dbp-5whys-state', JSON.stringify(state));
+    }
+
+    function renderFiveWhys() {
+      const state = getFiveWhysState();
+      return \`
+        <div class="card tool">
+          <h3>5 Whys Root Cause Analysis</h3>
+          <p>Use this Lean Six Sigma technique to drill down from symptoms to root causes. Ask "Why?" repeatedly until you reach the fundamental cause that, if addressed, would prevent recurrence.</p>
+
+          <div style="margin-top: 20px;">
+            <div class="form-group">
+              <label class="form-label">Problem Statement</label>
+              <textarea class="form-textarea" id="whys-problem" placeholder="e.g., 'TAT has increased from 23 days to 27 days over the past quarter'">\${state.problem || ''}</textarea>
+              <p class="form-hint">Be specific about what is happening, when, and the magnitude</p>
+            </div>
+
+            <div style="background:var(--bg); border-radius:12px; padding:20px; margin-top:20px;">
+              <div class="form-group">
+                <label class="form-label" style="color:var(--brand);">Why #1: Why is this happening?</label>
+                <textarea class="form-textarea" id="whys-1" placeholder="First-level cause...">\${state.why1 || ''}</textarea>
+              </div>
+
+              <div class="form-group" style="margin-left:20px; border-left:3px solid var(--brand); padding-left:16px;">
+                <label class="form-label" style="color:var(--brand-2);">Why #2: Why is that?</label>
+                <textarea class="form-textarea" id="whys-2" placeholder="Second-level cause...">\${state.why2 || ''}</textarea>
+              </div>
+
+              <div class="form-group" style="margin-left:40px; border-left:3px solid var(--brand-2); padding-left:16px;">
+                <label class="form-label" style="color:var(--accent);">Why #3: Why is that?</label>
+                <textarea class="form-textarea" id="whys-3" placeholder="Third-level cause...">\${state.why3 || ''}</textarea>
+              </div>
+
+              <div class="form-group" style="margin-left:60px; border-left:3px solid var(--accent); padding-left:16px;">
+                <label class="form-label" style="color:var(--amber);">Why #4: Why is that?</label>
+                <textarea class="form-textarea" id="whys-4" placeholder="Fourth-level cause...">\${state.why4 || ''}</textarea>
+              </div>
+
+              <div class="form-group" style="margin-left:80px; border-left:3px solid var(--amber); padding-left:16px;">
+                <label class="form-label" style="color:var(--danger);">Why #5: Why is that? (Root Cause)</label>
+                <textarea class="form-textarea" id="whys-5" placeholder="Root cause - the fundamental reason...">\${state.why5 || ''}</textarea>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top:20px;">
+              <label class="form-label">Root Cause Category</label>
+              <select class="form-select" id="whys-category">
+                <option value="">Select category (Fishbone/Ishikawa)</option>
+                <option value="People" \${state.category === 'People' ? 'selected' : ''}>People - Skills, training, staffing</option>
+                <option value="Process" \${state.category === 'Process' ? 'selected' : ''}>Process - Workflow, procedures, handoffs</option>
+                <option value="Technology" \${state.category === 'Technology' ? 'selected' : ''}>Technology - Systems, tools, automation</option>
+                <option value="Policy" \${state.category === 'Policy' ? 'selected' : ''}>Policy - Rules, requirements, constraints</option>
+                <option value="Environment" \${state.category === 'Environment' ? 'selected' : ''}>Environment - External factors, market conditions</option>
+                <option value="Measurement" \${state.category === 'Measurement' ? 'selected' : ''}>Measurement - Data quality, metrics definition</option>
+              </select>
+              <p class="form-hint">Categorizing helps identify appropriate countermeasures</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Proposed Countermeasure</label>
+              <textarea class="form-textarea" id="whys-countermeasure" placeholder="What action would address the root cause and prevent recurrence?">\${state.countermeasure || ''}</textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Verification Method</label>
+              <textarea class="form-textarea" id="whys-verification" placeholder="How will you verify the countermeasure is effective?">\${state.verification || ''}</textarea>
+            </div>
+          </div>
+
+          <div class="export-bar">
+            <button class="btn" onclick="saveFiveWhysState()"><i data-lucide="save"></i>Save Progress</button>
+            <button class="btn" onclick="clearFiveWhysState()"><i data-lucide="trash-2"></i>Clear</button>
+            <button class="btn primary" onclick="exportFiveWhys()"><i data-lucide="download"></i>Export Analysis</button>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Tips for effective 5 Whys:</strong>
+          <ul style="margin:8px 0 0 0;">
+            <li>Focus on process and systems, not people or blame</li>
+            <li>Each "why" should logically follow from the previous answer</li>
+            <li>You may need fewer or more than 5 whys - stop when you reach something actionable</li>
+            <li>Consider multiple branches if there are multiple contributing causes</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Example: TAT Increase Analysis</h3>
+          <table class="table">
+            <tbody>
+              <tr><td style="width:100px;"><strong>Problem</strong></td><td>TAT increased from 23 to 27 days</td></tr>
+              <tr><td><strong>Why 1</strong></td><td>Claims are sitting in queue longer before assignment</td></tr>
+              <tr><td><strong>Why 2</strong></td><td>Specialists are at capacity with current workload</td></tr>
+              <tr><td><strong>Why 3</strong></td><td>Claim volume increased 15% while headcount remained flat</td></tr>
+              <tr><td><strong>Why 4</strong></td><td>New client onboarding wasn't reflected in capacity planning</td></tr>
+              <tr><td><strong>Why 5</strong></td><td>No formal process to update capacity model when new clients added</td></tr>
+              <tr style="background:rgba(16,185,129,.1);"><td><strong>Root Cause</strong></td><td><strong>Process gap:</strong> Capacity planning not integrated with client onboarding</td></tr>
+            </tbody>
+          </table>
+        </div>
+      \`;
+    }
+
+    function saveFiveWhysState() {
+      const state = {
+        problem: document.getElementById('whys-problem')?.value || '',
+        why1: document.getElementById('whys-1')?.value || '',
+        why2: document.getElementById('whys-2')?.value || '',
+        why3: document.getElementById('whys-3')?.value || '',
+        why4: document.getElementById('whys-4')?.value || '',
+        why5: document.getElementById('whys-5')?.value || '',
+        category: document.getElementById('whys-category')?.value || '',
+        countermeasure: document.getElementById('whys-countermeasure')?.value || '',
+        verification: document.getElementById('whys-verification')?.value || ''
+      };
+      setFiveWhysState(state);
+      toast('5 Whys progress saved');
+    }
+
+    function clearFiveWhysState() {
+      if (confirm('Clear all 5 Whys data? This cannot be undone.')) {
+        setFiveWhysState({});
+        renderView('fiveWhys');
+      }
+    }
+
+    function exportFiveWhys() {
+      saveFiveWhysState();
+      const s = getFiveWhysState();
+      const date = new Date().toLocaleDateString();
+
+      let text = \`5 WHYS ROOT CAUSE ANALYSIS\n\`;
+      text += \`Generated: \${date}\n\`;
+      text += \`\${'='.repeat(60)}\n\n\`;
+      text += \`PROBLEM STATEMENT\n\`;
+      text += \`\${'-'.repeat(40)}\n\`;
+      text += \`\${s.problem || 'Not specified'}\n\n\`;
+      text += \`ROOT CAUSE ANALYSIS\n\`;
+      text += \`\${'-'.repeat(40)}\n\`;
+      text += \`Why #1: \${s.why1 || '-'}\n\`;
+      text += \`  Why #2: \${s.why2 || '-'}\n\`;
+      text += \`    Why #3: \${s.why3 || '-'}\n\`;
+      text += \`      Why #4: \${s.why4 || '-'}\n\`;
+      text += \`        Why #5 (Root): \${s.why5 || '-'}\n\n\`;
+      text += \`ROOT CAUSE CATEGORY: \${s.category || 'Not categorized'}\n\n\`;
+      text += \`COUNTERMEASURE\n\`;
+      text += \`\${'-'.repeat(40)}\n\`;
+      text += \`\${s.countermeasure || 'Not specified'}\n\n\`;
+      text += \`VERIFICATION METHOD\n\`;
+      text += \`\${'-'.repeat(40)}\n\`;
+      text += \`\${s.verification || 'Not specified'}\n\n\`;
+      text += \`\${'='.repeat(60)}\n\`;
+      text += \`Use this analysis to inform your decision and monitoring plan.\n\`;
+
+      downloadText(text, '5-whys-analysis.txt');
+    }
+
+    // ===============================
     // DOWNLOAD UTILITY
     // ===============================
     function downloadText(content, filename, type = 'text/plain') {
@@ -1273,35 +1636,90 @@
     const views = {
       overview: () => `
         <div class="card">
-          <p><strong>Start with questions, not data.</strong> Define what decision you're making, identify what could bias your thinking, then gather and interpret evidence. This approach prevents common mistakes by forcing clear questions, hypotheses, and thresholds up front—so you collect the right evidence and let that evidence drive decisions.</p>
+          <p><strong>Start with questions, not data — Drive continuous improvement through evidence.</strong> Define what decision you're making, identify what could bias your thinking, then gather and interpret evidence. This approach prevents common mistakes by forcing clear questions, hypotheses, and thresholds up front—so you collect the right evidence and let that evidence drive decisions.</p>
+          <p class="muted" style="margin-top:12px; font-size:13px;"><em>This framework integrates Lean Six Sigma DMAIC methodology and SAFe (Scaled Agile) principles for enterprise-grade rigor and continuous improvement.</em></p>
         </div>
-        
+
+        <div class="card">
+          <h3>Methodology Alignment</h3>
+          <p>Our five phases map directly to the <strong>DMAIC</strong> (Define, Measure, Analyze, Improve, Control) methodology used in Lean Six Sigma, with SAFe's built-in quality principles applied at every stage:</p>
+          <table class="table" style="margin-top:12px;">
+            <thead>
+              <tr><th>Phase</th><th>DMAIC</th><th>SAFe Principle</th><th>Key Output</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1. Frame Decision</td><td><strong>Define</strong></td><td>Customer Centricity</td><td>CTQ requirements & SMART question</td></tr>
+              <tr><td>2. Extract Data</td><td><strong>Measure</strong></td><td>Built-in Quality</td><td>Validated dataset with MSA</td></tr>
+              <tr><td>3. Interpret</td><td><strong>Analyze</strong></td><td>Transparency</td><td>Root cause identification</td></tr>
+              <tr><td>4. Bias Detection</td><td><em>Cross-cutting</em></td><td>Built-in Quality</td><td>Validated conclusions</td></tr>
+              <tr><td>5. Translate & Control</td><td><strong>Improve + Control</strong></td><td>Relentless Improvement</td><td>Action plan + control limits</td></tr>
+            </tbody>
+          </table>
+        </div>
+
         <div class="card">
           <h3>Audience</h3>
-          <p><strong>Business Users & Managers</strong> — Focus on Phases 1, 3, and 5. Understand and validate Phases 2 and 4 at a high level.</p>
-          <p><strong>Analysts & Consultants</strong> — Engage deeply with all five phases to ensure rigor throughout.</p>
+          <p><strong>Business Users & Managers</strong> — Focus on Phases 1, 3, and 5. Understand and validate Phases 2 and 4 at a high level. Equivalent to <em>Product Owner</em> role in SAFe.</p>
+          <p><strong>Analysts & Consultants</strong> — Engage deeply with all five phases to ensure rigor throughout. Equivalent to <em>Team Member / Subject Matter Expert</em> in SAFe.</p>
+          <p><strong>Data Professionals</strong> — Own methodology compliance and quality gates. Equivalent to <em>Scrum Master / RTE</em> in SAFe for process governance.</p>
         </div>
-        
+
         <div class="card">
-          <h3>The Five Phases</h3>
+          <h3>The Five Phases with Exit Criteria</h3>
+          <p class="muted" style="margin-bottom:12px;">Each phase includes a <strong>Definition of Done (DoD)</strong> — clear tollgate criteria that must be met before proceeding. This ensures built-in quality at every step.</p>
           <ol>
-            <li><strong>Frame the Decision</strong> — Define SMART questions before touching data</li>
-            <li><strong>Extract Data Systematically</strong> — Use certified datasets and consistent methods</li>
-            <li><strong>Interpret with Rigor</strong> — Apply context, statistical significance, and seasonality</li>
-            <li><strong>Apply Bias Detection</strong> — Actively identify and mitigate cognitive biases</li>
-            <li><strong>Translate to Decisions</strong> — Document rationale and monitoring plans</li>
+            <li><strong>Frame the Decision</strong> — Define SMART questions before touching data
+              <br><span class="muted" style="font-size:13px;">DoD: CTQ identified, hypothesis documented, success threshold defined</span></li>
+            <li><strong>Extract Data Systematically</strong> — Use certified datasets and consistent methods
+              <br><span class="muted" style="font-size:13px;">DoD: Data source validated, filters documented, sample size confirmed</span></li>
+            <li><strong>Interpret with Rigor</strong> — Apply context, statistical significance, and seasonality
+              <br><span class="muted" style="font-size:13px;">DoD: Confidence intervals calculated, comparisons contextualized, root cause explored</span></li>
+            <li><strong>Apply Bias Detection</strong> — Actively identify and mitigate cognitive biases
+              <br><span class="muted" style="font-size:13px;">DoD: Bias checklist completed, disconfirming evidence sought, peer review done</span></li>
+            <li><strong>Translate to Decisions & Control</strong> — Document rationale, implement action, establish monitoring
+              <br><span class="muted" style="font-size:13px;">DoD: Decision documented, control limits set, response triggers defined, owner assigned</span></li>
           </ol>
         </div>
-        
-        <div class="card tool">
-          <h3>New: Interactive Tools</h3>
-          <p>This guide now includes four interactive tools to make your analysis more rigorous:</p>
-          <ul>
-            <li><strong>Bias Self-Check</strong> — Interactive checklist with progress tracking and export</li>
-            <li><strong>Sample Size Calculator</strong> — Calculate confidence intervals and assess statistical precision</li>
-            <li><strong>Decision Template</strong> — Generate professional decision documentation</li>
-            <li><strong>Challenge My Analysis</strong> — Devil's advocate questions tailored to your analysis type</li>
+
+        <div class="card">
+          <h3>Cadence & Review Cycles</h3>
+          <p>Aligned with SAFe iteration patterns, establish regular review cadences to ensure continuous improvement:</p>
+          <div class="result-grid" style="margin-top:12px;">
+            <div class="result-stat">
+              <div class="stat-value" style="font-size:18px;">Weekly</div>
+              <div class="stat-label">Operational Metrics</div>
+            </div>
+            <div class="result-stat">
+              <div class="stat-value" style="font-size:18px;">Monthly</div>
+              <div class="stat-label">Trend Analysis</div>
+            </div>
+            <div class="result-stat">
+              <div class="stat-value" style="font-size:18px;">Quarterly</div>
+              <div class="stat-label">Strategic Review</div>
+            </div>
+          </div>
+          <ul style="margin-top:16px;">
+            <li><strong>Weekly Stand-up:</strong> Review control chart status, flag out-of-control signals</li>
+            <li><strong>Monthly Retrospective:</strong> Validate hypotheses, update baselines, identify improvement opportunities</li>
+            <li><strong>Quarterly PI Review:</strong> Strategic alignment, reset control limits, celebrate wins, plan next increment</li>
           </ul>
+        </div>
+
+        <div class="card tool">
+          <h3>Interactive Tools</h3>
+          <p>This guide includes interactive tools aligned with Lean Six Sigma and SAFe methodologies:</p>
+          <ul>
+            <li><strong><a href="#ctqBuilder" onclick="navigateTo('ctqBuilder')" style="color:var(--brand)">CTQ Tree Builder</a></strong> <span class="muted">(NEW)</span> — Identify Critical-to-Quality requirements from Voice of Customer</li>
+            <li><strong><a href="#fiveWhys" onclick="navigateTo('fiveWhys')" style="color:var(--brand)">5 Whys Analysis</a></strong> <span class="muted">(NEW)</span> — Root cause analysis tool for drilling into problems</li>
+            <li><strong><a href="#biasChecker" onclick="navigateTo('biasChecker')" style="color:var(--brand)">Bias Self-Check</a></strong> — Interactive checklist with progress tracking and export</li>
+            <li><strong><a href="#sampleCalc" onclick="navigateTo('sampleCalc')" style="color:var(--brand)">Sample Size Calculator</a></strong> — Calculate confidence intervals and assess statistical precision</li>
+            <li><strong><a href="#decisionTemplate" onclick="navigateTo('decisionTemplate')" style="color:var(--brand)">Decision Template</a></strong> — Generate professional decision documentation</li>
+            <li><strong><a href="#challengeMode" onclick="navigateTo('challengeMode')" style="color:var(--brand)">Challenge My Analysis</a></strong> — Devil's advocate questions tailored to your analysis type</li>
+          </ul>
+        </div>
+
+        <div class="callout success">
+          <strong>Continuous Improvement Mindset:</strong> This framework is not a one-time checklist. Use it iteratively — each decision cycle should inform and improve the next. Document lessons learned and update your control limits based on actual performance.
         </div>
       `,
       
@@ -1453,32 +1871,83 @@
       `,
       
       phase5: () => `
-        <div class="callout info">Use the <a href="#decisionTemplate" onclick="navigateTo('decisionTemplate')" style="color:var(--brand)">Decision Template Generator</a> to create professional documentation.</div>
-        
+        <div class="callout info">Use the <a href="#decisionTemplate" onclick="navigateTo('decisionTemplate')" style="color:var(--brand)">Decision Template Generator</a> to create professional documentation. This phase combines DMAIC's <strong>Improve</strong> and <strong>Control</strong> stages.</div>
+
         <div class="card">
-          <h3>Decision Documentation Template</h3>
-          
+          <h3>Part A: Improve — Decision Documentation</h3>
+
           <h4>Decision Summary</h4>
           <p>Decision, Decision-Maker, Date, Implementation Timeline</p>
-          
+
           <h4>Analysis Foundation</h4>
           <p>Primary Finding, Supporting Evidence, Confidence Level (High/Medium/Low)</p>
-          
+
           <h4>Decision Rationale</h4>
           <p>Why this decision? Why now? Alternatives considered?</p>
-          
+
           <h4>Risks and Monitoring</h4>
           <p>Key risks, success metrics, monitoring plan, expected impact</p>
         </div>
-        
+
         <div class="card">
-          <h3>Example: Staffing Decision</h3>
+          <h3>Part B: Control — Sustaining the Gains</h3>
+          <p class="muted">The Control phase ensures improvements are sustained over time. Without proper controls, performance typically regresses to pre-improvement levels within 6-12 months.</p>
+
+          <h4>Statistical Process Control (SPC)</h4>
+          <p>Establish control limits to distinguish normal variation from signals requiring action:</p>
+          <table class="table" style="margin-top:12px;">
+            <thead>
+              <tr><th>Element</th><th>Description</th><th>Example</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>UCL</strong></td><td>Upper Control Limit (mean + 3σ)</td><td>TAT: 28 days</td></tr>
+              <tr><td><strong>Target</strong></td><td>Process mean / goal</td><td>TAT: 23 days</td></tr>
+              <tr><td><strong>LCL</strong></td><td>Lower Control Limit (mean - 3σ)</td><td>TAT: 18 days</td></tr>
+            </tbody>
+          </table>
+          <p class="form-hint" style="margin-top:8px;">Note: For metrics where lower is worse (like accuracy), LCL becomes your alert threshold.</p>
+
+          <h4>Response Plan (OCAP)</h4>
+          <p>Define Out-of-Control Action Plan triggers:</p>
+          <ul>
+            <li><strong>Yellow Alert:</strong> One data point beyond 2σ → Monitor closely, investigate if persists</li>
+            <li><strong>Red Alert:</strong> One point beyond 3σ OR two consecutive points beyond 2σ → Immediate investigation required</li>
+            <li><strong>Pattern Alert:</strong> 7+ consecutive points trending same direction → Process shift, investigate root cause</li>
+          </ul>
+
+          <h4>Control Plan Elements</h4>
+          <ul>
+            <li><strong>What:</strong> Specific metric(s) to monitor</li>
+            <li><strong>Who:</strong> Owner responsible for monitoring</li>
+            <li><strong>When:</strong> Frequency of measurement (daily, weekly, monthly)</li>
+            <li><strong>How:</strong> Data source and collection method</li>
+            <li><strong>Response:</strong> Escalation path when out of control</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Example: Staffing Decision with Control Plan</h3>
           <ul>
             <li><strong>Decision:</strong> Add 2 FTE specialists to STD team effective December 1, 2025</li>
             <li><strong>Primary Finding:</strong> Capacity insufficient for sustained growth; TAT trending toward SLA threshold</li>
             <li><strong>Evidence:</strong> Claims per specialist: 195 → 212 (8.7% ↑), TAT: 23.2 → 26.8 days, Utilization: 94%</li>
             <li><strong>Expected Impact:</strong> TAT back to 23–24 days by Feb 2026</li>
           </ul>
+          <h4 style="margin-top:16px;">Control Plan</h4>
+          <table class="table">
+            <thead>
+              <tr><th>Metric</th><th>Target</th><th>UCL</th><th>Owner</th><th>Frequency</th><th>Response if OOC</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>TAT (days)</td><td>23</td><td>28</td><td>Ops Manager</td><td>Weekly</td><td>Escalate to Director; run 5 Whys</td></tr>
+              <tr><td>Claims/Specialist</td><td>195</td><td>210</td><td>Team Lead</td><td>Weekly</td><td>Review assignments; assess temp help</td></tr>
+              <tr><td>Utilization %</td><td>85%</td><td>92%</td><td>Ops Manager</td><td>Monthly</td><td>Capacity planning review</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout success">
+          <strong>SAFe Integration:</strong> Align control reviews with your sprint cadence. Include control chart status in sprint reviews and flag out-of-control signals during daily stand-ups. Use quarterly PI planning to reset baselines and celebrate sustained improvements.
         </div>
       `,
       
@@ -1486,7 +1955,9 @@
       sampleCalc: renderSampleCalc,
       decisionTemplate: renderDecisionTemplate,
       challengeMode: renderChallengeMode,
-      
+      ctqBuilder: renderCTQBuilder,
+      fiveWhys: renderFiveWhys,
+
       businessUsers: () => `
         <div class="card">
           <p><strong>Your Primary Role:</strong> Consume reports and dashboards to inform day-to-day operational decisions. Interpret accurately and know when to escalate.</p>
@@ -1609,16 +2080,18 @@
     // HERO METADATA
     // ===============================
     const heroMeta = {
-      overview: { icon: 'home', title: 'Framework Overview', tag: 'Start with questions, not data — let evidence drive decisions.' },
-      phase1: { icon: 'target', title: 'Phase 1 · Frame the Decision', tag: 'SMART questions and bias awareness set the path.' },
-      phase2: { icon: 'database', title: 'Phase 2 · Extract Data', tag: 'Certified sources, consistent periods, documented filters.' },
-      phase3: { icon: 'line-chart', title: 'Phase 3 · Interpret with Rigor', tag: 'Context, significance, and seasonality — always.' },
+      overview: { icon: 'home', title: 'Framework Overview', tag: 'Start with questions, not data — drive continuous improvement through evidence.' },
+      phase1: { icon: 'target', title: 'Phase 1 · Define', tag: 'SMART questions, CTQ requirements, and bias awareness set the path.' },
+      phase2: { icon: 'database', title: 'Phase 2 · Measure', tag: 'Certified sources, consistent periods, documented filters.' },
+      phase3: { icon: 'line-chart', title: 'Phase 3 · Analyze', tag: 'Context, significance, root cause, and seasonality — always.' },
       phase4: { icon: 'shield-check', title: 'Phase 4 · Bias Detection', tag: 'Seek disconfirming evidence and challenge anchors.' },
-      phase5: { icon: 'file-check-2', title: 'Phase 5 · Decisions', tag: 'Document rationale, risks, and monitoring.' },
+      phase5: { icon: 'file-check-2', title: 'Phase 5 · Improve & Control', tag: 'Document rationale, set control limits, monitor performance.' },
       biasChecker: { icon: 'check-circle', title: 'Bias Self-Check', tag: 'Interactive checklist with progress tracking.' },
       sampleCalc: { icon: 'calculator', title: 'Sample Size Calculator', tag: 'Calculate confidence intervals and assess precision.' },
       decisionTemplate: { icon: 'file-text', title: 'Decision Template', tag: 'Generate professional decision documentation.' },
       challengeMode: { icon: 'swords', title: 'Challenge My Analysis', tag: 'Devil\'s advocate questions to stress-test conclusions.' },
+      ctqBuilder: { icon: 'git-branch', title: 'CTQ Tree Builder', tag: 'Translate Voice of Customer into measurable requirements.' },
+      fiveWhys: { icon: 'help-circle', title: '5 Whys Analysis', tag: 'Drill down from symptoms to root causes.' },
       businessUsers: { icon: 'briefcase', title: 'Business Users', tag: 'Know when to self-serve and when to escalate.' },
       analysts: { icon: 'flask-conical', title: 'Analysts', tag: 'Analysis craft and bias-aware workflows.' },
       dataPros: { icon: 'settings-2', title: 'Data Professionals', tag: 'Governance, performance, and bias-resistant defaults.' },
