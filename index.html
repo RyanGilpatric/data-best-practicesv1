@@ -1270,7 +1270,7 @@
 
     function renderCTQBuilder() {
       const state = getCTQState();
-      return \`
+      return `
         <div class="card tool">
           <h3>CTQ Tree Builder</h3>
           <p>Use this Lean Six Sigma tool to translate Voice of Customer (VOC) into measurable Critical-to-Quality (CTQ) requirements. Complete this BEFORE starting your analysis to ensure you measure what truly matters.</p>
@@ -1280,7 +1280,7 @@
             <p class="muted">What is the stakeholder's need or concern in their own words?</p>
             <div class="form-group">
               <label class="form-label">Stakeholder Need Statement</label>
-              <textarea class="form-textarea" id="ctq-voc" placeholder="e.g., 'Claims are taking too long to process' or 'We need better accuracy on complex cases'">\${state.voc || ''}</textarea>
+              <textarea class="form-textarea" id="ctq-voc" placeholder="e.g., 'Claims are taking too long to process' or 'We need better accuracy on complex cases'">${state.voc || ''}</textarea>
               <p class="form-hint">Capture the raw voice of the customer without interpretation</p>
             </div>
 
@@ -1289,21 +1289,21 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Driver 1</label>
-                <input type="text" class="form-input" id="ctq-driver1" placeholder="e.g., Processing Speed" value="\${state.driver1 || ''}">
+                <input type="text" class="form-input" id="ctq-driver1" placeholder="e.g., Processing Speed" value="${state.driver1 || ''}">
               </div>
               <div class="form-group">
                 <label class="form-label">Driver 2</label>
-                <input type="text" class="form-input" id="ctq-driver2" placeholder="e.g., Decision Accuracy" value="\${state.driver2 || ''}">
+                <input type="text" class="form-input" id="ctq-driver2" placeholder="e.g., Decision Accuracy" value="${state.driver2 || ''}">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Driver 3</label>
-                <input type="text" class="form-input" id="ctq-driver3" placeholder="e.g., Communication Clarity" value="\${state.driver3 || ''}">
+                <input type="text" class="form-input" id="ctq-driver3" placeholder="e.g., Communication Clarity" value="${state.driver3 || ''}">
               </div>
               <div class="form-group">
                 <label class="form-label">Driver 4</label>
-                <input type="text" class="form-input" id="ctq-driver4" placeholder="Optional" value="\${state.driver4 || ''}">
+                <input type="text" class="form-input" id="ctq-driver4" placeholder="Optional" value="${state.driver4 || ''}">
               </div>
             </div>
 
@@ -1316,24 +1316,24 @@
               <tbody>
                 <tr>
                   <td><span id="ctq-label1">Driver 1</span></td>
-                  <td><input type="text" class="form-input" id="ctq-metric1" placeholder="e.g., TAT days" value="\${state.metric1 || ''}" style="padding:6px 10px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-lsl1" placeholder="e.g., -" value="\${state.lsl1 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-target1" placeholder="e.g., 23" value="\${state.target1 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-usl1" placeholder="e.g., 30" value="\${state.usl1 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-metric1" placeholder="e.g., TAT days" value="${state.metric1 || ''}" style="padding:6px 10px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-lsl1" placeholder="e.g., -" value="${state.lsl1 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-target1" placeholder="e.g., 23" value="${state.target1 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-usl1" placeholder="e.g., 30" value="${state.usl1 || ''}" style="padding:6px 10px; width:80px;"></td>
                 </tr>
                 <tr>
                   <td><span id="ctq-label2">Driver 2</span></td>
-                  <td><input type="text" class="form-input" id="ctq-metric2" placeholder="e.g., Accuracy %" value="\${state.metric2 || ''}" style="padding:6px 10px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-lsl2" placeholder="e.g., 95%" value="\${state.lsl2 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-target2" placeholder="e.g., 98%" value="\${state.target2 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-usl2" placeholder="e.g., -" value="\${state.usl2 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-metric2" placeholder="e.g., Accuracy %" value="${state.metric2 || ''}" style="padding:6px 10px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-lsl2" placeholder="e.g., 95%" value="${state.lsl2 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-target2" placeholder="e.g., 98%" value="${state.target2 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-usl2" placeholder="e.g., -" value="${state.usl2 || ''}" style="padding:6px 10px; width:80px;"></td>
                 </tr>
                 <tr>
                   <td><span id="ctq-label3">Driver 3</span></td>
-                  <td><input type="text" class="form-input" id="ctq-metric3" placeholder="e.g., Response time" value="\${state.metric3 || ''}" style="padding:6px 10px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-lsl3" placeholder="" value="\${state.lsl3 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-target3" placeholder="" value="\${state.target3 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-usl3" placeholder="" value="\${state.usl3 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-metric3" placeholder="e.g., Response time" value="${state.metric3 || ''}" style="padding:6px 10px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-lsl3" placeholder="" value="${state.lsl3 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-target3" placeholder="" value="${state.target3 || ''}" style="padding:6px 10px; width:80px;"></td>
+                  <td><input type="text" class="form-input" id="ctq-usl3" placeholder="" value="${state.usl3 || ''}" style="padding:6px 10px; width:80px;"></td>
                 </tr>
               </tbody>
             </table>
@@ -1342,7 +1342,7 @@
             <p class="muted">What constitutes a defect? (When does output fail to meet CTQ?)</p>
             <div class="form-group">
               <label class="form-label">Defect Definition</label>
-              <textarea class="form-textarea" id="ctq-defect" placeholder="e.g., 'A defect occurs when TAT exceeds 30 days OR accuracy falls below 95%'">\${state.defect || ''}</textarea>
+              <textarea class="form-textarea" id="ctq-defect" placeholder="e.g., 'A defect occurs when TAT exceeds 30 days OR accuracy falls below 95%'">${state.defect || ''}</textarea>
             </div>
           </div>
 
@@ -1376,7 +1376,7 @@
             </div>
           </div>
         </div>
-      \`;
+      `;
     }
 
     function saveCTQState() {
@@ -1416,35 +1416,35 @@
       const s = getCTQState();
       const date = new Date().toLocaleDateString();
 
-      let text = \`CTQ TREE ANALYSIS\n\`;
-      text += \`Generated: \${date}\n\`;
-      text += \`\${'='.repeat(60)}\n\n\`;
-      text += \`VOICE OF CUSTOMER (VOC)\n\`;
-      text += \`\${'-'.repeat(40)}\n\`;
-      text += \`\${s.voc || 'Not specified'}\n\n\`;
-      text += \`CTQ DRIVERS\n\`;
-      text += \`\${'-'.repeat(40)}\n\`;
-      if (s.driver1) text += \`1. \${s.driver1}\n\`;
-      if (s.driver2) text += \`2. \${s.driver2}\n\`;
-      if (s.driver3) text += \`3. \${s.driver3}\n\`;
-      if (s.driver4) text += \`4. \${s.driver4}\n\`;
-      text += \`\n\`;
-      text += \`CTQ SPECIFICATIONS\n\`;
-      text += \`\${'-'.repeat(40)}\n\`;
-      text += \`Driver 1: \${s.driver1 || '-'}\n\`;
-      text += \`  Metric: \${s.metric1 || '-'}\n\`;
-      text += \`  LSL: \${s.lsl1 || '-'} | Target: \${s.target1 || '-'} | USL: \${s.usl1 || '-'}\n\n\`;
-      text += \`Driver 2: \${s.driver2 || '-'}\n\`;
-      text += \`  Metric: \${s.metric2 || '-'}\n\`;
-      text += \`  LSL: \${s.lsl2 || '-'} | Target: \${s.target2 || '-'} | USL: \${s.usl2 || '-'}\n\n\`;
-      text += \`Driver 3: \${s.driver3 || '-'}\n\`;
-      text += \`  Metric: \${s.metric3 || '-'}\n\`;
-      text += \`  LSL: \${s.lsl3 || '-'} | Target: \${s.target3 || '-'} | USL: \${s.usl3 || '-'}\n\n\`;
-      text += \`DEFECT DEFINITION\n\`;
-      text += \`\${'-'.repeat(40)}\n\`;
-      text += \`\${s.defect || 'Not specified'}\n\n\`;
-      text += \`\${'='.repeat(60)}\n\`;
-      text += \`Use these CTQ specifications to guide your Phase 1 framing.\n\`;
+      let text = `CTQ TREE ANALYSIS\n`;
+      text += `Generated: ${date}\n`;
+      text += `${'='.repeat(60)}\n\n`;
+      text += `VOICE OF CUSTOMER (VOC)\n`;
+      text += `${'-'.repeat(40)}\n`;
+      text += `${s.voc || 'Not specified'}\n\n`;
+      text += `CTQ DRIVERS\n`;
+      text += `${'-'.repeat(40)}\n`;
+      if (s.driver1) text += `1. ${s.driver1}\n`;
+      if (s.driver2) text += `2. ${s.driver2}\n`;
+      if (s.driver3) text += `3. ${s.driver3}\n`;
+      if (s.driver4) text += `4. ${s.driver4}\n`;
+      text += `\n`;
+      text += `CTQ SPECIFICATIONS\n`;
+      text += `${'-'.repeat(40)}\n`;
+      text += `Driver 1: ${s.driver1 || '-'}\n`;
+      text += `  Metric: ${s.metric1 || '-'}\n`;
+      text += `  LSL: ${s.lsl1 || '-'} | Target: ${s.target1 || '-'} | USL: ${s.usl1 || '-'}\n\n`;
+      text += `Driver 2: ${s.driver2 || '-'}\n`;
+      text += `  Metric: ${s.metric2 || '-'}\n`;
+      text += `  LSL: ${s.lsl2 || '-'} | Target: ${s.target2 || '-'} | USL: ${s.usl2 || '-'}\n\n`;
+      text += `Driver 3: ${s.driver3 || '-'}\n`;
+      text += `  Metric: ${s.metric3 || '-'}\n`;
+      text += `  LSL: ${s.lsl3 || '-'} | Target: ${s.target3 || '-'} | USL: ${s.usl3 || '-'}\n\n`;
+      text += `DEFECT DEFINITION\n`;
+      text += `${'-'.repeat(40)}\n`;
+      text += `${s.defect || 'Not specified'}\n\n`;
+      text += `${'='.repeat(60)}\n`;
+      text += `Use these CTQ specifications to guide your Phase 1 framing.\n`;
 
       downloadText(text, 'ctq-tree-analysis.txt');
     }
@@ -1462,7 +1462,7 @@
 
     function renderFiveWhys() {
       const state = getFiveWhysState();
-      return \`
+      return `
         <div class="card tool">
           <h3>5 Whys Root Cause Analysis</h3>
           <p>Use this Lean Six Sigma technique to drill down from symptoms to root causes. Ask "Why?" repeatedly until you reach the fundamental cause that, if addressed, would prevent recurrence.</p>
@@ -1470,34 +1470,34 @@
           <div style="margin-top: 20px;">
             <div class="form-group">
               <label class="form-label">Problem Statement</label>
-              <textarea class="form-textarea" id="whys-problem" placeholder="e.g., 'TAT has increased from 23 days to 27 days over the past quarter'">\${state.problem || ''}</textarea>
+              <textarea class="form-textarea" id="whys-problem" placeholder="e.g., 'TAT has increased from 23 days to 27 days over the past quarter'">${state.problem || ''}</textarea>
               <p class="form-hint">Be specific about what is happening, when, and the magnitude</p>
             </div>
 
             <div style="background:var(--bg); border-radius:12px; padding:20px; margin-top:20px;">
               <div class="form-group">
                 <label class="form-label" style="color:var(--brand);">Why #1: Why is this happening?</label>
-                <textarea class="form-textarea" id="whys-1" placeholder="First-level cause...">\${state.why1 || ''}</textarea>
+                <textarea class="form-textarea" id="whys-1" placeholder="First-level cause...">${state.why1 || ''}</textarea>
               </div>
 
               <div class="form-group" style="margin-left:20px; border-left:3px solid var(--brand); padding-left:16px;">
                 <label class="form-label" style="color:var(--brand-2);">Why #2: Why is that?</label>
-                <textarea class="form-textarea" id="whys-2" placeholder="Second-level cause...">\${state.why2 || ''}</textarea>
+                <textarea class="form-textarea" id="whys-2" placeholder="Second-level cause...">${state.why2 || ''}</textarea>
               </div>
 
               <div class="form-group" style="margin-left:40px; border-left:3px solid var(--brand-2); padding-left:16px;">
                 <label class="form-label" style="color:var(--accent);">Why #3: Why is that?</label>
-                <textarea class="form-textarea" id="whys-3" placeholder="Third-level cause...">\${state.why3 || ''}</textarea>
+                <textarea class="form-textarea" id="whys-3" placeholder="Third-level cause...">${state.why3 || ''}</textarea>
               </div>
 
               <div class="form-group" style="margin-left:60px; border-left:3px solid var(--accent); padding-left:16px;">
                 <label class="form-label" style="color:var(--amber);">Why #4: Why is that?</label>
-                <textarea class="form-textarea" id="whys-4" placeholder="Fourth-level cause...">\${state.why4 || ''}</textarea>
+                <textarea class="form-textarea" id="whys-4" placeholder="Fourth-level cause...">${state.why4 || ''}</textarea>
               </div>
 
               <div class="form-group" style="margin-left:80px; border-left:3px solid var(--amber); padding-left:16px;">
                 <label class="form-label" style="color:var(--danger);">Why #5: Why is that? (Root Cause)</label>
-                <textarea class="form-textarea" id="whys-5" placeholder="Root cause - the fundamental reason...">\${state.why5 || ''}</textarea>
+                <textarea class="form-textarea" id="whys-5" placeholder="Root cause - the fundamental reason...">${state.why5 || ''}</textarea>
               </div>
             </div>
 
@@ -1505,24 +1505,24 @@
               <label class="form-label">Root Cause Category</label>
               <select class="form-select" id="whys-category">
                 <option value="">Select category (Fishbone/Ishikawa)</option>
-                <option value="People" \${state.category === 'People' ? 'selected' : ''}>People - Skills, training, staffing</option>
-                <option value="Process" \${state.category === 'Process' ? 'selected' : ''}>Process - Workflow, procedures, handoffs</option>
-                <option value="Technology" \${state.category === 'Technology' ? 'selected' : ''}>Technology - Systems, tools, automation</option>
-                <option value="Policy" \${state.category === 'Policy' ? 'selected' : ''}>Policy - Rules, requirements, constraints</option>
-                <option value="Environment" \${state.category === 'Environment' ? 'selected' : ''}>Environment - External factors, market conditions</option>
-                <option value="Measurement" \${state.category === 'Measurement' ? 'selected' : ''}>Measurement - Data quality, metrics definition</option>
+                <option value="People" ${state.category === 'People' ? 'selected' : ''}>People - Skills, training, staffing</option>
+                <option value="Process" ${state.category === 'Process' ? 'selected' : ''}>Process - Workflow, procedures, handoffs</option>
+                <option value="Technology" ${state.category === 'Technology' ? 'selected' : ''}>Technology - Systems, tools, automation</option>
+                <option value="Policy" ${state.category === 'Policy' ? 'selected' : ''}>Policy - Rules, requirements, constraints</option>
+                <option value="Environment" ${state.category === 'Environment' ? 'selected' : ''}>Environment - External factors, market conditions</option>
+                <option value="Measurement" ${state.category === 'Measurement' ? 'selected' : ''}>Measurement - Data quality, metrics definition</option>
               </select>
               <p class="form-hint">Categorizing helps identify appropriate countermeasures</p>
             </div>
 
             <div class="form-group">
               <label class="form-label">Proposed Countermeasure</label>
-              <textarea class="form-textarea" id="whys-countermeasure" placeholder="What action would address the root cause and prevent recurrence?">\${state.countermeasure || ''}</textarea>
+              <textarea class="form-textarea" id="whys-countermeasure" placeholder="What action would address the root cause and prevent recurrence?">${state.countermeasure || ''}</textarea>
             </div>
 
             <div class="form-group">
               <label class="form-label">Verification Method</label>
-              <textarea class="form-textarea" id="whys-verification" placeholder="How will you verify the countermeasure is effective?">\${state.verification || ''}</textarea>
+              <textarea class="form-textarea" id="whys-verification" placeholder="How will you verify the countermeasure is effective?">${state.verification || ''}</textarea>
             </div>
           </div>
 
@@ -1557,7 +1557,7 @@
             </tbody>
           </table>
         </div>
-      \`;
+      `;
     }
 
     function saveFiveWhysState() {
@@ -1588,28 +1588,28 @@
       const s = getFiveWhysState();
       const date = new Date().toLocaleDateString();
 
-      let text = \`5 WHYS ROOT CAUSE ANALYSIS\n\`;
-      text += \`Generated: \${date}\n\`;
-      text += \`\${'='.repeat(60)}\n\n\`;
-      text += \`PROBLEM STATEMENT\n\`;
-      text += \`\${'-'.repeat(40)}\n\`;
-      text += \`\${s.problem || 'Not specified'}\n\n\`;
-      text += \`ROOT CAUSE ANALYSIS\n\`;
-      text += \`\${'-'.repeat(40)}\n\`;
-      text += \`Why #1: \${s.why1 || '-'}\n\`;
-      text += \`  Why #2: \${s.why2 || '-'}\n\`;
-      text += \`    Why #3: \${s.why3 || '-'}\n\`;
-      text += \`      Why #4: \${s.why4 || '-'}\n\`;
-      text += \`        Why #5 (Root): \${s.why5 || '-'}\n\n\`;
-      text += \`ROOT CAUSE CATEGORY: \${s.category || 'Not categorized'}\n\n\`;
-      text += \`COUNTERMEASURE\n\`;
-      text += \`\${'-'.repeat(40)}\n\`;
-      text += \`\${s.countermeasure || 'Not specified'}\n\n\`;
-      text += \`VERIFICATION METHOD\n\`;
-      text += \`\${'-'.repeat(40)}\n\`;
-      text += \`\${s.verification || 'Not specified'}\n\n\`;
-      text += \`\${'='.repeat(60)}\n\`;
-      text += \`Use this analysis to inform your decision and monitoring plan.\n\`;
+      let text = `5 WHYS ROOT CAUSE ANALYSIS\n`;
+      text += `Generated: ${date}\n`;
+      text += `${'='.repeat(60)}\n\n`;
+      text += `PROBLEM STATEMENT\n`;
+      text += `${'-'.repeat(40)}\n`;
+      text += `${s.problem || 'Not specified'}\n\n`;
+      text += `ROOT CAUSE ANALYSIS\n`;
+      text += `${'-'.repeat(40)}\n`;
+      text += `Why #1: ${s.why1 || '-'}\n`;
+      text += `  Why #2: ${s.why2 || '-'}\n`;
+      text += `    Why #3: ${s.why3 || '-'}\n`;
+      text += `      Why #4: ${s.why4 || '-'}\n`;
+      text += `        Why #5 (Root): ${s.why5 || '-'}\n\n`;
+      text += `ROOT CAUSE CATEGORY: ${s.category || 'Not categorized'}\n\n`;
+      text += `COUNTERMEASURE\n`;
+      text += `${'-'.repeat(40)}\n`;
+      text += `${s.countermeasure || 'Not specified'}\n\n`;
+      text += `VERIFICATION METHOD\n`;
+      text += `${'-'.repeat(40)}\n`;
+      text += `${s.verification || 'Not specified'}\n\n`;
+      text += `${'='.repeat(60)}\n`;
+      text += `Use this analysis to inform your decision and monitoring plan.\n`;
 
       downloadText(text, '5-whys-analysis.txt');
     }
