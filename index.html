@@ -760,6 +760,141 @@
     }
     .bias-question:hover { border-color: rgba(139,92,246,.3); background: rgba(139,92,246,.03); }
     .bias-question i { width: 18px; height: 18px; color: var(--purple); flex-shrink: 0; margin-top: 1px; }
+
+    /* Phase 5: Part headers */
+    .part-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .part-badge {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .part-badge.improve { background: rgba(16,185,129,.15); color: var(--accent); }
+    .part-badge.control { background: rgba(59,130,246,.15); color: var(--brand); }
+    .part-header h3 { margin: 0; font-size: 16px; text-transform: none; letter-spacing: normal; color: var(--text); }
+
+    /* Documentation fields */
+    .doc-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .doc-field {
+      padding: 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      border-left: 3px solid var(--accent);
+    }
+    .doc-field h4 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .doc-field h4 i { width: 14px; height: 14px; color: var(--accent); }
+    .doc-field p { margin: 0; font-size: 12px; color: var(--muted); }
+
+    /* Alert cards */
+    .alert-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .alert-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .alert-card.yellow {
+      background: rgba(245,158,11,.08);
+      border: 1px solid rgba(245,158,11,.2);
+    }
+    .alert-card.red {
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.2);
+    }
+    .alert-card.pattern {
+      background: rgba(139,92,246,.08);
+      border: 1px solid rgba(139,92,246,.2);
+    }
+    .alert-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .alert-card.yellow .alert-indicator { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+    .alert-card.red .alert-indicator { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+    .alert-card.pattern .alert-indicator { background: var(--purple); box-shadow: 0 0 8px var(--purple); }
+    .alert-card strong { display: block; margin-bottom: 2px; }
+    .alert-card.yellow strong { color: var(--amber); }
+    .alert-card.red strong { color: var(--danger); }
+    .alert-card.pattern strong { color: var(--purple); }
+    .alert-card span { color: var(--muted); }
+
+    /* Case study card */
+    .case-study {
+      background: linear-gradient(135deg, rgba(16,185,129,.06), rgba(6,182,212,.03));
+      border: 1px solid rgba(16,185,129,.15);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .case-study-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: rgba(16,185,129,.08);
+      border-bottom: 1px solid rgba(16,185,129,.1);
+    }
+    .case-study-header i { width: 20px; height: 20px; color: var(--accent); }
+    .case-study-header h3 { margin: 0; color: var(--accent); font-size: 14px; }
+    .case-study-body { padding: 20px; }
+    .case-study-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .case-study-item:last-child { border-bottom: none; }
+    .case-study-item strong { min-width: 120px; color: var(--text); flex-shrink: 0; }
+    .case-study-item span { color: var(--muted); }
+
+    /* Control plan elements */
+    .control-elements {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .control-element {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .control-element i { width: 18px; height: 18px; color: var(--brand); flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -2541,82 +2676,136 @@
       `,
       
       phase5: () => `
-        <div class="callout info">Use the <a href="#decisionTemplate" onclick="navigateTo('decisionTemplate')" style="color:var(--brand)">Decision Template Generator</a> to create professional documentation. This phase combines DMAIC's <strong>Improve</strong> and <strong>Control</strong> stages.</div>
+        <div class="callout"><strong>Why it matters:</strong> A decision without documentation is just an opinion. A decision without controls will regress. This phase ensures your analysis drives lasting change.</div>
+
+        <a href="#decisionTemplate" onclick="navigateTo('decisionTemplate')" class="link-card" style="margin-bottom: 20px;">
+          <div class="link-card-icon"><i data-lucide="file-text"></i></div>
+          <div class="link-card-content">
+            <strong>Decision Template Generator</strong>
+            <span>Create professional documentation combining DMAIC Improve and Control stages</span>
+          </div>
+          <div class="link-card-arrow"><i data-lucide="arrow-right"></i></div>
+        </a>
 
         <div class="card">
-          <h3>Part A: Improve — Decision Documentation</h3>
-
-          <h4>Decision Summary</h4>
-          <p>Decision, Decision-Maker, Date, Implementation Timeline</p>
-
-          <h4>Analysis Foundation</h4>
-          <p>Primary Finding, Supporting Evidence, Confidence Level (High/Medium/Low)</p>
-
-          <h4>Decision Rationale</h4>
-          <p>Why this decision? Why now? Alternatives considered?</p>
-
-          <h4>Risks and Monitoring</h4>
-          <p>Key risks, success metrics, monitoring plan, expected impact</p>
+          <div class="part-header">
+            <span class="part-badge improve">Part A</span>
+            <h3>Improve — Decision Documentation</h3>
+          </div>
+          <div class="doc-fields">
+            <div class="doc-field">
+              <h4><i data-lucide="clipboard-list"></i> Decision Summary</h4>
+              <p>Decision, Decision-Maker, Date, Implementation Timeline</p>
+            </div>
+            <div class="doc-field">
+              <h4><i data-lucide="search"></i> Analysis Foundation</h4>
+              <p>Primary Finding, Supporting Evidence, Confidence Level (High/Medium/Low)</p>
+            </div>
+            <div class="doc-field">
+              <h4><i data-lucide="help-circle"></i> Decision Rationale</h4>
+              <p>Why this decision? Why now? Alternatives considered?</p>
+            </div>
+            <div class="doc-field">
+              <h4><i data-lucide="shield-alert"></i> Risks and Monitoring</h4>
+              <p>Key risks, success metrics, monitoring plan, expected impact</p>
+            </div>
+          </div>
         </div>
 
         <div class="card">
-          <h3>Part B: Control — Sustaining the Gains</h3>
-          <p class="muted">The Control phase ensures improvements are sustained over time. Without proper controls, performance typically regresses to pre-improvement levels within 6-12 months.</p>
+          <div class="part-header">
+            <span class="part-badge control">Part B</span>
+            <h3>Control — Sustaining the Gains</h3>
+          </div>
+          <p class="muted" style="margin-bottom: 16px;">Without proper controls, performance typically regresses to pre-improvement levels within 6-12 months.</p>
 
-          <h4>Statistical Process Control (SPC)</h4>
+          <h4 style="display: flex; align-items: center; gap: 8px;"><i data-lucide="activity" style="width:16px; height:16px; color:var(--brand);"></i> Statistical Process Control (SPC)</h4>
           <p>Establish control limits to distinguish normal variation from signals requiring action:</p>
-          <table class="table" style="margin-top:12px;">
+          <table class="threshold-table" style="margin: 12px 0;">
             <thead>
               <tr><th>Element</th><th>Description</th><th>Example</th></tr>
             </thead>
             <tbody>
-              <tr><td><strong>UCL</strong></td><td>Upper Control Limit (mean + 3σ)</td><td>TAT: 28 days</td></tr>
-              <tr><td><strong>Target</strong></td><td>Process mean / goal</td><td>TAT: 23 days</td></tr>
-              <tr><td><strong>LCL</strong></td><td>Lower Control Limit (mean - 3σ)</td><td>TAT: 18 days</td></tr>
+              <tr><td><strong class="threshold-action">UCL</strong></td><td>Upper Control Limit (mean + 3σ)</td><td>TAT: 28 days</td></tr>
+              <tr><td><strong class="threshold-normal">Target</strong></td><td>Process mean / goal</td><td>TAT: 23 days</td></tr>
+              <tr><td><strong class="threshold-action">LCL</strong></td><td>Lower Control Limit (mean - 3σ)</td><td>TAT: 18 days</td></tr>
             </tbody>
           </table>
-          <p class="form-hint" style="margin-top:8px;">Note: For metrics where lower is worse (like accuracy), LCL becomes your alert threshold.</p>
+          <p class="muted" style="font-size: 12px;">Note: For metrics where lower is worse (like accuracy), LCL becomes your alert threshold.</p>
 
-          <h4>Response Plan (OCAP)</h4>
+          <h4 style="display: flex; align-items: center; gap: 8px; margin-top: 20px;"><i data-lucide="bell-ring" style="width:16px; height:16px; color:var(--amber);"></i> Response Plan (OCAP)</h4>
           <p>Define Out-of-Control Action Plan triggers:</p>
-          <ul>
-            <li><strong>Yellow Alert:</strong> One data point beyond 2σ → Monitor closely, investigate if persists</li>
-            <li><strong>Red Alert:</strong> One point beyond 3σ OR two consecutive points beyond 2σ → Immediate investigation required</li>
-            <li><strong>Pattern Alert:</strong> 7+ consecutive points trending same direction → Process shift, investigate root cause</li>
-          </ul>
+          <div class="alert-grid">
+            <div class="alert-card yellow">
+              <div class="alert-indicator"></div>
+              <div>
+                <strong>Yellow Alert</strong>
+                <span>One data point beyond 2σ → Monitor closely, investigate if persists</span>
+              </div>
+            </div>
+            <div class="alert-card red">
+              <div class="alert-indicator"></div>
+              <div>
+                <strong>Red Alert</strong>
+                <span>One point beyond 3σ OR two consecutive points beyond 2σ → Immediate investigation required</span>
+              </div>
+            </div>
+            <div class="alert-card pattern">
+              <div class="alert-indicator"></div>
+              <div>
+                <strong>Pattern Alert</strong>
+                <span>7+ consecutive points trending same direction → Process shift, investigate root cause</span>
+              </div>
+            </div>
+          </div>
 
-          <h4>Control Plan Elements</h4>
-          <ul>
-            <li><strong>What:</strong> Specific metric(s) to monitor</li>
-            <li><strong>Who:</strong> Owner responsible for monitoring</li>
-            <li><strong>When:</strong> Frequency of measurement (daily, weekly, monthly)</li>
-            <li><strong>How:</strong> Data source and collection method</li>
-            <li><strong>Response:</strong> Escalation path when out of control</li>
-          </ul>
+          <h4 style="display: flex; align-items: center; gap: 8px; margin-top: 20px;"><i data-lucide="list-checks" style="width:16px; height:16px; color:var(--brand);"></i> Control Plan Elements</h4>
+          <div class="control-elements">
+            <div class="control-element"><i data-lucide="target"></i> <strong>What:</strong> Metric(s)</div>
+            <div class="control-element"><i data-lucide="user"></i> <strong>Who:</strong> Owner</div>
+            <div class="control-element"><i data-lucide="calendar"></i> <strong>When:</strong> Frequency</div>
+            <div class="control-element"><i data-lucide="database"></i> <strong>How:</strong> Data source</div>
+            <div class="control-element"><i data-lucide="arrow-up-right"></i> <strong>Response:</strong> Escalation</div>
+          </div>
         </div>
 
-        <div class="card">
-          <h3>Example: Staffing Decision with Control Plan</h3>
-          <ul>
-            <li><strong>Decision:</strong> Add 2 FTE specialists to STD team effective December 1, 2025</li>
-            <li><strong>Primary Finding:</strong> Capacity insufficient for sustained growth; TAT trending toward SLA threshold</li>
-            <li><strong>Evidence:</strong> Claims per specialist: 195 → 212 (8.7% ↑), TAT: 23.2 → 26.8 days, Utilization: 94%</li>
-            <li><strong>Expected Impact:</strong> TAT back to 23–24 days by Feb 2026</li>
-          </ul>
-          <h4 style="margin-top:16px;">Control Plan</h4>
-          <table class="table">
-            <thead>
-              <tr><th>Metric</th><th>Target</th><th>UCL</th><th>Owner</th><th>Frequency</th><th>Response if OOC</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>TAT (days)</td><td>23</td><td>28</td><td>Ops Manager</td><td>Weekly</td><td>Escalate to Director; run 5 Whys</td></tr>
-              <tr><td>Claims/Specialist</td><td>195</td><td>210</td><td>Team Lead</td><td>Weekly</td><td>Review assignments; assess temp help</td></tr>
-              <tr><td>Utilization %</td><td>85%</td><td>92%</td><td>Ops Manager</td><td>Monthly</td><td>Capacity planning review</td></tr>
-            </tbody>
-          </table>
+        <div class="case-study">
+          <div class="case-study-header">
+            <i data-lucide="lightbulb"></i>
+            <h3>Example: Staffing Decision with Control Plan</h3>
+          </div>
+          <div class="case-study-body">
+            <div class="case-study-item">
+              <strong>Decision</strong>
+              <span>Add 2 FTE specialists to STD team effective December 1, 2025</span>
+            </div>
+            <div class="case-study-item">
+              <strong>Primary Finding</strong>
+              <span>Capacity insufficient for sustained growth; TAT trending toward SLA threshold</span>
+            </div>
+            <div class="case-study-item">
+              <strong>Evidence</strong>
+              <span>Claims per specialist: 195 → 212 (8.7% ↑), TAT: 23.2 → 26.8 days, Utilization: 94%</span>
+            </div>
+            <div class="case-study-item">
+              <strong>Expected Impact</strong>
+              <span>TAT back to 23–24 days by Feb 2026</span>
+            </div>
+            <h4 style="margin: 16px 0 12px; font-size: 13px;">Control Plan</h4>
+            <table class="threshold-table">
+              <thead>
+                <tr><th>Metric</th><th>Target</th><th>UCL</th><th>Owner</th><th>Frequency</th><th>Response if OOC</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>TAT (days)</td><td><span class="threshold-normal">23</span></td><td><span class="threshold-action">28</span></td><td>Ops Manager</td><td>Weekly</td><td>Escalate to Director; run 5 Whys</td></tr>
+                <tr><td>Claims/Specialist</td><td><span class="threshold-normal">195</span></td><td><span class="threshold-action">210</span></td><td>Team Lead</td><td>Weekly</td><td>Review assignments; assess temp help</td></tr>
+                <tr><td>Utilization %</td><td><span class="threshold-normal">85%</span></td><td><span class="threshold-action">92%</span></td><td>Ops Manager</td><td>Monthly</td><td>Capacity planning review</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="callout success">
+        <div class="callout success" style="margin-top: 20px;">
           <strong>SAFe Integration:</strong> Align control reviews with your sprint cadence. Include control chart status in sprint reviews and flag out-of-control signals during daily stand-ups. Use quarterly PI planning to reset baselines and celebrate sustained improvements.
         </div>
       `,
