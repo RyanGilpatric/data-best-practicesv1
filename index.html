@@ -376,10 +376,126 @@
     .traffic-light.green { background: var(--accent); color: var(--accent); }
     
     .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-    
+
     /* Animations */
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in { animation: fadeIn .3s ease; }
+
+    /* SMART Framework Styles */
+    .smart-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color .15s;
+    }
+    .smart-item:hover { border-color: rgba(59,130,246,.3); }
+    .smart-item:last-child { margin-bottom: 0; }
+    .smart-letter {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+    }
+    .smart-content { flex: 1; min-width: 0; }
+    .smart-content h4 { margin: 0 0 6px; display: flex; align-items: center; gap: 8px; }
+    .smart-content h4 i { width: 16px; height: 16px; color: var(--muted); }
+    .smart-content > p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    /* Example comparison box */
+    .example-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 600px) { .example-compare { grid-template-columns: 1fr; } }
+    .example-box {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .example-box.bad {
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.2);
+    }
+    .example-box.good {
+      background: rgba(16,185,129,.1);
+      border: 1px solid rgba(16,185,129,.2);
+    }
+    .example-box .example-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .example-box.bad .example-label { color: var(--danger); }
+    .example-box.good .example-label { color: var(--accent); }
+    .example-box .example-label i { width: 14px; height: 14px; }
+
+    /* Bias cards */
+    .bias-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .bias-card {
+      padding: 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .bias-card strong { color: var(--amber); font-size: 13px; }
+    .bias-card p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+    /* CTQ link card */
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(139,92,246,.05));
+      border: 1px solid rgba(59,130,246,.2);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .link-card:hover {
+      border-color: var(--brand);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59,130,246,.15);
+    }
+    .link-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(59,130,246,.15);
+    }
+    .link-card-icon i { width: 20px; height: 20px; color: var(--brand); }
+    .link-card-content { flex: 1; }
+    .link-card-content strong { display: block; margin-bottom: 2px; }
+    .link-card-content span { font-size: 13px; color: var(--muted); }
+    .link-card-arrow { color: var(--muted); }
+    .link-card-arrow i { width: 20px; height: 20px; }
   </style>
 </head>
 <body>
@@ -1725,32 +1841,137 @@
       
       phase1: () => `
         <div class="callout"><strong>Why it matters:</strong> Poor framing leads to wasted analysis, misleading conclusions, and bad decisions. Invest <strong>10–15 minutes</strong> here to save hours later.</div>
-        
+
         <div class="card">
           <h3>SMART Questions Framework</h3>
-          
-          <h4>Specific</h4>
-          <p>Define exactly what you're trying to decide, including the metric, threshold, timeframe, and standard.</p>
-          <p><span class="danger">Too vague:</span> "Are we staffed appropriately?"</p>
-          <p><span class="ok">✓ Better:</span> "Do we have sufficient specialists to maintain 95% claims processed within 30 days given Q4 volume patterns?"</p>
-          
-          <h4>Measurable</h4>
-          <p>Identify specific metrics before analysis: claims per specialist, average handling time, queue depth, TAT performance, utilization rate. Write these down to prevent cherry-picking favorable metrics later.</p>
-          
-          <h4>Action-Oriented</h4>
-          <p>Connect your question to a decision with consequences. If no action will result, question whether the analysis is necessary.</p>
-          
-          <h4>Relevant</h4>
-          <p>Ensure the question matters to business outcomes. Document why it matters now, who needs the answer, and the impact.</p>
-          
-          <h4>Time-Bound</h4>
-          <p>Define comparison periods explicitly. Prefer "Compare Q3 2025 to Q3 2024" over "Compare October to September" to account for seasonal patterns.</p>
+
+          <div class="smart-item">
+            <div class="smart-letter">S</div>
+            <div class="smart-content">
+              <h4><i data-lucide="crosshair"></i> Specific</h4>
+              <p>Define exactly what you're trying to decide, including the metric, threshold, timeframe, and standard.</p>
+              <div class="example-compare">
+                <div class="example-box bad">
+                  <div class="example-label"><i data-lucide="x-circle"></i> Too vague</div>
+                  "Are we staffed appropriately?"
+                </div>
+                <div class="example-box good">
+                  <div class="example-label"><i data-lucide="check-circle"></i> Better</div>
+                  "Do we have sufficient specialists to maintain 95% claims processed within 30 days given Q4 volume patterns?"
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="smart-item">
+            <div class="smart-letter">M</div>
+            <div class="smart-content">
+              <h4><i data-lucide="bar-chart-3"></i> Measurable</h4>
+              <p>Identify specific metrics before analysis. Write these down to prevent cherry-picking favorable metrics later.</p>
+              <div class="example-compare">
+                <div class="example-box bad">
+                  <div class="example-label"><i data-lucide="x-circle"></i> Too vague</div>
+                  "We'll look at performance data."
+                </div>
+                <div class="example-box good">
+                  <div class="example-label"><i data-lucide="check-circle"></i> Better</div>
+                  "We'll measure: claims per specialist, average handling time, queue depth, TAT performance, utilization rate."
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="smart-item">
+            <div class="smart-letter">A</div>
+            <div class="smart-content">
+              <h4><i data-lucide="zap"></i> Action-Oriented</h4>
+              <p>Connect your question to a decision with consequences. If no action will result, question whether the analysis is necessary.</p>
+              <div class="example-compare">
+                <div class="example-box bad">
+                  <div class="example-label"><i data-lucide="x-circle"></i> Too vague</div>
+                  "What does our claims data look like?"
+                </div>
+                <div class="example-box good">
+                  <div class="example-label"><i data-lucide="check-circle"></i> Better</div>
+                  "Should we hire 2 additional specialists or redistribute existing workload to meet SLA?"
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="smart-item">
+            <div class="smart-letter">R</div>
+            <div class="smart-content">
+              <h4><i data-lucide="compass"></i> Relevant</h4>
+              <p>Ensure the question matters to business outcomes. Document why it matters now, who needs the answer, and the impact.</p>
+              <div class="example-compare">
+                <div class="example-box bad">
+                  <div class="example-label"><i data-lucide="x-circle"></i> Too vague</div>
+                  "Interesting trend in the data."
+                </div>
+                <div class="example-box good">
+                  <div class="example-label"><i data-lucide="check-circle"></i> Better</div>
+                  "VP of Operations needs this by Friday to finalize Q1 budget. Missing SLA costs $50K/month in penalties."
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="smart-item">
+            <div class="smart-letter">T</div>
+            <div class="smart-content">
+              <h4><i data-lucide="clock"></i> Time-Bound</h4>
+              <p>Define comparison periods explicitly to account for seasonal patterns and ensure apples-to-apples comparisons.</p>
+              <div class="example-compare">
+                <div class="example-box bad">
+                  <div class="example-label"><i data-lucide="x-circle"></i> Too vague</div>
+                  "Compare October to September."
+                </div>
+                <div class="example-box good">
+                  <div class="example-label"><i data-lucide="check-circle"></i> Better</div>
+                  "Compare Q3 2025 to Q3 2024 to account for seasonal patterns."
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        
+
+        <a href="#ctqBuilder" onclick="navigateTo('ctqBuilder')" class="link-card" style="margin-bottom: 20px;">
+          <div class="link-card-icon"><i data-lucide="git-branch"></i></div>
+          <div class="link-card-content">
+            <strong>CTQ Tree Builder</strong>
+            <span>Translate Voice of Customer into Critical-to-Quality requirements before analysis</span>
+          </div>
+          <div class="link-card-arrow"><i data-lucide="arrow-right"></i></div>
+        </a>
+
         <div class="card">
           <h3>Document Before Analysis</h3>
-          <p><strong>Hypotheses:</strong> Write down what you expect to find and why.</p>
-          <p><strong>Potential Biases:</strong> Anchoring on last year's headcount, recency from difficult weeks, availability if challenging claims are top of mind, confirmation toward standard processes, sunflower bias where junior team members defer to senior leaders.</p>
+          <p><strong>Hypotheses:</strong> Write down what you expect to find and why. This creates accountability and prevents post-hoc rationalization.</p>
+
+          <h4 style="margin-top: 20px;"><i data-lucide="alert-triangle" style="width:16px; height:16px; color:var(--amber); vertical-align: middle; margin-right: 6px;"></i>Potential Biases to Watch</h4>
+          <div class="bias-grid">
+            <div class="bias-card">
+              <strong>Anchoring</strong>
+              <p>Over-relying on last year's headcount or initial numbers as reference points</p>
+            </div>
+            <div class="bias-card">
+              <strong>Recency</strong>
+              <p>Overweighting recent difficult weeks while ignoring longer-term patterns</p>
+            </div>
+            <div class="bias-card">
+              <strong>Availability</strong>
+              <p>Focusing on memorable challenging claims that come easily to mind</p>
+            </div>
+            <div class="bias-card">
+              <strong>Confirmation</strong>
+              <p>Seeking data that supports standard processes while ignoring contradictions</p>
+            </div>
+            <div class="bias-card">
+              <strong>Sunflower</strong>
+              <p>Junior team members deferring to senior leaders instead of questioning assumptions</p>
+            </div>
+          </div>
         </div>
       `,
       
