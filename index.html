@@ -2568,6 +2568,9 @@
     // ===============================
     // INTERACTIVE TOOLS - CTQ TREE BUILDER (Lean Six Sigma)
     // ===============================
+    let ctqAutoSaveTimer = null;
+    let ctqExpandedHints = new Set();
+
     function getCTQState() {
       try { return JSON.parse(localStorage.getItem('dbp-ctq-state') || '{}'); }
       catch { return {}; }
@@ -2576,87 +2579,445 @@
       localStorage.setItem('dbp-ctq-state', JSON.stringify(state));
     }
 
+    function formatCTQLastSaved(timestamp) {
+      if (!timestamp) return '';
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+
+      if (diffMins < 1) return 'just now';
+      if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+
+    function updateCTQLastSavedDisplay() {
+      const state = getCTQState();
+      const el = document.getElementById('ctq-last-saved');
+      if (el && state.lastSaved) {
+        el.textContent = `Auto-saved ${formatCTQLastSaved(state.lastSaved)}`;
+        el.style.opacity = '1';
+      }
+    }
+
+    function autoSaveCTQ() {
+      clearTimeout(ctqAutoSaveTimer);
+      ctqAutoSaveTimer = setTimeout(() => {
+        const state = {
+          voc: document.getElementById('ctq-voc')?.value || '',
+          driver1: document.getElementById('ctq-driver1')?.value || '',
+          driver2: document.getElementById('ctq-driver2')?.value || '',
+          driver3: document.getElementById('ctq-driver3')?.value || '',
+          driver4: document.getElementById('ctq-driver4')?.value || '',
+          metric1: document.getElementById('ctq-metric1')?.value || '',
+          metric2: document.getElementById('ctq-metric2')?.value || '',
+          metric3: document.getElementById('ctq-metric3')?.value || '',
+          metric4: document.getElementById('ctq-metric4')?.value || '',
+          lsl1: document.getElementById('ctq-lsl1')?.value || '',
+          lsl2: document.getElementById('ctq-lsl2')?.value || '',
+          lsl3: document.getElementById('ctq-lsl3')?.value || '',
+          lsl4: document.getElementById('ctq-lsl4')?.value || '',
+          target1: document.getElementById('ctq-target1')?.value || '',
+          target2: document.getElementById('ctq-target2')?.value || '',
+          target3: document.getElementById('ctq-target3')?.value || '',
+          target4: document.getElementById('ctq-target4')?.value || '',
+          usl1: document.getElementById('ctq-usl1')?.value || '',
+          usl2: document.getElementById('ctq-usl2')?.value || '',
+          usl3: document.getElementById('ctq-usl3')?.value || '',
+          usl4: document.getElementById('ctq-usl4')?.value || '',
+          defect: document.getElementById('ctq-defect')?.value || '',
+          lastSaved: Date.now()
+        };
+        setCTQState(state);
+        updateCTQLastSavedDisplay();
+        updateCTQVisualization();
+        updateCTQVisibility();
+        updateCTQProgress();
+      }, 800);
+    }
+
+    function updateCTQVisualization() {
+      const vocEl = document.getElementById('ctq-viz-voc');
+      const voc = document.getElementById('ctq-voc')?.value?.trim();
+      if (vocEl) vocEl.textContent = voc || 'Stakeholder need...';
+
+      for (let i = 1; i <= 4; i++) {
+        const driver = document.getElementById(`ctq-driver${i}`)?.value?.trim();
+        const metric = document.getElementById(`ctq-metric${i}`)?.value?.trim();
+        const target = document.getElementById(`ctq-target${i}`)?.value?.trim();
+        const lsl = document.getElementById(`ctq-lsl${i}`)?.value?.trim();
+        const usl = document.getElementById(`ctq-usl${i}`)?.value?.trim();
+
+        const dEl = document.getElementById(`ctq-viz-d${i}`);
+        const tEl = document.getElementById(`ctq-viz-t${i}`);
+        const branchEl = document.getElementById(`ctq-viz-branch${i}`);
+
+        if (dEl) dEl.textContent = driver || '-';
+        if (tEl) {
+          const specs = [];
+          if (metric) specs.push(`Metric: ${metric}`);
+          if (lsl) specs.push(`LSL: ${lsl}`);
+          if (target) specs.push(`Target: ${target}`);
+          if (usl) specs.push(`USL: ${usl}`);
+          tEl.textContent = specs.length > 0 ? specs.join(' | ') : 'Metric: - | Specs: -';
+        }
+
+        if (branchEl) {
+          branchEl.style.display = driver ? 'block' : 'none';
+        }
+      }
+    }
+
+    function updateCTQVisibility() {
+      // Progressive disclosure for Driver 4
+      const driver3Value = document.getElementById('ctq-driver3')?.value?.trim();
+      const driver4Container = document.getElementById('ctq-driver4-container');
+      if (driver4Container) {
+        driver4Container.style.display = driver3Value ? 'block' : 'none';
+        driver4Container.style.opacity = driver3Value ? '1' : '0';
+      }
+
+      // Progressive disclosure for spec rows
+      for (let i = 2; i <= 4; i++) {
+        const prevDriverValue = document.getElementById(`ctq-driver${i-1}`)?.value?.trim();
+        const specRow = document.getElementById(`ctq-spec-row${i}`);
+        if (specRow) {
+          specRow.style.display = prevDriverValue ? 'table-row' : 'none';
+        }
+      }
+
+      // Update spec row driver labels
+      for (let i = 1; i <= 4; i++) {
+        const driverValue = document.getElementById(`ctq-driver${i}`)?.value?.trim();
+        const labelEl = document.getElementById(`ctq-label${i}`);
+        if (labelEl) {
+          labelEl.textContent = driverValue || `Driver ${i}`;
+        }
+      }
+    }
+
+    function updateCTQProgress() {
+      const state = getCTQState();
+
+      // Calculate completion
+      const hasVOC = state.voc?.trim()?.length > 0;
+      const driverCount = [state.driver1, state.driver2, state.driver3, state.driver4]
+        .filter(d => d?.trim()?.length > 0).length;
+      const hasDrivers = driverCount >= 2;
+
+      // Check if at least one driver has full specs
+      let specsComplete = 0;
+      for (let i = 1; i <= 4; i++) {
+        const driver = state[`driver${i}`]?.trim();
+        const metric = state[`metric${i}`]?.trim();
+        const hasSpec = state[`lsl${i}`]?.trim() || state[`target${i}`]?.trim() || state[`usl${i}`]?.trim();
+        if (driver && metric && hasSpec) specsComplete++;
+      }
+      const hasSpecs = specsComplete >= 1;
+      const hasDefect = state.defect?.trim()?.length > 0;
+
+      // Update step indicators
+      const steps = [
+        { id: 'ctq-step1-status', complete: hasVOC },
+        { id: 'ctq-step2-status', complete: hasDrivers },
+        { id: 'ctq-step3-status', complete: hasSpecs },
+        { id: 'ctq-step4-status', complete: hasDefect }
+      ];
+
+      steps.forEach(step => {
+        const el = document.getElementById(step.id);
+        if (el) {
+          el.innerHTML = step.complete
+            ? '<i data-lucide="check" style="width:14px;height:14px;"></i>'
+            : '';
+          el.className = `ctq-step-status ${step.complete ? 'complete' : ''}`;
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+      });
+
+      // Update overall progress
+      const completedSteps = [hasVOC, hasDrivers, hasSpecs, hasDefect].filter(Boolean).length;
+      const progressEl = document.getElementById('ctq-progress-text');
+      if (progressEl) {
+        progressEl.textContent = `${completedSteps}/4 steps complete`;
+        progressEl.className = completedSteps === 4 ? 'ctq-progress-complete' : '';
+      }
+
+      // Update completion badge
+      const badgeEl = document.getElementById('ctq-completion-badge');
+      if (badgeEl) {
+        badgeEl.style.display = completedSteps === 4 ? 'inline-flex' : 'none';
+      }
+    }
+
+    function toggleCTQHint(hintId, event) {
+      if (event) event.stopPropagation();
+      if (ctqExpandedHints.has(hintId)) {
+        ctqExpandedHints.delete(hintId);
+      } else {
+        ctqExpandedHints.add(hintId);
+      }
+      renderView('ctqBuilder');
+    }
+
+    function renderCTQStepHeader(num, color, title, subtitle) {
+      return `
+        <div style="display:flex; align-items:flex-start; gap:12px; margin-top:${num === 1 ? '0' : '24px'}; margin-bottom:12px;">
+          <div style="
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-width:32px;
+            height:32px;
+            background:var(--${color});
+            color:white;
+            border-radius:50%;
+            font-size:14px;
+            font-weight:600;
+            position:relative;
+          ">
+            ${num}
+            <span id="ctq-step${num}-status" class="ctq-step-status"></span>
+          </div>
+          <div style="flex:1;">
+            <h4 style="margin:0; color:var(--${color});">${title}</h4>
+            <p class="muted" style="margin:4px 0 0 0; font-size:13px;">${subtitle}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCTQHint(id, title, content) {
+      const isExpanded = ctqExpandedHints.has(id);
+      return `
+        <div class="ctq-hint-toggle" onclick="toggleCTQHint('${id}', event)">
+          <i data-lucide="chevron-${isExpanded ? 'up' : 'down'}" style="width:14px;height:14px;"></i>
+          <span>${isExpanded ? 'Hide tips' : title}</span>
+        </div>
+        <div class="ctq-hint-content" style="display:${isExpanded ? 'block' : 'none'};">
+          <i data-lucide="lightbulb" style="width:14px;height:14px;color:var(--amber);flex-shrink:0;"></i>
+          <div>${content}</div>
+        </div>
+      `;
+    }
+
     function renderCTQBuilder() {
       const state = getCTQState();
-      return `
-        <div class="card tool">
-          <h3>CTQ Tree Builder</h3>
-          <p>Use this Lean Six Sigma tool to translate Voice of Customer (VOC) into measurable Critical-to-Quality (CTQ) requirements. Complete this BEFORE starting your analysis to ensure you measure what truly matters.</p>
+      const lastSavedText = state.lastSaved ? formatCTQLastSaved(state.lastSaved) : '';
+      const hasDriver3 = state.driver3?.trim()?.length > 0;
 
-          <div style="margin-top: 20px;">
-            <h4 style="margin-top:0;">Step 1: Voice of Customer (VOC)</h4>
-            <p class="muted">What is the stakeholder's need or concern in their own words?</p>
+      return `
+        <style>
+          .ctq-step-status {
+            position:absolute;
+            bottom:-2px;
+            right:-2px;
+            width:16px;
+            height:16px;
+            background:var(--panel);
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+          }
+          .ctq-step-status.complete {
+            background:var(--accent);
+            color:white;
+          }
+          .ctq-hint-toggle {
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            font-size:12px;
+            color:var(--muted);
+            cursor:pointer;
+            padding:4px 8px;
+            border-radius:4px;
+            transition: background 0.2s;
+          }
+          .ctq-hint-toggle:hover {
+            background:var(--bg);
+            color:var(--text);
+          }
+          .ctq-hint-content {
+            display:flex;
+            gap:8px;
+            background:rgba(251,191,36,.08);
+            border-left:3px solid var(--amber);
+            padding:12px;
+            border-radius:0 8px 8px 0;
+            margin-top:8px;
+            font-size:13px;
+            line-height:1.5;
+          }
+          .ctq-progress-header {
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-size:12px;
+            color:var(--muted);
+            background:var(--bg);
+            padding:6px 12px;
+            border-radius:20px;
+          }
+          .ctq-progress-complete {
+            color:var(--accent) !important;
+            font-weight:600;
+          }
+          .ctq-completion-badge {
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            background:var(--accent);
+            color:white;
+            padding:4px 10px;
+            border-radius:12px;
+            font-size:11px;
+            font-weight:600;
+            animation: ctqPulse 2s ease-in-out infinite;
+          }
+          @keyframes ctqPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,.4); }
+            50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+          }
+          .ctq-viz-branch {
+            margin-left:20px;
+            margin-top:8px;
+            border-left:3px solid var(--border);
+            padding-left:16px;
+            transition: all 0.3s ease;
+          }
+          .ctq-spec-input {
+            padding:6px 10px;
+            font-size:13px;
+          }
+          .ctq-spec-input.small {
+            width:80px;
+          }
+        </style>
+        <div class="card tool">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h3 style="margin-bottom:4px;">CTQ Tree Builder</h3>
+              <p style="margin:0;">Translate Voice of Customer (VOC) into measurable Critical-to-Quality requirements.</p>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+              <div class="ctq-progress-header">
+                <i data-lucide="check-circle" style="width:14px;height:14px;"></i>
+                <span id="ctq-progress-text">0/4 steps complete</span>
+              </div>
+              <span id="ctq-completion-badge" class="ctq-completion-badge" style="display:none;">
+                <i data-lucide="award" style="width:12px;height:12px;"></i>Ready to Export
+              </span>
+              <span id="ctq-last-saved" style="
+                font-size:11px;
+                color:var(--muted);
+                opacity:${lastSavedText ? '1' : '0'};
+                transition: opacity 0.3s ease;
+              ">${lastSavedText ? `Auto-saved ${lastSavedText}` : ''}</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px;">
+            ${renderCTQStepHeader(1, 'brand', 'Voice of Customer (VOC)', 'What is the stakeholder\'s need or concern in their own words?')}
             <div class="form-group">
               <label class="form-label">Stakeholder Need Statement</label>
-              <textarea class="form-textarea" id="ctq-voc" placeholder="e.g., 'Claims are taking too long to process' or 'We need better accuracy on complex cases'">${state.voc || ''}</textarea>
-              <p class="form-hint">Capture the raw voice of the customer without interpretation</p>
+              <textarea class="form-textarea" id="ctq-voc" placeholder="e.g., 'Claims are taking too long to process' or 'We need better accuracy on complex cases'" oninput="autoSaveCTQ()">${state.voc || ''}</textarea>
+              ${renderCTQHint('voc', 'Tips for capturing VOC',
+                '<strong>Good VOC examples:</strong><ul style="margin:8px 0 0 16px;padding:0;"><li>"Claims are taking too long to process"</li><li>"We need better accuracy on complex cases"</li><li>"Customers complain about inconsistent responses"</li></ul><strong>Avoid:</strong> Technical jargon or pre-interpreted statements. Capture raw customer language.'
+              )}
             </div>
 
-            <h4>Step 2: CTQ Drivers</h4>
-            <p class="muted">What quality characteristics would satisfy this need? (Usually 2-4 drivers)</p>
+            ${renderCTQStepHeader(2, 'brand-2', 'CTQ Drivers', 'What quality characteristics would satisfy this need? (Usually 2-4 drivers)')}
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label">Driver 1</label>
-                <input type="text" class="form-input" id="ctq-driver1" placeholder="e.g., Processing Speed" value="${state.driver1 || ''}">
+                <label class="form-label">Driver 1 <span style="color:var(--danger);">*</span></label>
+                <input type="text" class="form-input" id="ctq-driver1" placeholder="e.g., Processing Speed" value="${state.driver1 || ''}" oninput="autoSaveCTQ()">
               </div>
               <div class="form-group">
-                <label class="form-label">Driver 2</label>
-                <input type="text" class="form-input" id="ctq-driver2" placeholder="e.g., Decision Accuracy" value="${state.driver2 || ''}">
+                <label class="form-label">Driver 2 <span style="color:var(--danger);">*</span></label>
+                <input type="text" class="form-input" id="ctq-driver2" placeholder="e.g., Decision Accuracy" value="${state.driver2 || ''}" oninput="autoSaveCTQ()">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Driver 3</label>
-                <input type="text" class="form-input" id="ctq-driver3" placeholder="e.g., Communication Clarity" value="${state.driver3 || ''}">
+                <input type="text" class="form-input" id="ctq-driver3" placeholder="e.g., Communication Clarity" value="${state.driver3 || ''}" oninput="autoSaveCTQ()">
               </div>
-              <div class="form-group">
+              <div class="form-group" id="ctq-driver4-container" style="display:${hasDriver3 ? 'block' : 'none'}; opacity:${hasDriver3 ? '1' : '0'}; transition: opacity 0.3s ease;">
                 <label class="form-label">Driver 4</label>
-                <input type="text" class="form-input" id="ctq-driver4" placeholder="Optional" value="${state.driver4 || ''}">
+                <input type="text" class="form-input" id="ctq-driver4" placeholder="Optional - add if needed" value="${state.driver4 || ''}" oninput="autoSaveCTQ()">
               </div>
             </div>
+            ${renderCTQHint('drivers', 'Tips for identifying drivers',
+              '<strong>Good drivers are:</strong><ul style="margin:8px 0 0 16px;padding:0;"><li><strong>Measurable</strong> - Can be quantified (speed, accuracy, completeness)</li><li><strong>Actionable</strong> - Your team can influence them</li><li><strong>Customer-focused</strong> - Directly tied to stakeholder satisfaction</li></ul><strong>Common categories:</strong> Speed, Accuracy, Completeness, Consistency, Cost'
+            )}
 
-            <h4>Step 3: CTQ Specifications</h4>
-            <p class="muted">Define measurable specifications for each driver with Upper Spec Limit (USL) and Lower Spec Limit (LSL)</p>
-            <table class="table" style="margin-top:12px;">
-              <thead>
-                <tr><th>CTQ Driver</th><th>Metric</th><th>LSL (Min)</th><th>Target</th><th>USL (Max)</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span id="ctq-label1">Driver 1</span></td>
-                  <td><input type="text" class="form-input" id="ctq-metric1" placeholder="e.g., TAT days" value="${state.metric1 || ''}" style="padding:6px 10px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-lsl1" placeholder="e.g., -" value="${state.lsl1 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-target1" placeholder="e.g., 23" value="${state.target1 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-usl1" placeholder="e.g., 30" value="${state.usl1 || ''}" style="padding:6px 10px; width:80px;"></td>
-                </tr>
-                <tr>
-                  <td><span id="ctq-label2">Driver 2</span></td>
-                  <td><input type="text" class="form-input" id="ctq-metric2" placeholder="e.g., Accuracy %" value="${state.metric2 || ''}" style="padding:6px 10px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-lsl2" placeholder="e.g., 95%" value="${state.lsl2 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-target2" placeholder="e.g., 98%" value="${state.target2 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-usl2" placeholder="e.g., -" value="${state.usl2 || ''}" style="padding:6px 10px; width:80px;"></td>
-                </tr>
-                <tr>
-                  <td><span id="ctq-label3">Driver 3</span></td>
-                  <td><input type="text" class="form-input" id="ctq-metric3" placeholder="e.g., Response time" value="${state.metric3 || ''}" style="padding:6px 10px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-lsl3" placeholder="" value="${state.lsl3 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-target3" placeholder="" value="${state.target3 || ''}" style="padding:6px 10px; width:80px;"></td>
-                  <td><input type="text" class="form-input" id="ctq-usl3" placeholder="" value="${state.usl3 || ''}" style="padding:6px 10px; width:80px;"></td>
-                </tr>
-              </tbody>
-            </table>
+            ${renderCTQStepHeader(3, 'accent', 'CTQ Specifications', 'Define measurable specifications for each driver')}
+            <div style="margin-bottom:8px;">
+              ${renderCTQHint('specs', 'Understanding LSL, Target, and USL',
+                '<strong>Specification Limits:</strong><ul style="margin:8px 0 0 16px;padding:0;"><li><strong>LSL (Lower Spec Limit)</strong> - Minimum acceptable value (e.g., accuracy ≥95%)</li><li><strong>Target</strong> - Ideal/goal value to aim for</li><li><strong>USL (Upper Spec Limit)</strong> - Maximum acceptable value (e.g., TAT ≤30 days)</li></ul><strong>Note:</strong> Not all metrics need both LSL and USL. Use "-" for one-sided specs.'
+              )}
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="table" style="margin-top:8px;">
+                <thead>
+                  <tr>
+                    <th style="width:140px;">CTQ Driver</th>
+                    <th>Metric</th>
+                    <th style="width:90px;">LSL (Min)</th>
+                    <th style="width:90px;">Target</th>
+                    <th style="width:90px;">USL (Max)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="ctq-spec-row1">
+                    <td><span id="ctq-label1" style="font-weight:500;color:var(--brand);">${state.driver1 || 'Driver 1'}</span></td>
+                    <td><input type="text" class="form-input ctq-spec-input" id="ctq-metric1" placeholder="e.g., TAT days" value="${state.metric1 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-lsl1" placeholder="e.g., -" value="${state.lsl1 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-target1" placeholder="e.g., 23" value="${state.target1 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-usl1" placeholder="e.g., 30" value="${state.usl1 || ''}" oninput="autoSaveCTQ()"></td>
+                  </tr>
+                  <tr id="ctq-spec-row2" style="display:${state.driver1?.trim() ? 'table-row' : 'none'};">
+                    <td><span id="ctq-label2" style="font-weight:500;color:var(--brand-2);">${state.driver2 || 'Driver 2'}</span></td>
+                    <td><input type="text" class="form-input ctq-spec-input" id="ctq-metric2" placeholder="e.g., Accuracy %" value="${state.metric2 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-lsl2" placeholder="e.g., 95%" value="${state.lsl2 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-target2" placeholder="e.g., 98%" value="${state.target2 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-usl2" placeholder="e.g., -" value="${state.usl2 || ''}" oninput="autoSaveCTQ()"></td>
+                  </tr>
+                  <tr id="ctq-spec-row3" style="display:${state.driver2?.trim() ? 'table-row' : 'none'};">
+                    <td><span id="ctq-label3" style="font-weight:500;color:var(--accent);">${state.driver3 || 'Driver 3'}</span></td>
+                    <td><input type="text" class="form-input ctq-spec-input" id="ctq-metric3" placeholder="e.g., Response time" value="${state.metric3 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-lsl3" placeholder="" value="${state.lsl3 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-target3" placeholder="" value="${state.target3 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-usl3" placeholder="" value="${state.usl3 || ''}" oninput="autoSaveCTQ()"></td>
+                  </tr>
+                  <tr id="ctq-spec-row4" style="display:${state.driver3?.trim() ? 'table-row' : 'none'};">
+                    <td><span id="ctq-label4" style="font-weight:500;color:var(--amber);">${state.driver4 || 'Driver 4'}</span></td>
+                    <td><input type="text" class="form-input ctq-spec-input" id="ctq-metric4" placeholder="e.g., Cost per unit" value="${state.metric4 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-lsl4" placeholder="" value="${state.lsl4 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-target4" placeholder="" value="${state.target4 || ''}" oninput="autoSaveCTQ()"></td>
+                    <td><input type="text" class="form-input ctq-spec-input small" id="ctq-usl4" placeholder="" value="${state.usl4 || ''}" oninput="autoSaveCTQ()"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-            <h4>Step 4: Defect Definition</h4>
-            <p class="muted">What constitutes a defect? (When does output fail to meet CTQ?)</p>
+            ${renderCTQStepHeader(4, 'amber', 'Defect Definition', 'What constitutes a defect? (When does output fail to meet CTQ?)')}
             <div class="form-group">
               <label class="form-label">Defect Definition</label>
-              <textarea class="form-textarea" id="ctq-defect" placeholder="e.g., 'A defect occurs when TAT exceeds 30 days OR accuracy falls below 95%'">${state.defect || ''}</textarea>
+              <textarea class="form-textarea" id="ctq-defect" placeholder="e.g., 'A defect occurs when TAT exceeds 30 days OR accuracy falls below 95%'" oninput="autoSaveCTQ()">${state.defect || ''}</textarea>
+              ${renderCTQHint('defect', 'Tips for defining defects',
+                '<strong>A good defect definition:</strong><ul style="margin:8px 0 0 16px;padding:0;"><li>References your CTQ specifications directly</li><li>Uses clear AND/OR logic for multiple criteria</li><li>Is binary - something either is or isn\'t a defect</li></ul><strong>Template:</strong> "A defect occurs when [metric] exceeds [USL] OR falls below [LSL]"'
+              )}
             </div>
           </div>
 
           <div class="export-bar">
-            <button class="btn" onclick="saveCTQState()"><i data-lucide="save"></i>Save Progress</button>
             <button class="btn" onclick="clearCTQState()"><i data-lucide="trash-2"></i>Clear</button>
+            <button class="btn" onclick="copyCTQToClipboard()"><i data-lucide="copy"></i>Copy</button>
             <button class="btn primary" onclick="exportCTQ()"><i data-lucide="download"></i>Export CTQ Tree</button>
           </div>
         </div>
@@ -2668,64 +3029,90 @@
         <div class="card">
           <h3>CTQ Tree Visualization</h3>
           <p class="muted">Your CTQ tree flows from Voice of Customer to measurable specifications:</p>
-          <div style="background:var(--bg); border-radius:10px; padding:20px; margin-top:12px; font-family:var(--font-mono); font-size:13px;">
-            <div style="color:var(--brand);">VOC: "<span id="ctq-viz-voc">Stakeholder need...</span>"</div>
-            <div style="margin-left:20px; margin-top:8px; border-left:2px solid var(--border); padding-left:16px;">
-              <div style="color:var(--accent);">CTQ Driver: <span id="ctq-viz-d1">-</span></div>
-              <div style="margin-left:20px; color:var(--muted);">Metric: <span id="ctq-viz-m1">-</span> | Target: <span id="ctq-viz-t1">-</span></div>
+          <div style="background:var(--bg); border-radius:12px; padding:20px; margin-top:12px; font-family:var(--font-mono); font-size:13px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="background:var(--brand); color:white; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600;">VOC</span>
+              <span style="color:var(--brand); font-weight:500;">"<span id="ctq-viz-voc">${state.voc?.trim() || 'Stakeholder need...'}</span>"</span>
             </div>
-            <div style="margin-left:20px; margin-top:8px; border-left:2px solid var(--border); padding-left:16px;">
-              <div style="color:var(--accent);">CTQ Driver: <span id="ctq-viz-d2">-</span></div>
-              <div style="margin-left:20px; color:var(--muted);">Metric: <span id="ctq-viz-m2">-</span> | Target: <span id="ctq-viz-t2">-</span></div>
+
+            <div id="ctq-viz-branch1" class="ctq-viz-branch" style="border-color:var(--brand); display:${state.driver1?.trim() ? 'block' : 'none'};">
+              <div style="color:var(--brand); font-weight:500;"><i data-lucide="git-branch" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px;"></i><span id="ctq-viz-d1">${state.driver1?.trim() || '-'}</span></div>
+              <div style="margin-left:20px; color:var(--muted); font-size:12px;"><span id="ctq-viz-t1">${formatCTQVizSpecs(state, 1)}</span></div>
             </div>
-            <div style="margin-left:20px; margin-top:8px; border-left:2px solid var(--border); padding-left:16px;">
-              <div style="color:var(--accent);">CTQ Driver: <span id="ctq-viz-d3">-</span></div>
-              <div style="margin-left:20px; color:var(--muted);">Metric: <span id="ctq-viz-m3">-</span> | Target: <span id="ctq-viz-t3">-</span></div>
+
+            <div id="ctq-viz-branch2" class="ctq-viz-branch" style="border-color:var(--brand-2); display:${state.driver2?.trim() ? 'block' : 'none'};">
+              <div style="color:var(--brand-2); font-weight:500;"><i data-lucide="git-branch" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px;"></i><span id="ctq-viz-d2">${state.driver2?.trim() || '-'}</span></div>
+              <div style="margin-left:20px; color:var(--muted); font-size:12px;"><span id="ctq-viz-t2">${formatCTQVizSpecs(state, 2)}</span></div>
             </div>
+
+            <div id="ctq-viz-branch3" class="ctq-viz-branch" style="border-color:var(--accent); display:${state.driver3?.trim() ? 'block' : 'none'};">
+              <div style="color:var(--accent); font-weight:500;"><i data-lucide="git-branch" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px;"></i><span id="ctq-viz-d3">${state.driver3?.trim() || '-'}</span></div>
+              <div style="margin-left:20px; color:var(--muted); font-size:12px;"><span id="ctq-viz-t3">${formatCTQVizSpecs(state, 3)}</span></div>
+            </div>
+
+            <div id="ctq-viz-branch4" class="ctq-viz-branch" style="border-color:var(--amber); display:${state.driver4?.trim() ? 'block' : 'none'};">
+              <div style="color:var(--amber); font-weight:500;"><i data-lucide="git-branch" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px;"></i><span id="ctq-viz-d4">${state.driver4?.trim() || '-'}</span></div>
+              <div style="margin-left:20px; color:var(--muted); font-size:12px;"><span id="ctq-viz-t4">${formatCTQVizSpecs(state, 4)}</span></div>
+            </div>
+
+            ${!state.driver1?.trim() ? '<div style="color:var(--muted); font-style:italic; margin-top:12px;">Start typing above to see your CTQ tree take shape...</div>' : ''}
           </div>
         </div>
       `;
     }
 
-    function saveCTQState() {
-      const state = {
-        voc: document.getElementById('ctq-voc')?.value || '',
-        driver1: document.getElementById('ctq-driver1')?.value || '',
-        driver2: document.getElementById('ctq-driver2')?.value || '',
-        driver3: document.getElementById('ctq-driver3')?.value || '',
-        driver4: document.getElementById('ctq-driver4')?.value || '',
-        metric1: document.getElementById('ctq-metric1')?.value || '',
-        metric2: document.getElementById('ctq-metric2')?.value || '',
-        metric3: document.getElementById('ctq-metric3')?.value || '',
-        lsl1: document.getElementById('ctq-lsl1')?.value || '',
-        lsl2: document.getElementById('ctq-lsl2')?.value || '',
-        lsl3: document.getElementById('ctq-lsl3')?.value || '',
-        target1: document.getElementById('ctq-target1')?.value || '',
-        target2: document.getElementById('ctq-target2')?.value || '',
-        target3: document.getElementById('ctq-target3')?.value || '',
-        usl1: document.getElementById('ctq-usl1')?.value || '',
-        usl2: document.getElementById('ctq-usl2')?.value || '',
-        usl3: document.getElementById('ctq-usl3')?.value || '',
-        defect: document.getElementById('ctq-defect')?.value || ''
-      };
-      setCTQState(state);
-      toast('CTQ progress saved');
+    function formatCTQVizSpecs(state, num) {
+      const metric = state[`metric${num}`]?.trim();
+      const lsl = state[`lsl${num}`]?.trim();
+      const target = state[`target${num}`]?.trim();
+      const usl = state[`usl${num}`]?.trim();
+
+      if (!metric && !lsl && !target && !usl) return 'Metric: - | Specs: -';
+
+      const specs = [];
+      if (metric) specs.push(`Metric: ${metric}`);
+      if (lsl) specs.push(`LSL: ${lsl}`);
+      if (target) specs.push(`Target: ${target}`);
+      if (usl) specs.push(`USL: ${usl}`);
+
+      return specs.join(' | ');
+    }
+
+    function initCTQ() {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+      setTimeout(() => {
+        updateCTQVisibility();
+        updateCTQVisualization();
+        updateCTQProgress();
+      }, 50);
     }
 
     function clearCTQState() {
       if (confirm('Clear all CTQ data? This cannot be undone.')) {
         setCTQState({});
+        ctqExpandedHints.clear();
         renderView('ctqBuilder');
       }
     }
 
-    function exportCTQ() {
-      saveCTQState();
+    function copyCTQToClipboard() {
+      const text = generateCTQExportText();
+      navigator.clipboard.writeText(text).then(() => {
+        toast('CTQ analysis copied to clipboard');
+      }).catch(() => {
+        toast('Failed to copy to clipboard');
+      });
+    }
+
+    function generateCTQExportText() {
       const s = getCTQState();
       const date = new Date().toLocaleDateString();
+      const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
       let text = `CTQ TREE ANALYSIS\n`;
-      text += `Generated: ${date}\n`;
+      text += `Generated: ${date} at ${time}\n`;
       text += `${'='.repeat(60)}\n\n`;
       text += `VOICE OF CUSTOMER (VOC)\n`;
       text += `${'-'.repeat(40)}\n`;
@@ -2739,22 +3126,29 @@
       text += `\n`;
       text += `CTQ SPECIFICATIONS\n`;
       text += `${'-'.repeat(40)}\n`;
-      text += `Driver 1: ${s.driver1 || '-'}\n`;
-      text += `  Metric: ${s.metric1 || '-'}\n`;
-      text += `  LSL: ${s.lsl1 || '-'} | Target: ${s.target1 || '-'} | USL: ${s.usl1 || '-'}\n\n`;
-      text += `Driver 2: ${s.driver2 || '-'}\n`;
-      text += `  Metric: ${s.metric2 || '-'}\n`;
-      text += `  LSL: ${s.lsl2 || '-'} | Target: ${s.target2 || '-'} | USL: ${s.usl2 || '-'}\n\n`;
-      text += `Driver 3: ${s.driver3 || '-'}\n`;
-      text += `  Metric: ${s.metric3 || '-'}\n`;
-      text += `  LSL: ${s.lsl3 || '-'} | Target: ${s.target3 || '-'} | USL: ${s.usl3 || '-'}\n\n`;
+
+      for (let i = 1; i <= 4; i++) {
+        const driver = s[`driver${i}`];
+        if (driver) {
+          text += `Driver ${i}: ${driver}\n`;
+          text += `  Metric: ${s[`metric${i}`] || '-'}\n`;
+          text += `  LSL: ${s[`lsl${i}`] || '-'} | Target: ${s[`target${i}`] || '-'} | USL: ${s[`usl${i}`] || '-'}\n\n`;
+        }
+      }
+
       text += `DEFECT DEFINITION\n`;
       text += `${'-'.repeat(40)}\n`;
       text += `${s.defect || 'Not specified'}\n\n`;
       text += `${'='.repeat(60)}\n`;
       text += `Use these CTQ specifications to guide your Phase 1 framing.\n`;
 
+      return text;
+    }
+
+    function exportCTQ() {
+      const text = generateCTQExportText();
       downloadText(text, 'ctq-tree-analysis.txt');
+      toast('CTQ analysis exported');
     }
 
     // ===============================
@@ -4018,6 +4412,11 @@
       // Initialize calculator if on that page
       if (key === 'sampleCalc') {
         setTimeout(calculateCI, 50);
+      }
+
+      // Initialize CTQ Builder if on that page
+      if (key === 'ctqBuilder') {
+        setTimeout(initCTQ, 50);
       }
 
       // Initialize 5 Whys if on that page
