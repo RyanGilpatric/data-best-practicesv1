@@ -708,6 +708,58 @@
       flex-shrink: 0;
     }
     .principle-header h3 { margin: 0; }
+
+    /* Bias detection cards */
+    .bias-category {
+      margin-bottom: 16px;
+    }
+    .bias-category:last-child { margin-bottom: 0; }
+    .bias-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .bias-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .bias-icon i { width: 20px; height: 20px; }
+    .bias-icon.cherry { background: rgba(239,68,68,.12); }
+    .bias-icon.cherry i { color: var(--danger); }
+    .bias-icon.confirm { background: rgba(245,158,11,.12); }
+    .bias-icon.confirm i { color: var(--amber); }
+    .bias-icon.sample { background: rgba(139,92,246,.12); }
+    .bias-icon.sample i { color: var(--purple); }
+    .bias-icon.recency { background: rgba(59,130,246,.12); }
+    .bias-icon.recency i { color: var(--brand); }
+    .bias-header-content h4 { margin: 0 0 2px; font-size: 15px; }
+    .bias-header-content p { margin: 0; font-size: 12px; color: var(--muted); }
+
+    /* Bias question items */
+    .bias-questions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .bias-question {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all .15s;
+    }
+    .bias-question:hover { border-color: rgba(139,92,246,.3); background: rgba(139,92,246,.03); }
+    .bias-question i { width: 18px; height: 18px; color: var(--purple); flex-shrink: 0; margin-top: 1px; }
   </style>
 </head>
 <body>
@@ -2414,42 +2466,77 @@
       `,
       
       phase4: () => `
-        <div class="callout info">For an interactive version of this checklist with progress tracking, use the <a href="#biasChecker" onclick="navigateTo('biasChecker')" style="color:var(--brand)">Bias Self-Check Tool</a>.</div>
-        
+        <div class="callout"><strong>Why it matters:</strong> Cognitive biases are invisible to the person who has them. This checklist forces you to actively look for blind spots before they undermine your analysis.</div>
+
+        <a href="#biasChecker" onclick="navigateTo('biasChecker')" class="link-card" style="margin-bottom: 20px;">
+          <div class="link-card-icon"><i data-lucide="check-circle"></i></div>
+          <div class="link-card-content">
+            <strong>Bias Self-Check Tool</strong>
+            <span>Interactive version with progress tracking and exportable results</span>
+          </div>
+          <div class="link-card-arrow"><i data-lucide="arrow-right"></i></div>
+        </a>
+
         <div class="card">
-          <h3>Cherry-Picking Detection</h3>
-          <ul>
-            <li>Did I examine all relevant time periods or only favorable ones?</li>
-            <li>Am I reporting all key metrics or only positive performance?</li>
-            <li>Have I included data that contradicts my hypothesis?</li>
-          </ul>
-        </div>
-        
-        <div class="card">
-          <h3>Confirmation Bias Detection</h3>
-          <ul>
-            <li>Did I define my hypothesis before seeing the data?</li>
-            <li>Have I actively sought disconfirming evidence?</li>
-            <li>Have I considered alternative explanations?</li>
-          </ul>
-        </div>
-        
-        <div class="card">
-          <h3>Sample Size Bias Detection</h3>
-          <ul>
-            <li>Does my sample meet minimum thresholds?</li>
-            <li>Have I calculated confidence intervals?</li>
-            <li>Am I comparing groups with vastly different sizes?</li>
-          </ul>
-        </div>
-        
-        <div class="card">
-          <h3>Recency & Anchoring Bias</h3>
-          <ul>
-            <li>Am I overweighting recent experiences?</li>
-            <li>Am I overly influenced by historical baselines?</li>
-            <li>Have I questioned whether historical performance is appropriate?</li>
-          </ul>
+          <div class="bias-category">
+            <div class="bias-header">
+              <div class="bias-icon cherry"><i data-lucide="scissors"></i></div>
+              <div class="bias-header-content">
+                <h4>Cherry-Picking Detection</h4>
+                <p>Selectively presenting only favorable data</p>
+              </div>
+            </div>
+            <div class="bias-questions">
+              <div class="bias-question"><i data-lucide="help-circle"></i> Did I examine all relevant time periods or only favorable ones?</div>
+              <div class="bias-question"><i data-lucide="help-circle"></i> Am I reporting all key metrics or only positive performance?</div>
+              <div class="bias-question"><i data-lucide="help-circle"></i> Have I included data that contradicts my hypothesis?</div>
+            </div>
+          </div>
+
+          <div class="bias-category">
+            <div class="bias-header">
+              <div class="bias-icon confirm"><i data-lucide="thumbs-up"></i></div>
+              <div class="bias-header-content">
+                <h4>Confirmation Bias Detection</h4>
+                <p>Seeking evidence that supports existing beliefs</p>
+              </div>
+            </div>
+            <div class="bias-questions">
+              <div class="bias-question"><i data-lucide="help-circle"></i> Did I define my hypothesis before seeing the data?</div>
+              <div class="bias-question"><i data-lucide="help-circle"></i> Have I actively sought disconfirming evidence?</div>
+              <div class="bias-question"><i data-lucide="help-circle"></i> Have I considered alternative explanations?</div>
+            </div>
+          </div>
+
+          <div class="bias-category">
+            <div class="bias-header">
+              <div class="bias-icon sample"><i data-lucide="users"></i></div>
+              <div class="bias-header-content">
+                <h4>Sample Size Bias Detection</h4>
+                <p>Drawing conclusions from insufficient data</p>
+              </div>
+            </div>
+            <div class="bias-questions">
+              <div class="bias-question"><i data-lucide="help-circle"></i> Does my sample meet minimum thresholds?</div>
+              <div class="bias-question"><i data-lucide="help-circle"></i> Have I calculated confidence intervals?</div>
+              <div class="bias-question"><i data-lucide="help-circle"></i> Am I comparing groups with vastly different sizes?</div>
+            </div>
+          </div>
+
+          <div class="bias-category">
+            <div class="bias-header">
+              <div class="bias-icon recency"><i data-lucide="anchor"></i></div>
+              <div class="bias-header-content">
+                <h4>Recency & Anchoring Bias</h4>
+                <p>Overweighting recent events or initial reference points</p>
+              </div>
+            </div>
+            <div class="bias-questions">
+              <div class="bias-question"><i data-lucide="help-circle"></i> Am I overweighting recent experiences?</div>
+              <div class="bias-question"><i data-lucide="help-circle"></i> Am I overly influenced by historical baselines?</div>
+              <div class="bias-question"><i data-lucide="help-circle"></i> Have I questioned whether historical performance is appropriate?</div>
+            </div>
+          </div>
         </div>
       `,
       
