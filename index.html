@@ -596,6 +596,118 @@
     .error-card-content { flex: 1; }
     .error-card-content strong { color: var(--danger); font-size: 13px; }
     .error-card-content p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+    /* Context type cards */
+    .context-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .context-card {
+      padding: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      border-left: 3px solid var(--brand);
+      transition: border-color .15s;
+    }
+    .context-card:hover { border-color: var(--brand); }
+    .context-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .context-card-header i { width: 18px; height: 18px; color: var(--brand); }
+    .context-card-header strong { font-size: 14px; color: var(--text); }
+    .context-card p { margin: 0; font-size: 13px; color: var(--muted); font-style: italic; }
+
+    /* Threshold table */
+    .threshold-table {
+      width: 100%;
+      margin-top: 12px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .threshold-table th,
+    .threshold-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .threshold-table th {
+      background: var(--bg);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+    }
+    .threshold-table th:first-child { border-radius: 8px 0 0 0; }
+    .threshold-table th:last-child { border-radius: 0 8px 0 0; }
+    .threshold-table td { background: var(--panel); font-size: 13px; }
+    .threshold-table tr:last-child td { border-bottom: none; }
+    .threshold-table tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+    .threshold-table tr:last-child td:last-child { border-radius: 0 0 8px 0; }
+    .threshold-normal { color: var(--accent); }
+    .threshold-warning { color: var(--amber); }
+    .threshold-action { color: var(--danger); }
+
+    /* Seasonality timeline */
+    .season-timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .season-item {
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .season-item .season-month {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .season-item .season-label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .season-item.surge { border-color: rgba(239,68,68,.3); background: rgba(239,68,68,.05); }
+    .season-item.surge .season-month { color: var(--danger); }
+    .season-item.uptick { border-color: rgba(245,158,11,.3); background: rgba(245,158,11,.05); }
+    .season-item.uptick .season-month { color: var(--amber); }
+    .season-item.baseline { border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.05); }
+    .season-item.baseline .season-month { color: var(--accent); }
+    .season-item.low { border-color: rgba(59,130,246,.3); background: rgba(59,130,246,.05); }
+    .season-item.low .season-month { color: var(--brand); }
+
+    /* Numbered principle headers */
+    .principle-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .principle-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      flex-shrink: 0;
+    }
+    .principle-header h3 { margin: 0; }
   </style>
 </head>
 <body>
@@ -2161,44 +2273,144 @@
       `,
       
       phase3: () => `
-        <div class="card">
-          <p><strong>Core Goal:</strong> Not to confirm what you expected but to understand what is true.</p>
+        <div class="callout"><strong>Why it matters:</strong> Analysis without context is just numbers. Your interpretation determines whether decisions help or harm. Take time to understand what the data actually means.</div>
+
+        <div class="principle-box">
+          <div class="principle-box-icon"><i data-lucide="search"></i></div>
+          <div class="principle-box-content">
+            <strong>Core Goal</strong>
+            <p>Not to confirm what you expected, but to understand what is true.</p>
+          </div>
         </div>
-        
+
         <div class="card">
-          <h3>Principle 1: Context is Mandatory</h3>
-          <ul>
-            <li><strong>Historical:</strong> "AHT increased 10% from 28 to 30.8 minutes, the highest since Q1 2024."</li>
-            <li><strong>Benchmark:</strong> "AHT of 30.8 minutes exceeds our 28-minute target but remains within industry standard of 32 minutes."</li>
-            <li><strong>Causal:</strong> "AHT increase coincides with three new clients requiring complex medical records review."</li>
-            <li><strong>Comparative:</strong> "AHT increased 10% while claim complexity increased 15%."</li>
-          </ul>
+          <div class="principle-header">
+            <div class="principle-number">1</div>
+            <h3 style="color: var(--brand-2);">Context is Mandatory</h3>
+          </div>
+          <p class="muted" style="margin-bottom: 12px;">Every metric needs at least one of these context types to be meaningful:</p>
+          <div class="context-grid">
+            <div class="context-card">
+              <div class="context-card-header">
+                <i data-lucide="history"></i>
+                <strong>Historical</strong>
+              </div>
+              <p>"AHT increased 10% from 28 to 30.8 minutes, the highest since Q1 2024."</p>
+            </div>
+            <div class="context-card">
+              <div class="context-card-header">
+                <i data-lucide="target"></i>
+                <strong>Benchmark</strong>
+              </div>
+              <p>"AHT of 30.8 minutes exceeds our 28-minute target but remains within industry standard of 32 minutes."</p>
+            </div>
+            <div class="context-card">
+              <div class="context-card-header">
+                <i data-lucide="git-branch"></i>
+                <strong>Causal</strong>
+              </div>
+              <p>"AHT increase coincides with three new clients requiring complex medical records review."</p>
+            </div>
+            <div class="context-card">
+              <div class="context-card-header">
+                <i data-lucide="git-compare"></i>
+                <strong>Comparative</strong>
+              </div>
+              <p>"AHT increased 10% while claim complexity increased 15%."</p>
+            </div>
+          </div>
         </div>
-        
+
         <div class="card">
-          <h3>Principle 2: Statistical vs Practical Significance</h3>
+          <div class="principle-header">
+            <div class="principle-number">2</div>
+            <h3 style="color: var(--brand-2);">Statistical vs Practical Significance</h3>
+          </div>
           <p>Use the <a href="#sampleCalc" onclick="navigateTo('sampleCalc')" style="color:var(--brand)">Sample Size Calculator</a> to determine if your sample supports your conclusions.</p>
-          
-          <h4>Practical Significance Thresholds (Examples)</h4>
-          <ul>
-            <li><strong>Claims/specialist variance:</strong> ±5% normal, 10%+ requires action</li>
-            <li><strong>TAT:</strong> ±1 day may not be meaningful, 2+ days requires investigation</li>
-            <li><strong>Accuracy:</strong> Even 1-2% change can be significant given 95%+ baseline</li>
-          </ul>
+
+          <table class="threshold-table" style="margin-top: 16px;">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th><span class="threshold-normal">Normal</span></th>
+                <th><span class="threshold-warning">Investigate</span></th>
+                <th><span class="threshold-action">Action Required</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Claims/Specialist</strong></td>
+                <td><span class="threshold-normal">±5%</span></td>
+                <td><span class="threshold-warning">5-10%</span></td>
+                <td><span class="threshold-action">10%+</span></td>
+              </tr>
+              <tr>
+                <td><strong>TAT (Turnaround)</strong></td>
+                <td><span class="threshold-normal">±1 day</span></td>
+                <td><span class="threshold-warning">1-2 days</span></td>
+                <td><span class="threshold-action">2+ days</span></td>
+              </tr>
+              <tr>
+                <td><strong>Accuracy</strong></td>
+                <td><span class="threshold-normal">&lt;0.5%</span></td>
+                <td><span class="threshold-warning">0.5-1%</span></td>
+                <td><span class="threshold-action">1-2%*</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="muted" style="font-size: 12px; margin-top: 8px;">*Even small accuracy changes can be significant given 95%+ baseline</p>
         </div>
-        
+
         <div class="card">
-          <h3>Principle 3: Account for Seasonality</h3>
-          <p style="display:flex; flex-wrap:wrap; gap:6px;">
-            <code>Jan — New year surge</code>
-            <code>Mar–Apr — Spring normalization</code>
-            <code>May–Jun — Baseline</code>
-            <code>Jul–Aug — Summer uptick</code>
-            <code>Sep–Oct — Return to baseline</code>
-            <code>Nov — Holiday uptick</code>
-            <code>Dec — Year-end low</code>
-          </p>
+          <div class="principle-header">
+            <div class="principle-number">3</div>
+            <h3 style="color: var(--brand-2);">Account for Seasonality</h3>
+          </div>
+          <p class="muted" style="margin-bottom: 12px;">Understand typical patterns before attributing changes to other factors:</p>
+          <div class="season-timeline">
+            <div class="season-item surge">
+              <div class="season-month">Jan</div>
+              <div class="season-label">New year surge</div>
+            </div>
+            <div class="season-item baseline">
+              <div class="season-month">Feb</div>
+              <div class="season-label">Normalizing</div>
+            </div>
+            <div class="season-item baseline">
+              <div class="season-month">Mar–Apr</div>
+              <div class="season-label">Spring normal</div>
+            </div>
+            <div class="season-item baseline">
+              <div class="season-month">May–Jun</div>
+              <div class="season-label">Baseline</div>
+            </div>
+            <div class="season-item uptick">
+              <div class="season-month">Jul–Aug</div>
+              <div class="season-label">Summer uptick</div>
+            </div>
+            <div class="season-item baseline">
+              <div class="season-month">Sep–Oct</div>
+              <div class="season-label">Return to baseline</div>
+            </div>
+            <div class="season-item uptick">
+              <div class="season-month">Nov</div>
+              <div class="season-label">Holiday uptick</div>
+            </div>
+            <div class="season-item low">
+              <div class="season-month">Dec</div>
+              <div class="season-label">Year-end low</div>
+            </div>
+          </div>
         </div>
+
+        <a href="#challengeMode" onclick="navigateTo('challengeMode')" class="link-card">
+          <div class="link-card-icon"><i data-lucide="swords"></i></div>
+          <div class="link-card-content">
+            <strong>Challenge My Analysis</strong>
+            <span>Get devil's advocate questions to stress-test your conclusions</span>
+          </div>
+          <div class="link-card-arrow"><i data-lucide="arrow-right"></i></div>
+        </a>
       `,
       
       phase4: () => `
