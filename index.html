@@ -496,6 +496,106 @@
     .link-card-content span { font-size: 13px; color: var(--muted); }
     .link-card-arrow { color: var(--muted); }
     .link-card-arrow i { width: 20px; height: 20px; }
+
+    /* Principle callout */
+    .principle-box {
+      display: flex;
+      gap: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(16,185,129,.1), rgba(6,182,212,.05));
+      border: 1px solid rgba(16,185,129,.2);
+      border-radius: 14px;
+      margin-bottom: 20px;
+    }
+    .principle-box-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(16,185,129,.15);
+      flex-shrink: 0;
+    }
+    .principle-box-icon i { width: 24px; height: 24px; color: var(--accent); }
+    .principle-box-content { flex: 1; }
+    .principle-box-content strong { color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: .05em; }
+    .principle-box-content p { margin: 6px 0 0; }
+
+    /* Practice cards grid */
+    .practice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 12px 0 20px;
+    }
+    .practice-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: border-color .15s;
+    }
+    .practice-card:hover { border-color: rgba(59,130,246,.3); }
+    .practice-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(59,130,246,.1);
+      flex-shrink: 0;
+    }
+    .practice-card-icon i { width: 18px; height: 18px; color: var(--brand); }
+    .practice-card-content strong { display: block; font-size: 13px; margin-bottom: 4px; }
+    .practice-card-content span { font-size: 13px; color: var(--muted); }
+
+    /* Checklist with visual checkboxes */
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      transition: all .15s;
+    }
+    .checklist-item:hover { border-color: rgba(16,185,129,.3); }
+    .checklist-item i { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; }
+
+    /* Warning/Error cards */
+    .error-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .error-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(239,68,68,.06);
+      border: 1px solid rgba(239,68,68,.15);
+      border-left: 3px solid var(--danger);
+      border-radius: 0 10px 10px 0;
+    }
+    .error-card i { width: 18px; height: 18px; color: var(--danger); flex-shrink: 0; margin-top: 2px; }
+    .error-card-content { flex: 1; }
+    .error-card-content strong { color: var(--danger); font-size: 13px; }
+    .error-card-content p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -1976,37 +2076,87 @@
       `,
       
       phase2: () => `
-        <div class="card">
-          <p><strong>Key Principle:</strong> Always start with certified, governed datasets rather than creating custom extractions. These have been validated for accuracy and include proper quality controls.</p>
+        <div class="callout"><strong>Why it matters:</strong> Bad data in means bad decisions out. Taking time to verify your data sources prevents hours of rework and protects against flawed conclusions.</div>
+
+        <div class="principle-box">
+          <div class="principle-box-icon"><i data-lucide="shield-check"></i></div>
+          <div class="principle-box-content">
+            <strong>Key Principle</strong>
+            <p>Always start with certified, governed datasets rather than creating custom extractions. These have been validated for accuracy and include proper quality controls.</p>
+          </div>
         </div>
-        
+
         <div class="card">
-          <h3>Best Practices</h3>
-          
-          <h4>Use Consistent Time Periods</h4>
-          <ul>
-            <li><strong>Year-over-Year:</strong> Always compare identical periods (Q3 2025 vs Q3 2024)</li>
-            <li><strong>Minimum Period:</strong> Never analyze less than one complete month</li>
-            <li><strong>Seasonal Adjustments:</strong> Use 12-month moving averages when trending</li>
-          </ul>
-          
-          <h4>Data Extraction Checklist</h4>
-          <ul>
-            <li>Verified most recent data refresh timestamp</li>
-            <li>Documented exact filters applied</li>
-            <li>Recorded sample size</li>
-            <li>Noted data quality warnings</li>
-            <li>Saved extraction parameters</li>
-          </ul>
+          <h3>Use Consistent Time Periods</h3>
+          <div class="practice-grid">
+            <div class="practice-card">
+              <div class="practice-card-icon"><i data-lucide="calendar-check"></i></div>
+              <div class="practice-card-content">
+                <strong>Year-over-Year</strong>
+                <span>Always compare identical periods (Q3 2025 vs Q3 2024)</span>
+              </div>
+            </div>
+            <div class="practice-card">
+              <div class="practice-card-icon"><i data-lucide="calendar-range"></i></div>
+              <div class="practice-card-content">
+                <strong>Minimum Period</strong>
+                <span>Never analyze less than one complete month</span>
+              </div>
+            </div>
+            <div class="practice-card">
+              <div class="practice-card-icon"><i data-lucide="trending-up"></i></div>
+              <div class="practice-card-content">
+                <strong>Seasonal Adjustments</strong>
+                <span>Use 12-month moving averages when trending</span>
+              </div>
+            </div>
+          </div>
+
+          <h3>Data Extraction Checklist</h3>
+          <div class="checklist-grid">
+            <div class="checklist-item"><i data-lucide="square-check"></i> Verified most recent data refresh timestamp</div>
+            <div class="checklist-item"><i data-lucide="square-check"></i> Documented exact filters applied</div>
+            <div class="checklist-item"><i data-lucide="square-check"></i> Recorded sample size</div>
+            <div class="checklist-item"><i data-lucide="square-check"></i> Noted data quality warnings</div>
+            <div class="checklist-item"><i data-lucide="square-check"></i> Saved extraction parameters</div>
+          </div>
         </div>
-        
+
+        <a href="#sampleCalc" onclick="navigateTo('sampleCalc')" class="link-card" style="margin-bottom: 20px;">
+          <div class="link-card-icon"><i data-lucide="calculator"></i></div>
+          <div class="link-card-content">
+            <strong>Sample Size Calculator</strong>
+            <span>Verify your sample size is sufficient for statistically valid conclusions</span>
+          </div>
+          <div class="link-card-arrow"><i data-lucide="arrow-right"></i></div>
+        </a>
+
         <div class="card">
           <h3>Common Extraction Errors</h3>
-          <ul>
-            <li><strong>Mixing Date Fields:</strong> Be explicit about claim submission date vs triage date</li>
-            <li><strong>Ignoring Claim Status:</strong> Including pending claims can distort analysis</li>
-            <li><strong>Overlooking Client Rules:</strong> Client implementations may affect aggregate metrics</li>
-          </ul>
+          <p class="muted" style="margin-bottom: 12px;">Watch out for these frequent mistakes that can invalidate your analysis:</p>
+          <div class="error-list">
+            <div class="error-card">
+              <i data-lucide="alert-triangle"></i>
+              <div class="error-card-content">
+                <strong>Mixing Date Fields</strong>
+                <p>Be explicit about claim submission date vs triage date. Using inconsistent date fields creates false trends.</p>
+              </div>
+            </div>
+            <div class="error-card">
+              <i data-lucide="alert-triangle"></i>
+              <div class="error-card-content">
+                <strong>Ignoring Claim Status</strong>
+                <p>Including pending claims can distort analysis. Always filter to closed/completed claims unless tracking pipeline.</p>
+              </div>
+            </div>
+            <div class="error-card">
+              <i data-lucide="alert-triangle"></i>
+              <div class="error-card-content">
+                <strong>Overlooking Client Rules</strong>
+                <p>Client implementations may affect aggregate metrics. Segment by client or document known variations.</p>
+              </div>
+            </div>
+          </div>
         </div>
       `,
       
