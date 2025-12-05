@@ -895,6 +895,118 @@
       font-size: 13px;
     }
     .control-element i { width: 18px; height: 18px; color: var(--brand); flex-shrink: 0; }
+
+    /* Confidence interval visualization */
+    .ci-visual {
+      margin: 20px 0;
+      padding: 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .ci-bar-container {
+      position: relative;
+      height: 40px;
+      background: linear-gradient(90deg, rgba(239,68,68,.1), rgba(245,158,11,.1) 25%, rgba(16,185,129,.1) 50%, rgba(245,158,11,.1) 75%, rgba(239,68,68,.1));
+      border-radius: 8px;
+      margin: 16px 0;
+      overflow: hidden;
+    }
+    .ci-bar-range {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      border-radius: 8px;
+      opacity: 0.9;
+    }
+    .ci-bar-marker {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      background: white;
+      border: 3px solid var(--brand);
+      border-radius: 50%;
+      z-index: 2;
+    }
+    .ci-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .ci-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    @media (max-width: 600px) { .ci-stats { grid-template-columns: repeat(2, 1fr); } }
+    .ci-stat {
+      text-align: center;
+      padding: 12px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .ci-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--brand);
+    }
+    .ci-stat-value.lower { color: var(--amber); }
+    .ci-stat-value.upper { color: var(--amber); }
+    .ci-stat-value.observed { color: var(--accent); }
+    .ci-stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+
+    /* Assessment badges */
+    .assessment-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .assessment-badge i { width: 18px; height: 18px; }
+    .assessment-badge.excellent {
+      background: rgba(16,185,129,.12);
+      color: var(--accent);
+      border: 1px solid rgba(16,185,129,.25);
+    }
+    .assessment-badge.good {
+      background: rgba(59,130,246,.12);
+      color: var(--brand);
+      border: 1px solid rgba(59,130,246,.25);
+    }
+    .assessment-badge.moderate {
+      background: rgba(245,158,11,.12);
+      color: var(--amber);
+      border: 1px solid rgba(245,158,11,.25);
+    }
+    .assessment-badge.low {
+      background: rgba(239,68,68,.12);
+      color: var(--danger);
+      border: 1px solid rgba(239,68,68,.25);
+    }
+
+    /* Form with icons */
+    .form-label-icon {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .form-label-icon i { width: 14px; height: 14px; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -1297,23 +1409,25 @@
     // ===============================
     function renderSampleCalc() {
       return `
+        <div class="callout"><strong>Why it matters:</strong> Small samples produce wide confidence intervals that can't distinguish real effects from noise. Know your precision before drawing conclusions.</div>
+
         <div class="card tool">
-          <h3>Sample Size & Confidence Calculator</h3>
-          <p>Input your analysis parameters to calculate statistical confidence and determine if your sample is sufficient.</p>
-          
+          <h3 style="display: flex; align-items: center; gap: 10px;"><i data-lucide="calculator" style="width:20px; height:20px; color:var(--brand);"></i> Sample Size & Confidence Calculator</h3>
+          <p class="muted">Input your analysis parameters to calculate statistical confidence. Uses the Wilson score interval for accurate proportion estimates.</p>
+
           <div class="form-row" style="margin-top: 20px;">
             <div class="form-group">
-              <label class="form-label">Sample Size (n)</label>
-              <input type="number" class="form-input" id="calc-n" placeholder="e.g., 500" value="500" onchange="calculateCI()">
+              <label class="form-label form-label-icon"><i data-lucide="hash"></i> Sample Size (n)</label>
+              <input type="number" class="form-input" id="calc-n" placeholder="e.g., 500" value="500" oninput="calculateCI()">
               <p class="form-hint">Number of observations in your sample</p>
             </div>
             <div class="form-group">
-              <label class="form-label">Observed Rate (%)</label>
-              <input type="number" class="form-input" id="calc-rate" placeholder="e.g., 95" value="95" min="0" max="100" step="0.1" onchange="calculateCI()">
+              <label class="form-label form-label-icon"><i data-lucide="percent"></i> Observed Rate (%)</label>
+              <input type="number" class="form-input" id="calc-rate" placeholder="e.g., 95" value="95" min="0" max="100" step="0.1" oninput="calculateCI()">
               <p class="form-hint">Your measured percentage (0-100)</p>
             </div>
             <div class="form-group">
-              <label class="form-label">Confidence Level</label>
+              <label class="form-label form-label-icon"><i data-lucide="shield-check"></i> Confidence Level</label>
               <select class="form-select" id="calc-conf" onchange="calculateCI()">
                 <option value="1.645">90%</option>
                 <option value="1.96" selected>95%</option>
@@ -1322,26 +1436,26 @@
               <p class="form-hint">Statistical confidence level</p>
             </div>
           </div>
-          
+
           <div id="calc-results" style="margin-top: 20px;"></div>
         </div>
-        
+
         <div class="card">
-          <h3>Sample Size Minimums by Context</h3>
-          <table class="table">
+          <h3 style="display: flex; align-items: center; gap: 10px;"><i data-lucide="list-checks" style="width:18px; height:18px; color:var(--brand-2);"></i> Sample Size Minimums by Context</h3>
+          <table class="threshold-table" style="margin-top: 12px;">
             <thead>
               <tr><th>Analysis Type</th><th>Minimum Sample</th><th>Notes</th></tr>
             </thead>
             <tbody>
-              <tr><td>Claims processing metrics</td><td>100+ claims</td><td>Per specialist, per period</td></tr>
-              <tr><td>Client performance comparison</td><td>200+ claims or 3+ months</td><td>Smaller clients need longer timeframes</td></tr>
-              <tr><td>A/B testing</td><td>500+ per variant</td><td>More for small effect sizes</td></tr>
-              <tr><td>Accuracy rates (95%+ baseline)</td><td>300+ claims</td><td>High baselines need larger n</td></tr>
-              <tr><td>Return-to-work metrics</td><td>50+ completed episodes</td><td>Full episode completion required</td></tr>
+              <tr><td><strong>Claims processing metrics</strong></td><td><span class="threshold-normal">100+ claims</span></td><td>Per specialist, per period</td></tr>
+              <tr><td><strong>Client performance comparison</strong></td><td><span class="threshold-normal">200+ claims</span> or 3+ months</td><td>Smaller clients need longer timeframes</td></tr>
+              <tr><td><strong>A/B testing</strong></td><td><span class="threshold-warning">500+ per variant</span></td><td>More for small effect sizes</td></tr>
+              <tr><td><strong>Accuracy rates (95%+ baseline)</strong></td><td><span class="threshold-warning">300+ claims</span></td><td>High baselines need larger n</td></tr>
+              <tr><td><strong>Return-to-work metrics</strong></td><td><span class="threshold-normal">50+ episodes</span></td><td>Full episode completion required</td></tr>
             </tbody>
           </table>
         </div>
-        
+
         <div class="callout info">
           <strong>Rule of thumb:</strong> If your confidence interval is wider than the difference you're trying to detect, your sample is too small to draw conclusions.
         </div>
@@ -1352,58 +1466,104 @@
       const n = parseInt(document.getElementById('calc-n').value) || 0;
       const rate = parseFloat(document.getElementById('calc-rate').value) / 100 || 0;
       const z = parseFloat(document.getElementById('calc-conf').value) || 1.96;
-      
+      const confLabel = document.getElementById('calc-conf').options[document.getElementById('calc-conf').selectedIndex].text;
+
       if (n <= 0 || rate < 0 || rate > 1) {
         document.getElementById('calc-results').innerHTML = `
           <div class="callout danger">Please enter valid values: sample size > 0 and rate between 0-100%.</div>
         `;
         return;
       }
-      
+
       // Wilson score interval (more accurate for proportions)
       const p = rate;
       const q = 1 - p;
       const denominator = 1 + (z * z) / n;
       const center = (p + (z * z) / (2 * n)) / denominator;
       const margin = (z * Math.sqrt((p * q) / n + (z * z) / (4 * n * n))) / denominator;
-      
+
       const lower = Math.max(0, (center - margin) * 100);
       const upper = Math.min(100, (center + margin) * 100);
+      const observed = rate * 100;
       const width = upper - lower;
-      
-      // Standard error
-      const se = Math.sqrt((rate * (1 - rate)) / n) * 100;
-      
+
+      // Calculate bar positions (scale to 0-100 range, but show meaningful range)
+      const rangeMin = Math.max(0, lower - 10);
+      const rangeMax = Math.min(100, upper + 10);
+      const scale = 100 / (rangeMax - rangeMin);
+      const barLeft = (lower - rangeMin) * scale;
+      const barWidth = (upper - lower) * scale;
+      const markerPos = (observed - rangeMin) * scale;
+
       // Assessment
-      let assessment, assessClass;
-      if (width <= 3) { assessment = 'Excellent precision'; assessClass = 'ok'; }
-      else if (width <= 5) { assessment = 'Good precision'; assessClass = 'brand'; }
-      else if (width <= 10) { assessment = 'Moderate precision'; assessClass = 'muted'; }
-      else { assessment = 'Low precision - increase sample size'; assessClass = 'danger'; }
-      
+      let assessment, assessClass, assessIcon;
+      if (width <= 3) {
+        assessment = 'Excellent precision';
+        assessClass = 'excellent';
+        assessIcon = 'check-circle';
+      } else if (width <= 5) {
+        assessment = 'Good precision';
+        assessClass = 'good';
+        assessIcon = 'check-circle';
+      } else if (width <= 10) {
+        assessment = 'Moderate precision — consider larger sample';
+        assessClass = 'moderate';
+        assessIcon = 'alert-circle';
+      } else {
+        assessment = 'Low precision — increase sample size';
+        assessClass = 'low';
+        assessIcon = 'alert-triangle';
+      }
+
       document.getElementById('calc-results').innerHTML = `
         <div class="card result">
-          <h4 style="margin-top:0;">Results</h4>
-          <div class="result-grid">
-            <div class="result-stat">
-              <div class="stat-value">${lower.toFixed(1)}%</div>
-              <div class="stat-label">Lower Bound</div>
+          <h4 style="margin-top:0; display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="bar-chart-3" style="width:18px; height:18px; color:var(--accent);"></i>
+            Results
+          </h4>
+
+          <div class="ci-visual">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span class="muted" style="font-size: 12px;">Confidence Interval (${confLabel})</span>
+              <span style="font-size: 13px;"><strong>${lower.toFixed(1)}%</strong> — <strong>${upper.toFixed(1)}%</strong></span>
             </div>
-            <div class="result-stat">
-              <div class="stat-value">${(rate * 100).toFixed(1)}%</div>
-              <div class="stat-label">Observed Rate</div>
+            <div class="ci-bar-container">
+              <div class="ci-bar-range" style="left: ${barLeft}%; width: ${barWidth}%;"></div>
+              <div class="ci-bar-marker" style="left: ${markerPos}%;"></div>
             </div>
-            <div class="result-stat">
-              <div class="stat-value">${upper.toFixed(1)}%</div>
-              <div class="stat-label">Upper Bound</div>
-            </div>
-            <div class="result-stat">
-              <div class="stat-value">±${(width/2).toFixed(1)}%</div>
-              <div class="stat-label">Margin of Error</div>
+            <div class="ci-bar-labels">
+              <span>${rangeMin.toFixed(0)}%</span>
+              <span>Observed: ${observed.toFixed(1)}%</span>
+              <span>${rangeMax.toFixed(0)}%</span>
             </div>
           </div>
-          <p style="margin-top:16px;"><strong>Interpretation:</strong> With ${n.toLocaleString()} observations, the true rate is between <strong>${lower.toFixed(1)}%</strong> and <strong>${upper.toFixed(1)}%</strong> with the selected confidence level.</p>
-          <p><strong class="${assessClass}">Assessment: ${assessment}</strong></p>
+
+          <div class="ci-stats">
+            <div class="ci-stat">
+              <div class="ci-stat-value lower">${lower.toFixed(1)}%</div>
+              <div class="ci-stat-label">Lower Bound</div>
+            </div>
+            <div class="ci-stat">
+              <div class="ci-stat-value observed">${observed.toFixed(1)}%</div>
+              <div class="ci-stat-label">Observed Rate</div>
+            </div>
+            <div class="ci-stat">
+              <div class="ci-stat-value upper">${upper.toFixed(1)}%</div>
+              <div class="ci-stat-label">Upper Bound</div>
+            </div>
+            <div class="ci-stat">
+              <div class="ci-stat-value">±${(width/2).toFixed(1)}%</div>
+              <div class="ci-stat-label">Margin of Error</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+            <p style="margin-bottom: 12px;"><strong>Interpretation:</strong> With <strong>${n.toLocaleString()}</strong> observations at ${confLabel} confidence, the true rate is between <strong>${lower.toFixed(1)}%</strong> and <strong>${upper.toFixed(1)}%</strong>.</p>
+            <div class="assessment-badge ${assessClass}">
+              <i data-lucide="${assessIcon}"></i>
+              ${assessment}
+            </div>
+          </div>
         </div>
       `;
       renderIcons();
