@@ -1007,6 +1007,190 @@
       gap: 6px;
     }
     .form-label-icon i { width: 14px; height: 14px; color: var(--muted); }
+
+    /* Challenge Mode enhancements */
+    .intensity-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .intensity-btn {
+      flex: 1;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all .15s;
+    }
+    .intensity-btn:hover { border-color: var(--brand); }
+    .intensity-btn.active {
+      border-color: var(--brand);
+      background: rgba(59,130,246,.1);
+    }
+    .intensity-btn .intensity-icon { font-size: 20px; margin-bottom: 4px; }
+    .intensity-btn .intensity-label { font-weight: 600; font-size: 13px; }
+    .intensity-btn .intensity-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .challenge-progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    .challenge-progress-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .challenge-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      border-radius: 4px;
+      transition: width .3s ease;
+    }
+    .challenge-progress-text {
+      font-size: 13px;
+      font-weight: 600;
+      min-width: 80px;
+      text-align: right;
+    }
+
+    .challenge-card {
+      padding: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      transition: all .15s;
+    }
+    .challenge-card:hover { border-color: rgba(139,92,246,.3); }
+    .challenge-card.answered {
+      border-color: rgba(16,185,129,.3);
+      background: rgba(16,185,129,.03);
+    }
+    .challenge-card.needs-work {
+      border-color: rgba(245,158,11,.3);
+      background: rgba(245,158,11,.03);
+    }
+    .challenge-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .challenge-card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .challenge-card-icon i { width: 16px; height: 16px; }
+    .challenge-card-icon.data { background: rgba(59,130,246,.12); }
+    .challenge-card-icon.data i { color: var(--brand); }
+    .challenge-card-icon.bias { background: rgba(245,158,11,.12); }
+    .challenge-card-icon.bias i { color: var(--amber); }
+    .challenge-card-icon.logic { background: rgba(139,92,246,.12); }
+    .challenge-card-icon.logic i { color: var(--purple); }
+    .challenge-card-icon.risk { background: rgba(239,68,68,.12); }
+    .challenge-card-icon.risk i { color: var(--danger); }
+    .challenge-card-icon.context { background: rgba(6,182,212,.12); }
+    .challenge-card-icon.context i { color: var(--brand-2); }
+    .challenge-card-content { flex: 1; }
+    .challenge-card-category {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .challenge-card-question {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .challenge-card-context {
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: rgba(59,130,246,.06);
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .challenge-card-context a { color: var(--brand); }
+    .challenge-card-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .challenge-action-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all .15s;
+    }
+    .challenge-action-btn:hover { border-color: var(--brand); }
+    .challenge-action-btn.confident {
+      background: rgba(16,185,129,.1);
+      border-color: rgba(16,185,129,.3);
+      color: var(--accent);
+    }
+    .challenge-action-btn.needs-work {
+      background: rgba(245,158,11,.1);
+      border-color: rgba(245,158,11,.3);
+      color: var(--amber);
+    }
+    .challenge-action-btn i { width: 14px; height: 14px; }
+
+    .challenge-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .challenge-summary-stat {
+      text-align: center;
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 10px;
+    }
+    .challenge-summary-stat .stat-value { font-size: 24px; font-weight: 700; }
+    .challenge-summary-stat .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; }
+    .challenge-summary-stat.confident .stat-value { color: var(--accent); }
+    .challenge-summary-stat.needs-work .stat-value { color: var(--amber); }
+    .challenge-summary-stat.unanswered .stat-value { color: var(--muted); }
+
+    .detected-patterns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .pattern-tag {
+      padding: 4px 10px;
+      background: rgba(139,92,246,.1);
+      border: 1px solid rgba(139,92,246,.2);
+      border-radius: 12px;
+      font-size: 11px;
+      color: var(--purple);
+    }
   </style>
 </head>
 <body>
@@ -1767,34 +1951,40 @@
     // ===============================
     // INTERACTIVE TOOLS - CHALLENGE MODE
     // ===============================
+    // Challenge Mode state
+    let challengeState = { responses: {}, intensity: 'thorough' };
+
     function renderChallengeMode() {
       return `
+        <div class="callout"><strong>Why it matters:</strong> Research shows that actively seeking disconfirming evidence dramatically improves decision quality. Pre-mortems catch 30% more potential problems than post-hoc reviews.</div>
+
         <div class="card tool">
-          <h3>Challenge My Analysis</h3>
-          <p>Enter your analysis parameters below. This tool will generate devil's advocate questions to stress-test your conclusions before you present them.</p>
-          
+          <h3 style="display: flex; align-items: center; gap: 10px;"><i data-lucide="swords" style="width:20px; height:20px; color:var(--purple);"></i> Challenge My Analysis</h3>
+          <p class="muted">Enter your analysis details below. This tool will parse your input and generate tailored devil's advocate questions.</p>
+
           <div style="margin-top: 20px;">
             <div class="form-group">
-              <label class="form-label">Your Conclusion</label>
-              <textarea class="form-textarea" id="chal-conclusion" placeholder="e.g., We need to hire 2 additional specialists because TAT is trending toward SLA threshold"></textarea>
+              <label class="form-label form-label-icon"><i data-lucide="message-square"></i> Your Conclusion</label>
+              <textarea class="form-textarea" id="chal-conclusion" placeholder="e.g., We need to hire 2 additional specialists because TAT increased 17% from 23 to 27 days and is trending toward our 30-day SLA threshold"></textarea>
+              <p class="form-hint">Be specific — include numbers, percentages, and action words for better tailored questions</p>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label">Key Metric(s)</label>
-                <input type="text" class="form-input" id="chal-metrics" placeholder="e.g., TAT increased from 23 to 27 days">
+                <label class="form-label form-label-icon"><i data-lucide="bar-chart-3"></i> Key Metric(s)</label>
+                <input type="text" class="form-input" id="chal-metrics" placeholder="e.g., TAT increased from 23 to 27 days (17%)">
               </div>
               <div class="form-group">
-                <label class="form-label">Time Period Analyzed</label>
+                <label class="form-label form-label-icon"><i data-lucide="calendar"></i> Time Period Analyzed</label>
                 <input type="text" class="form-input" id="chal-period" placeholder="e.g., Q3 2025 vs Q3 2024">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label">Sample Size</label>
+                <label class="form-label form-label-icon"><i data-lucide="hash"></i> Sample Size</label>
                 <input type="text" class="form-input" id="chal-sample" placeholder="e.g., 4,200 claims">
               </div>
               <div class="form-group">
-                <label class="form-label">Analysis Type</label>
+                <label class="form-label form-label-icon"><i data-lucide="folder"></i> Analysis Type</label>
                 <select class="form-select" id="chal-type">
                   <option value="staffing">Staffing/Capacity Decision</option>
                   <option value="performance">Performance Assessment</option>
@@ -1804,131 +1994,354 @@
                 </select>
               </div>
             </div>
-            
-            <button class="btn primary" style="width:100%; margin-top:16px;" onclick="generateChallenges()">
-              <i data-lucide="swords"></i>Generate Challenge Questions
+
+            <h4 style="margin: 20px 0 12px; display: flex; align-items: center; gap: 8px;"><i data-lucide="gauge" style="width:16px; height:16px; color:var(--muted);"></i> Challenge Intensity</h4>
+            <div class="intensity-selector">
+              <div class="intensity-btn" data-intensity="quick" onclick="setIntensity('quick')">
+                <div class="intensity-icon">⚡</div>
+                <div class="intensity-label">Quick Check</div>
+                <div class="intensity-desc">5 essential questions</div>
+              </div>
+              <div class="intensity-btn active" data-intensity="thorough" onclick="setIntensity('thorough')">
+                <div class="intensity-icon">🔍</div>
+                <div class="intensity-label">Thorough</div>
+                <div class="intensity-desc">9 comprehensive questions</div>
+              </div>
+              <div class="intensity-btn" data-intensity="rigorous" onclick="setIntensity('rigorous')">
+                <div class="intensity-icon">🎯</div>
+                <div class="intensity-label">Rigorous</div>
+                <div class="intensity-desc">12+ for high-stakes decisions</div>
+              </div>
+            </div>
+
+            <button class="btn primary" style="width:100%; margin-top:8px;" onclick="generateChallenges()">
+              <i data-lucide="zap"></i>Generate Tailored Challenges
             </button>
           </div>
-          
+
           <div id="challenge-results" style="margin-top: 20px;"></div>
-        </div>
-        
-        <div class="callout info">
-          <strong>Why challenge yourself?</strong> Research shows that actively seeking disconfirming evidence dramatically improves decision quality. This tool helps you anticipate objections and strengthen your analysis before stakeholders raise them.
         </div>
       `;
     }
-    
+
+    function setIntensity(level) {
+      challengeState.intensity = level;
+      document.querySelectorAll('.intensity-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.intensity === level);
+      });
+    }
+
+    function parseInputPatterns(conclusion, metrics, period, sample) {
+      const patterns = [];
+      const allText = (conclusion + ' ' + metrics + ' ' + period).toLowerCase();
+
+      // Detect numbers and percentages
+      const percentMatch = allText.match(/(\d+(?:\.\d+)?)\s*%/g);
+      const numberMatch = allText.match(/\b(\d{1,3}(?:,\d{3})*(?:\.\d+)?)\b/g);
+
+      if (percentMatch) patterns.push({ type: 'percentage', values: percentMatch, icon: 'percent' });
+      if (numberMatch && numberMatch.length > 1) patterns.push({ type: 'comparison', icon: 'git-compare' });
+
+      // Detect direction words
+      if (/increas|up|grew|higher|rise|spike/i.test(allText)) patterns.push({ type: 'increase', icon: 'trending-up' });
+      if (/decreas|down|drop|lower|fell|decline/i.test(allText)) patterns.push({ type: 'decrease', icon: 'trending-down' });
+
+      // Detect action words
+      if (/hire|add|expand|grow|scale/i.test(allText)) patterns.push({ type: 'expansion', icon: 'user-plus' });
+      if (/cut|reduce|eliminate|remove|layoff/i.test(allText)) patterns.push({ type: 'reduction', icon: 'user-minus' });
+      if (/implement|change|modify|update|switch/i.test(allText)) patterns.push({ type: 'change', icon: 'refresh-cw' });
+
+      // Detect time patterns
+      if (/q[1-4]|quarter/i.test(allText)) patterns.push({ type: 'quarterly', icon: 'calendar' });
+      if (/year|annual|yoy|y-o-y/i.test(allText)) patterns.push({ type: 'yearly', icon: 'calendar-days' });
+      if (/month|week|daily/i.test(allText)) patterns.push({ type: 'short-term', icon: 'clock' });
+
+      // Detect threshold/SLA mentions
+      if (/threshold|sla|target|goal|limit|benchmark/i.test(allText)) patterns.push({ type: 'threshold', icon: 'target' });
+
+      // Parse sample size
+      const sampleNum = sample ? parseInt(sample.replace(/,/g, '')) : 0;
+      if (sampleNum > 0 && sampleNum < 100) patterns.push({ type: 'small-sample', icon: 'alert-triangle' });
+      if (sampleNum >= 100 && sampleNum < 300) patterns.push({ type: 'moderate-sample', icon: 'info' });
+
+      return patterns;
+    }
+
     function generateChallenges() {
       const conclusion = document.getElementById('chal-conclusion').value;
       const metrics = document.getElementById('chal-metrics').value;
       const period = document.getElementById('chal-period').value;
       const sample = document.getElementById('chal-sample').value;
       const type = document.getElementById('chal-type').value;
-      
+      const intensity = challengeState.intensity;
+
       if (!conclusion) {
-        document.getElementById('challenge-results').innerHTML = `
+        document.getElementById('challenge-results').innerHTML = \`
           <div class="callout danger">Please enter your conclusion to generate challenge questions.</div>
-        `;
+        \`;
         return;
       }
-      
-      // Generate context-aware challenges based on analysis type
-      const challenges = {
+
+      // Parse input for dynamic questions
+      const patterns = parseInputPatterns(conclusion, metrics, period, sample);
+      challengeState.responses = {};
+
+      // Base challenges by type with icons and categories
+      const challengeBank = {
         staffing: [
-          { category: 'Alternative Explanations', q: 'Could the metric changes be explained by factors other than staffing (e.g., claim complexity, system issues, training gaps)?' },
-          { category: 'Seasonality', q: 'Have you compared to the same period in prior years? Is this pattern consistent historically?' },
-          { category: 'Threshold Validity', q: 'Is your performance threshold still appropriate? When was it last validated against industry benchmarks?' },
-          { category: 'Leading Indicators', q: 'Are there leading indicators that predict whether this trend will continue or reverse?' },
-          { category: 'Cost-Benefit', q: 'What is the cost of this decision vs. the cost of inaction? Have you quantified both?' },
-          { category: 'Reversibility', q: 'If this decision proves wrong, how easily can it be reversed? What is the exit strategy?' }
+          { cat: 'Alternative Explanations', icon: 'git-branch', type: 'logic', q: 'Could the metric changes be explained by factors other than staffing (e.g., claim complexity, system issues, training gaps)?', priority: 1 },
+          { cat: 'Seasonality', icon: 'calendar', type: 'context', q: 'Have you compared to the same period in prior years? Is this pattern consistent historically or an anomaly?', priority: 1 },
+          { cat: 'Threshold Validity', icon: 'target', type: 'data', q: 'Is your performance threshold still appropriate? When was it last validated against industry benchmarks?', priority: 2 },
+          { cat: 'Leading Indicators', icon: 'trending-up', type: 'logic', q: 'Are there leading indicators that predict whether this trend will continue, stabilize, or reverse?', priority: 2 },
+          { cat: 'Cost-Benefit', icon: 'calculator', type: 'risk', q: 'What is the full cost of this decision vs. the cost of inaction? Have you quantified both including hidden costs?', priority: 1 },
+          { cat: 'Reversibility', icon: 'undo', type: 'risk', q: 'If this decision proves wrong, how easily can it be reversed? What is the exit strategy?', priority: 2 },
+          { cat: 'Capacity Alternatives', icon: 'settings', type: 'logic', q: 'Have you explored alternatives like process optimization, automation, or workload redistribution before adding headcount?', priority: 3 },
+          { cat: 'Stakeholder Alignment', icon: 'users', type: 'context', q: 'Do all key stakeholders agree with this interpretation of the data? What objections have you heard?', priority: 3 }
         ],
         performance: [
-          { category: 'Cherry-Picking', q: 'Are you showing all relevant metrics, or only the ones that support your narrative?' },
-          { category: 'Comparison Validity', q: 'Are the groups/periods you\'re comparing truly equivalent? What confounding factors exist?' },
-          { category: 'Statistical Significance', q: 'Is the observed difference statistically significant, or could it be random variation?' },
-          { category: 'Practical Significance', q: 'Even if statistically significant, is the difference large enough to matter operationally?' },
-          { category: 'Data Quality', q: 'Are there known data quality issues that could affect these results?' },
-          { category: 'Survivorship Bias', q: 'Are you only analyzing successful/completed cases and missing important failure patterns?' }
+          { cat: 'Cherry-Picking', icon: 'filter', type: 'bias', q: 'Are you showing all relevant metrics, or only the ones that support your narrative?', priority: 1 },
+          { cat: 'Comparison Validity', icon: 'git-compare', type: 'data', q: 'Are the groups/periods you\'re comparing truly equivalent? What confounding factors exist?', priority: 1 },
+          { cat: 'Statistical Significance', icon: 'percent', type: 'data', q: 'Is the observed difference statistically significant, or could it be random variation?', priority: 1, tool: 'sampleCalc' },
+          { cat: 'Practical Significance', icon: 'target', type: 'logic', q: 'Even if statistically significant, is the difference large enough to matter operationally?', priority: 2 },
+          { cat: 'Data Quality', icon: 'database', type: 'data', q: 'Are there known data quality issues that could affect these results? When was data last validated?', priority: 2 },
+          { cat: 'Survivorship Bias', icon: 'eye-off', type: 'bias', q: 'Are you only analyzing successful/completed cases and missing important failure patterns?', priority: 2 },
+          { cat: 'Regression to Mean', icon: 'activity', type: 'logic', q: 'Could this result be regression to the mean rather than a real change?', priority: 3 },
+          { cat: 'Simpson\'s Paradox', icon: 'layers', type: 'data', q: 'Does this trend hold when you segment the data differently? Could aggregation be hiding opposite trends?', priority: 3 }
         ],
         process: [
-          { category: 'Root Cause', q: 'Are you addressing the root cause or just symptoms? Have you done proper root cause analysis?' },
-          { category: 'Unintended Consequences', q: 'What could go wrong? What unintended consequences might this process change create?' },
-          { category: 'Baseline Validity', q: 'Is your "before" measurement actually representative, or was it an anomaly?' },
-          { category: 'Implementation Risk', q: 'What assumptions are you making about implementation that might not hold?' },
-          { category: 'Scale Effects', q: 'Will results from a pilot or limited sample hold at full scale?' },
-          { category: 'Measurement Bias', q: 'Could the act of measuring or monitoring be influencing the results?' }
+          { cat: 'Root Cause', icon: 'search', type: 'logic', q: 'Are you addressing the root cause or just symptoms? Have you done proper root cause analysis (5 Whys)?', priority: 1, tool: 'fiveWhys' },
+          { cat: 'Unintended Consequences', icon: 'alert-triangle', type: 'risk', q: 'What could go wrong? What unintended consequences might this process change create?', priority: 1 },
+          { cat: 'Baseline Validity', icon: 'flag', type: 'data', q: 'Is your "before" measurement actually representative, or was it an anomaly?', priority: 1 },
+          { cat: 'Implementation Risk', icon: 'construction', type: 'risk', q: 'What assumptions are you making about implementation that might not hold?', priority: 2 },
+          { cat: 'Scale Effects', icon: 'maximize', type: 'logic', q: 'Will results from a pilot or limited sample hold at full scale?', priority: 2 },
+          { cat: 'Measurement Bias', icon: 'eye', type: 'bias', q: 'Could the act of measuring or monitoring be influencing the results (Hawthorne effect)?', priority: 2 },
+          { cat: 'Change Fatigue', icon: 'battery-low', type: 'context', q: 'Is your team experiencing change fatigue? Is now the right time for this change?', priority: 3 },
+          { cat: 'Dependencies', icon: 'link', type: 'risk', q: 'What other systems or processes does this change depend on or affect?', priority: 3 }
         ],
         client: [
-          { category: 'Client Context', q: 'Are you accounting for client-specific factors that might explain their unique patterns?' },
-          { category: 'Benchmark Fairness', q: 'Is the comparison benchmark fair for this client\'s specific situation?' },
-          { category: 'Selection Bias', q: 'Are you selectively presenting information that paints a particular picture?' },
-          { category: 'Trend vs. Point', q: 'Are you presenting a single point in time, or showing the full trend with context?' },
-          { category: 'Confidence Communication', q: 'Are you appropriately communicating uncertainty and confidence intervals?' },
-          { category: 'Actionability', q: 'Does your analysis lead to clear, actionable recommendations the client can implement?' }
+          { cat: 'Client Context', icon: 'building', type: 'context', q: 'Are you accounting for client-specific factors that might explain their unique patterns?', priority: 1 },
+          { cat: 'Benchmark Fairness', icon: 'scale', type: 'logic', q: 'Is the comparison benchmark fair for this client\'s specific situation and constraints?', priority: 1 },
+          { cat: 'Selection Bias', icon: 'filter', type: 'bias', q: 'Are you selectively presenting information that paints a particular picture?', priority: 1 },
+          { cat: 'Trend vs. Point', icon: 'line-chart', type: 'data', q: 'Are you presenting a single point in time, or showing the full trend with context?', priority: 2 },
+          { cat: 'Confidence Communication', icon: 'shield', type: 'data', q: 'Are you appropriately communicating uncertainty and confidence intervals?', priority: 2, tool: 'sampleCalc' },
+          { cat: 'Actionability', icon: 'play', type: 'logic', q: 'Does your analysis lead to clear, actionable recommendations the client can implement?', priority: 2 },
+          { cat: 'External Factors', icon: 'cloud', type: 'context', q: 'Are there external factors (market conditions, regulations) affecting this client differently?', priority: 3 },
+          { cat: 'Relationship Impact', icon: 'heart', type: 'risk', q: 'How will this message be received? Have you considered the relationship implications?', priority: 3 }
         ],
         forecast: [
-          { category: 'Historical Reliability', q: 'How accurate have similar forecasts been in the past? What\'s your track record?' },
-          { category: 'Assumption Testing', q: 'What key assumptions is your forecast based on? What happens if they\'re wrong?' },
-          { category: 'Scenario Planning', q: 'Have you modeled best-case, worst-case, and most-likely scenarios?' },
-          { category: 'External Factors', q: 'What external factors could invalidate your forecast that aren\'t captured in historical data?' },
-          { category: 'Overconfidence', q: 'Are your confidence intervals appropriately wide? Forecasters typically underestimate uncertainty.' },
-          { category: 'Feedback Loops', q: 'Could actions based on this forecast change the outcome itself?' }
+          { cat: 'Historical Reliability', icon: 'history', type: 'data', q: 'How accurate have similar forecasts been in the past? What\'s your track record?', priority: 1 },
+          { cat: 'Assumption Testing', icon: 'help-circle', type: 'logic', q: 'What key assumptions is your forecast based on? What happens if they\'re wrong?', priority: 1 },
+          { cat: 'Scenario Planning', icon: 'git-branch', type: 'logic', q: 'Have you modeled best-case, worst-case, and most-likely scenarios?', priority: 1 },
+          { cat: 'External Factors', icon: 'cloud', type: 'context', q: 'What external factors could invalidate your forecast that aren\'t captured in historical data?', priority: 2 },
+          { cat: 'Overconfidence', icon: 'alert-circle', type: 'bias', q: 'Are your confidence intervals appropriately wide? Forecasters typically underestimate uncertainty.', priority: 2 },
+          { cat: 'Feedback Loops', icon: 'refresh-cw', type: 'logic', q: 'Could actions based on this forecast change the outcome itself (self-fulfilling or self-defeating)?', priority: 2 },
+          { cat: 'Black Swans', icon: 'zap', type: 'risk', q: 'What rare but high-impact events could completely invalidate this forecast?', priority: 3 },
+          { cat: 'Model Limitations', icon: 'box', type: 'data', q: 'What are the known limitations of your forecasting model or methodology?', priority: 3 }
         ]
       };
-      
-      // Universal challenges that apply to all types
+
+      // Universal challenges
       const universalChallenges = [
-        { category: 'Confirmation Bias', q: 'Did you form this conclusion before or after looking at the data? Have you sought disconfirming evidence?' },
-        { category: 'Sample Size', q: `Is ${sample || 'your sample'} large enough to draw this conclusion with confidence?` },
-        { category: 'Recency Bias', q: 'Are you overweighting recent events while undervaluing longer-term patterns?' }
+        { cat: 'Confirmation Bias', icon: 'thumbs-up', type: 'bias', q: 'Did you form this conclusion before or after looking at the data? Have you actively sought disconfirming evidence?', priority: 1, tool: 'biasChecker' },
+        { cat: 'Sample Size', icon: 'users', type: 'data', q: \`Is \${sample || 'your sample'} large enough to draw this conclusion with confidence?\`, priority: 1, tool: 'sampleCalc' },
+        { cat: 'Recency Bias', icon: 'clock', type: 'bias', q: 'Are you overweighting recent events while undervaluing longer-term patterns?', priority: 2 }
       ];
-      
-      const typeSpecific = challenges[type] || challenges.performance;
-      const allChallenges = [...typeSpecific.slice(0, 4), ...universalChallenges, ...typeSpecific.slice(4)];
-      
-      document.getElementById('challenge-results').innerHTML = `
-        <div class="card warning">
-          <h4 style="margin-top:0;"><i data-lucide="alert-triangle" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i>Devil's Advocate Questions</h4>
-          <p class="muted">Answer each question thoroughly before presenting your analysis. If you can't answer confidently, your analysis may need more work.</p>
-          
-          <ul class="challenge-list" style="margin-top:16px;">
-            ${allChallenges.map(c => `
-              <li class="challenge-item">
-                <strong>${c.category}:</strong> ${c.q}
-              </li>
-            `).join('')}
-          </ul>
-          
-          <div class="export-bar">
-            <button class="btn" onclick="exportChallenges()"><i data-lucide="download"></i>Export Questions</button>
+
+      // Dynamic challenges based on detected patterns
+      const dynamicChallenges = [];
+
+      if (patterns.find(p => p.type === 'percentage')) {
+        dynamicChallenges.push({ cat: 'Percentage Context', icon: 'percent', type: 'data', q: 'What are the absolute numbers behind these percentages? Could small base sizes be inflating the apparent change?', priority: 1 });
+      }
+      if (patterns.find(p => p.type === 'small-sample')) {
+        dynamicChallenges.push({ cat: 'Sample Size Warning', icon: 'alert-triangle', type: 'data', q: 'Your sample size appears small. Have you calculated confidence intervals? The true value could vary significantly.', priority: 1, tool: 'sampleCalc' });
+      }
+      if (patterns.find(p => p.type === 'threshold')) {
+        dynamicChallenges.push({ cat: 'Threshold Arbitrariness', icon: 'target', type: 'logic', q: 'How was this threshold/SLA originally set? Is it still the right target, or should it be recalibrated?', priority: 2 });
+      }
+      if (patterns.find(p => p.type === 'expansion')) {
+        dynamicChallenges.push({ cat: 'Growth Sustainability', icon: 'trending-up', type: 'risk', q: 'Is this expansion sustainable long-term? What happens if conditions change and you need to scale back?', priority: 2 });
+      }
+      if (patterns.find(p => p.type === 'reduction')) {
+        dynamicChallenges.push({ cat: 'Reduction Risks', icon: 'alert-circle', type: 'risk', q: 'What capabilities or institutional knowledge might be lost? Are there non-obvious dependencies?', priority: 1 });
+      }
+      if (patterns.find(p => p.type === 'short-term')) {
+        dynamicChallenges.push({ cat: 'Short-Term Thinking', icon: 'clock', type: 'context', q: 'Is this time period long enough to establish a reliable pattern? Short windows can be misleading.', priority: 2 });
+      }
+
+      // Combine and prioritize challenges
+      const typeSpecific = challengeBank[type] || challengeBank.performance;
+      let allChallenges = [...dynamicChallenges, ...typeSpecific, ...universalChallenges];
+
+      // Sort by priority
+      allChallenges.sort((a, b) => a.priority - b.priority);
+
+      // Limit based on intensity
+      const limits = { quick: 5, thorough: 9, rigorous: 15 };
+      allChallenges = allChallenges.slice(0, limits[intensity]);
+
+      // Generate pattern tags HTML
+      const patternTags = patterns.length > 0 ? \`
+        <div style="margin-bottom: 16px;">
+          <span class="muted" style="font-size: 12px;">Detected patterns in your input:</span>
+          <div class="detected-patterns">
+            \${patterns.map(p => \`<span class="pattern-tag"><i data-lucide="\${p.icon}" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;"></i>\${p.type.replace('-', ' ')}</span>\`).join('')}
           </div>
         </div>
-      `;
+      \` : '';
+
+      document.getElementById('challenge-results').innerHTML = \`
+        <div class="card warning">
+          <h4 style="margin-top:0; display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="shield-alert" style="width:20px; height:20px; color:var(--amber);"></i>
+            Devil's Advocate Challenge (\${allChallenges.length} questions)
+          </h4>
+
+          \${patternTags}
+
+          <div class="challenge-progress">
+            <span class="muted" style="font-size: 12px;">Progress:</span>
+            <div class="challenge-progress-bar">
+              <div class="challenge-progress-fill" id="challenge-progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="challenge-progress-text" id="challenge-progress-text">0 / \${allChallenges.length}</div>
+          </div>
+
+          <div id="challenge-cards">
+            \${allChallenges.map((c, i) => \`
+              <div class="challenge-card" id="challenge-\${i}" data-index="\${i}">
+                <div class="challenge-card-header">
+                  <div class="challenge-card-icon \${c.type}">
+                    <i data-lucide="\${c.icon}"></i>
+                  </div>
+                  <div class="challenge-card-content">
+                    <div class="challenge-card-category">\${c.cat}</div>
+                    <div class="challenge-card-question">\${c.q}</div>
+                    \${c.tool ? \`<div class="challenge-card-context">💡 Use the <a href="#\${c.tool}" onclick="navigateTo('\${c.tool}')">\${getToolName(c.tool)}</a> to help answer this question.</div>\` : ''}
+                  </div>
+                </div>
+                <div class="challenge-card-actions">
+                  <button class="challenge-action-btn" onclick="markChallenge(\${i}, 'confident')">
+                    <i data-lucide="check"></i> I'm Confident
+                  </button>
+                  <button class="challenge-action-btn" onclick="markChallenge(\${i}, 'needs-work')">
+                    <i data-lucide="alert-circle"></i> Needs Work
+                  </button>
+                </div>
+              </div>
+            \`).join('')}
+          </div>
+
+          <div class="challenge-summary" id="challenge-summary" style="display: none;">
+            <div class="challenge-summary-stat confident">
+              <div class="stat-value" id="summary-confident">0</div>
+              <div class="stat-label">Confident</div>
+            </div>
+            <div class="challenge-summary-stat needs-work">
+              <div class="stat-value" id="summary-needs-work">0</div>
+              <div class="stat-label">Needs Work</div>
+            </div>
+            <div class="challenge-summary-stat unanswered">
+              <div class="stat-value" id="summary-unanswered">\${allChallenges.length}</div>
+              <div class="stat-label">Unanswered</div>
+            </div>
+          </div>
+
+          <div class="export-bar">
+            <button class="btn" onclick="exportChallenges()"><i data-lucide="download"></i>Export Worksheet</button>
+            <button class="btn" onclick="resetChallenges()"><i data-lucide="refresh-cw"></i>Reset</button>
+          </div>
+        </div>
+      \`;
       renderIcons();
+      document.getElementById('challenge-summary').style.display = 'grid';
     }
-    
+
+    function getToolName(tool) {
+      const names = {
+        sampleCalc: 'Sample Size Calculator',
+        biasChecker: 'Bias Self-Check Tool',
+        fiveWhys: '5 Whys Analysis'
+      };
+      return names[tool] || tool;
+    }
+
+    function markChallenge(index, status) {
+      challengeState.responses[index] = status;
+      const card = document.getElementById(\`challenge-\${index}\`);
+      card.classList.remove('answered', 'needs-work');
+      card.classList.add(status === 'confident' ? 'answered' : 'needs-work');
+
+      // Update buttons
+      const buttons = card.querySelectorAll('.challenge-action-btn');
+      buttons.forEach(btn => btn.classList.remove('confident', 'needs-work'));
+      const activeBtn = status === 'confident' ? buttons[0] : buttons[1];
+      activeBtn.classList.add(status);
+
+      updateChallengeProgress();
+    }
+
+    function updateChallengeProgress() {
+      const total = document.querySelectorAll('.challenge-card').length;
+      const responses = Object.values(challengeState.responses);
+      const confident = responses.filter(r => r === 'confident').length;
+      const needsWork = responses.filter(r => r === 'needs-work').length;
+      const answered = confident + needsWork;
+      const unanswered = total - answered;
+
+      const percent = Math.round((answered / total) * 100);
+      document.getElementById('challenge-progress-fill').style.width = percent + '%';
+      document.getElementById('challenge-progress-text').textContent = \`\${answered} / \${total}\`;
+
+      document.getElementById('summary-confident').textContent = confident;
+      document.getElementById('summary-needs-work').textContent = needsWork;
+      document.getElementById('summary-unanswered').textContent = unanswered;
+    }
+
+    function resetChallenges() {
+      challengeState.responses = {};
+      document.querySelectorAll('.challenge-card').forEach(card => {
+        card.classList.remove('answered', 'needs-work');
+        card.querySelectorAll('.challenge-action-btn').forEach(btn => btn.classList.remove('confident', 'needs-work'));
+      });
+      updateChallengeProgress();
+    }
+
     function exportChallenges() {
       const conclusion = document.getElementById('chal-conclusion').value;
       const metrics = document.getElementById('chal-metrics').value;
       const period = document.getElementById('chal-period').value;
       const sample = document.getElementById('chal-sample').value;
-      
-      const questions = Array.from(document.querySelectorAll('.challenge-item')).map(el => el.textContent.trim());
-      
-      let text = `ANALYSIS CHALLENGE WORKSHEET\n`;
-      text += `Generated: ${new Date().toLocaleDateString()}\n`;
-      text += `${'='.repeat(60)}\n\n`;
-      text += `CONCLUSION UNDER REVIEW:\n${conclusion || 'Not specified'}\n\n`;
-      text += `KEY METRICS: ${metrics || 'Not specified'}\n`;
-      text += `TIME PERIOD: ${period || 'Not specified'}\n`;
-      text += `SAMPLE SIZE: ${sample || 'Not specified'}\n\n`;
-      text += `${'='.repeat(60)}\n\n`;
-      text += `CHALLENGE QUESTIONS:\n\n`;
-      questions.forEach((q, i) => {
-        text += `${i + 1}. ${q}\n\n   YOUR RESPONSE:\n   _________________________________\n\n`;
+
+      const cards = document.querySelectorAll('.challenge-card');
+      const total = cards.length;
+      const confident = Object.values(challengeState.responses).filter(r => r === 'confident').length;
+      const needsWork = Object.values(challengeState.responses).filter(r => r === 'needs-work').length;
+
+      let text = \`ANALYSIS CHALLENGE WORKSHEET\n\`;
+      text += \`Generated: \${new Date().toLocaleDateString()} at \${new Date().toLocaleTimeString()}\n\`;
+      text += \`Intensity: \${challengeState.intensity.toUpperCase()}\n\`;
+      text += \`\${'='.repeat(60)}\n\n\`;
+      text += \`CONCLUSION UNDER REVIEW:\n\${conclusion || 'Not specified'}\n\n\`;
+      text += \`KEY METRICS: \${metrics || 'Not specified'}\n\`;
+      text += \`TIME PERIOD: \${period || 'Not specified'}\n\`;
+      text += \`SAMPLE SIZE: \${sample || 'Not specified'}\n\n\`;
+      text += \`\${'='.repeat(60)}\n\n\`;
+      text += \`SUMMARY: \${confident} Confident | \${needsWork} Needs Work | \${total - confident - needsWork} Unanswered\n\n\`;
+      text += \`\${'='.repeat(60)}\n\n\`;
+      text += \`CHALLENGE QUESTIONS:\n\n\`;
+
+      cards.forEach((card, i) => {
+        const category = card.querySelector('.challenge-card-category').textContent;
+        const question = card.querySelector('.challenge-card-question').textContent;
+        const status = challengeState.responses[i] || 'unanswered';
+        const statusEmoji = status === 'confident' ? '✅' : status === 'needs-work' ? '⚠️' : '⬜';
+
+        text += \`\${i + 1}. [\${statusEmoji}] \${category}\n\`;
+        text += \`   \${question}\n\n\`;
+        text += \`   YOUR RESPONSE:\n   _________________________________\n\n\`;
       });
-      
+
       downloadText(text, 'analysis-challenge-worksheet.txt');
     }
 
