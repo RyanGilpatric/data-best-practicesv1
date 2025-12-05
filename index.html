@@ -1093,6 +1093,71 @@
     }
     .form-label-icon i { width: 14px; height: 14px; color: var(--muted); }
 
+    /* Required field indicator */
+    .form-required {
+      color: var(--danger);
+      font-weight: 600;
+      margin-left: 2px;
+    }
+
+    /* Decision Template Styles */
+    .dec-section {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--border);
+    }
+    .dec-section-risks {
+      border-left-color: var(--amber);
+      background: rgba(245,158,11,.03);
+    }
+    .dec-section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 16px 0;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .dec-section-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      color: white;
+    }
+    .dec-section-icon i {
+      width: 16px;
+      height: 16px;
+    }
+    .dec-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .dec-status i { width: 14px; height: 14px; }
+    .dec-status.ok {
+      background: rgba(16,185,129,.12);
+      color: var(--accent);
+    }
+    .dec-status.brand {
+      background: rgba(59,130,246,.12);
+      color: var(--brand);
+    }
+    .dec-status.muted {
+      background: var(--bg);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
     /* Challenge Mode enhancements */
     .intensity-selector {
       display: flex;
@@ -1976,83 +2041,276 @@
     // ===============================
     // INTERACTIVE TOOLS - DECISION TEMPLATE
     // ===============================
+    // Decision Template State Management
+    let decisionAutoSaveTimer = null;
+
+    function getDecisionState() {
+      try { return JSON.parse(localStorage.getItem('dbp-decision-state') || '{}'); }
+      catch { return {}; }
+    }
+
+    function setDecisionState(state) {
+      localStorage.setItem('dbp-decision-state', JSON.stringify(state));
+    }
+
+    function formatDecisionLastSaved(timestamp) {
+      if (!timestamp) return '';
+      const diffMs = Date.now() - timestamp;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      if (diffMins < 1) return 'just now';
+      if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      return new Date(timestamp).toLocaleDateString();
+    }
+
+    function autoSaveDecision() {
+      clearTimeout(decisionAutoSaveTimer);
+      decisionAutoSaveTimer = setTimeout(() => {
+        const state = {
+          title: document.getElementById('dec-title')?.value || '',
+          maker: document.getElementById('dec-maker')?.value || '',
+          date: document.getElementById('dec-date')?.value || '',
+          timeline: document.getElementById('dec-timeline')?.value || '',
+          finding: document.getElementById('dec-finding')?.value || '',
+          evidence: document.getElementById('dec-evidence')?.value || '',
+          confidence: document.getElementById('dec-confidence')?.value || 'Medium',
+          rationale: document.getElementById('dec-rationale')?.value || '',
+          alternatives: document.getElementById('dec-alternatives')?.value || '',
+          risks: document.getElementById('dec-risks')?.value || '',
+          monitoring: document.getElementById('dec-monitoring')?.value || '',
+          impact: document.getElementById('dec-impact')?.value || '',
+          lastSaved: Date.now()
+        };
+        setDecisionState(state);
+        updateDecisionLastSaved();
+        updateDecisionProgress();
+      }, 800);
+    }
+
+    function updateDecisionLastSaved() {
+      const state = getDecisionState();
+      const el = document.getElementById('dec-last-saved');
+      if (el && state.lastSaved) {
+        el.innerHTML = `<i data-lucide="save"></i>Auto-saved ${formatDecisionLastSaved(state.lastSaved)}`;
+        el.style.opacity = '1';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    }
+
+    function updateDecisionProgress() {
+      const requiredFields = ['dec-title', 'dec-finding', 'dec-rationale', 'dec-risks'];
+      const filled = requiredFields.filter(id => document.getElementById(id)?.value?.trim()).length;
+      const total = requiredFields.length;
+      const pct = Math.round((filled / total) * 100);
+
+      const progressFill = document.getElementById('dec-progress-fill');
+      const progressText = document.getElementById('dec-progress-text');
+      const statusEl = document.getElementById('dec-status');
+
+      if (progressFill) progressFill.style.width = `${pct}%`;
+      if (progressText) progressText.textContent = `${filled}/${total} key fields`;
+
+      if (statusEl) {
+        if (pct === 100) {
+          statusEl.innerHTML = '<i data-lucide="check-circle"></i>Ready to export';
+          statusEl.className = 'dec-status ok';
+        } else if (pct >= 50) {
+          statusEl.innerHTML = '<i data-lucide="clock"></i>In progress';
+          statusEl.className = 'dec-status brand';
+        } else {
+          statusEl.innerHTML = '<i data-lucide="edit-3"></i>Getting started';
+          statusEl.className = 'dec-status muted';
+        }
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    }
+
+    function initDecision() {
+      const state = getDecisionState();
+      // Restore saved values
+      if (state.title) document.getElementById('dec-title').value = state.title;
+      if (state.maker) document.getElementById('dec-maker').value = state.maker;
+      if (state.date) document.getElementById('dec-date').value = state.date;
+      if (state.timeline) document.getElementById('dec-timeline').value = state.timeline;
+      if (state.finding) document.getElementById('dec-finding').value = state.finding;
+      if (state.evidence) document.getElementById('dec-evidence').value = state.evidence;
+      if (state.confidence) document.getElementById('dec-confidence').value = state.confidence;
+      if (state.rationale) document.getElementById('dec-rationale').value = state.rationale;
+      if (state.alternatives) document.getElementById('dec-alternatives').value = state.alternatives;
+      if (state.risks) document.getElementById('dec-risks').value = state.risks;
+      if (state.monitoring) document.getElementById('dec-monitoring').value = state.monitoring;
+      if (state.impact) document.getElementById('dec-impact').value = state.impact;
+
+      // Update UI
+      setTimeout(() => {
+        updateDecisionLastSaved();
+        updateDecisionProgress();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }, 50);
+    }
+
     function renderDecisionTemplate() {
+      const state = getDecisionState();
+      const lastSavedText = state.lastSaved ? formatDecisionLastSaved(state.lastSaved) : '';
+
+      // Calculate progress
+      const requiredFields = ['title', 'finding', 'rationale', 'risks'];
+      const filled = requiredFields.filter(f => state[f]?.trim()).length;
+      const total = requiredFields.length;
+      const pct = Math.round((filled / total) * 100);
+
+      let statusText, statusClass;
+      if (pct === 100) { statusText = '<i data-lucide="check-circle"></i>Ready to export'; statusClass = 'ok'; }
+      else if (pct >= 50) { statusText = '<i data-lucide="clock"></i>In progress'; statusClass = 'brand'; }
+      else { statusText = '<i data-lucide="edit-3"></i>Getting started'; statusClass = 'muted'; }
+
       return `
         <div class="card tool">
-          <h3>Decision Documentation Generator</h3>
-          <p>Complete this template before any significant operational decision. Export as a professional document when done.</p>
-          
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+            <div>
+              <h3 style="margin-bottom:4px;">Decision Documentation Generator</h3>
+              <p style="margin:0;">Complete this template before any significant operational decision. Export as a professional document when done.</p>
+            </div>
+            <span id="dec-last-saved" style="
+              font-size:12px;
+              color:var(--muted);
+              background:var(--bg);
+              padding:4px 10px;
+              border-radius:12px;
+              display:flex;
+              align-items:center;
+              gap:4px;
+              opacity:${lastSavedText ? '1' : '0'};
+              transition: opacity 0.3s ease;
+            ">${lastSavedText ? `<i data-lucide="save"></i>Auto-saved ${lastSavedText}` : ''}</span>
+          </div>
+
+          <!-- Progress Indicator -->
+          <div class="challenge-progress" style="margin-top:16px;">
+            <div class="challenge-progress-bar">
+              <div id="dec-progress-fill" class="challenge-progress-fill" style="width:${pct}%;"></div>
+            </div>
+            <span id="dec-progress-text" class="challenge-progress-text">${filled}/${total} key fields</span>
+            <span id="dec-status" class="dec-status ${statusClass}">${statusText}</span>
+          </div>
+
           <div style="margin-top: 20px;">
-            <h4 style="margin-top:0;">Decision Summary</h4>
-            <div class="form-row">
+            <!-- Decision Summary Section -->
+            <div class="dec-section">
+              <h4 class="dec-section-header">
+                <span class="dec-section-icon" style="background:var(--brand);"><i data-lucide="clipboard-list"></i></span>
+                Decision Summary
+              </h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label form-label-icon"><i data-lucide="tag"></i>Decision Title <span class="form-required">*</span></label>
+                  <input type="text" class="form-input" id="dec-title" placeholder="e.g., Add 2 FTE specialists to STD team" oninput="autoSaveDecision()">
+                  <p class="form-hint">A clear, action-oriented title that describes what you're deciding</p>
+                </div>
+                <div class="form-group">
+                  <label class="form-label form-label-icon"><i data-lucide="user"></i>Decision Maker</label>
+                  <input type="text" class="form-input" id="dec-maker" placeholder="Name and role" oninput="autoSaveDecision()">
+                  <p class="form-hint">Who has authority and accountability for this decision</p>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label form-label-icon"><i data-lucide="calendar"></i>Decision Date</label>
+                  <input type="date" class="form-input" id="dec-date" value="${new Date().toISOString().split('T')[0]}" onchange="autoSaveDecision()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label form-label-icon"><i data-lucide="clock"></i>Implementation Timeline</label>
+                  <input type="text" class="form-input" id="dec-timeline" placeholder="e.g., December 1, 2025" oninput="autoSaveDecision()">
+                  <p class="form-hint">When will changes take effect?</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Analysis Foundation Section -->
+            <div class="dec-section">
+              <h4 class="dec-section-header">
+                <span class="dec-section-icon" style="background:var(--accent);"><i data-lucide="microscope"></i></span>
+                Analysis Foundation
+              </h4>
               <div class="form-group">
-                <label class="form-label">Decision Title</label>
-                <input type="text" class="form-input" id="dec-title" placeholder="e.g., Add 2 FTE specialists to STD team">
+                <label class="form-label form-label-icon"><i data-lucide="lightbulb"></i>Primary Finding <span class="form-required">*</span></label>
+                <textarea class="form-textarea" id="dec-finding" placeholder="What is the main insight driving this decision?" oninput="autoSaveDecision()"></textarea>
+                <p class="form-hint">The key insight or data point that makes this decision necessary</p>
               </div>
               <div class="form-group">
-                <label class="form-label">Decision Maker</label>
-                <input type="text" class="form-input" id="dec-maker" placeholder="Name and role">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Decision Date</label>
-                <input type="date" class="form-input" id="dec-date" value="${new Date().toISOString().split('T')[0]}">
+                <label class="form-label form-label-icon"><i data-lucide="bar-chart-2"></i>Supporting Evidence</label>
+                <textarea class="form-textarea" id="dec-evidence" placeholder="List key metrics and data points (e.g., Claims per specialist: 195 → 212, TAT: 23.2 → 26.8 days)" oninput="autoSaveDecision()"></textarea>
+                <p class="form-hint">Quantitative data that supports your primary finding</p>
               </div>
               <div class="form-group">
-                <label class="form-label">Implementation Timeline</label>
-                <input type="text" class="form-input" id="dec-timeline" placeholder="e.g., December 1, 2025">
+                <label class="form-label form-label-icon"><i data-lucide="gauge"></i>Confidence Level</label>
+                <select class="form-select" id="dec-confidence" onchange="autoSaveDecision()">
+                  <option value="High">High - Strong evidence, large sample, multiple confirming sources</option>
+                  <option value="Medium" selected>Medium - Reasonable evidence with some uncertainty</option>
+                  <option value="Low">Low - Limited data, small samples, or conflicting signals</option>
+                </select>
+                <p class="form-hint">How certain are you in the analysis? Lower confidence = more monitoring needed</p>
               </div>
             </div>
-            
-            <h4>Analysis Foundation</h4>
-            <div class="form-group">
-              <label class="form-label">Primary Finding</label>
-              <textarea class="form-textarea" id="dec-finding" placeholder="What is the main insight driving this decision?"></textarea>
+
+            <!-- Decision Rationale Section -->
+            <div class="dec-section">
+              <h4 class="dec-section-header">
+                <span class="dec-section-icon" style="background:var(--brand-2);"><i data-lucide="git-branch"></i></span>
+                Decision Rationale
+              </h4>
+              <div class="form-group">
+                <label class="form-label form-label-icon"><i data-lucide="help-circle"></i>Why this decision? Why now? <span class="form-required">*</span></label>
+                <textarea class="form-textarea" id="dec-rationale" placeholder="Explain the reasoning behind this specific choice and timing" oninput="autoSaveDecision()"></textarea>
+                <p class="form-hint">Connect the evidence to the action—explain the logical chain</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label-icon"><i data-lucide="git-compare"></i>Alternatives Considered</label>
+                <textarea class="form-textarea" id="dec-alternatives" placeholder="What other options were evaluated and why were they rejected?" oninput="autoSaveDecision()"></textarea>
+                <p class="form-hint">Documenting rejected options shows due diligence and prevents relitigating later</p>
+              </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">Supporting Evidence</label>
-              <textarea class="form-textarea" id="dec-evidence" placeholder="List key metrics and data points (e.g., Claims per specialist: 195 → 212, TAT: 23.2 → 26.8 days)"></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Confidence Level</label>
-              <select class="form-select" id="dec-confidence">
-                <option value="High">High - Strong evidence, large sample, multiple confirming sources</option>
-                <option value="Medium" selected>Medium - Reasonable evidence with some uncertainty</option>
-                <option value="Low">Low - Limited data, small samples, or conflicting signals</option>
-              </select>
-            </div>
-            
-            <h4>Decision Rationale</h4>
-            <div class="form-group">
-              <label class="form-label">Why this decision? Why now?</label>
-              <textarea class="form-textarea" id="dec-rationale" placeholder="Explain the reasoning behind this specific choice and timing"></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Alternatives Considered</label>
-              <textarea class="form-textarea" id="dec-alternatives" placeholder="What other options were evaluated and why were they rejected?"></textarea>
-            </div>
-            
-            <h4>Risks & Monitoring</h4>
-            <div class="form-group">
-              <label class="form-label">Key Risks</label>
-              <textarea class="form-textarea" id="dec-risks" placeholder="What could go wrong? What assumptions might be incorrect?"></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Success Metrics & Monitoring Plan</label>
-              <textarea class="form-textarea" id="dec-monitoring" placeholder="How will you measure success? What leading indicators will you track?"></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Expected Impact</label>
-              <textarea class="form-textarea" id="dec-impact" placeholder="What outcomes do you expect? By when? (e.g., TAT back to 23-24 days by Feb 2026)"></textarea>
+
+            <!-- Risks & Monitoring Section -->
+            <div class="dec-section dec-section-risks">
+              <h4 class="dec-section-header">
+                <span class="dec-section-icon" style="background:var(--amber);"><i data-lucide="shield-alert"></i></span>
+                Risks & Monitoring
+              </h4>
+              <div class="form-group">
+                <label class="form-label form-label-icon"><i data-lucide="alert-triangle"></i>Key Risks <span class="form-required">*</span></label>
+                <textarea class="form-textarea" id="dec-risks" placeholder="What could go wrong? What assumptions might be incorrect?" oninput="autoSaveDecision()"></textarea>
+                <p class="form-hint">Identify failure modes and assumptions that need validation</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label-icon"><i data-lucide="activity"></i>Success Metrics & Monitoring Plan</label>
+                <textarea class="form-textarea" id="dec-monitoring" placeholder="How will you measure success? What leading indicators will you track?" oninput="autoSaveDecision()"></textarea>
+                <p class="form-hint">Define measurable outcomes and early warning signals</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label-icon"><i data-lucide="target"></i>Expected Impact</label>
+                <textarea class="form-textarea" id="dec-impact" placeholder="What outcomes do you expect? By when? (e.g., TAT back to 23-24 days by Feb 2026)" oninput="autoSaveDecision()"></textarea>
+                <p class="form-hint">Specific, time-bound expectations for measuring success</p>
+              </div>
             </div>
           </div>
-          
+
           <div class="export-bar">
             <button class="btn" onclick="clearDecisionForm()"><i data-lucide="trash-2"></i>Clear Form</button>
+            <button class="btn" onclick="copyDecisionToClipboard()"><i data-lucide="copy"></i>Copy</button>
             <button class="btn" onclick="exportDecisionMarkdown()"><i data-lucide="file-text"></i>Export Markdown</button>
             <button class="btn primary" onclick="exportDecisionHTML()"><i data-lucide="file-down"></i>Export Document</button>
           </div>
+        </div>
+
+        <div id="dec-callout" class="callout ${pct === 100 ? 'success' : pct >= 50 ? 'info' : ''}">
+          <strong>${pct === 100 ? '✓ Ready to export!' : pct >= 50 ? 'Making progress...' : 'Key fields needed:'}</strong>
+          ${pct === 100
+            ? 'All key fields are complete. Review your entries and export when ready.'
+            : pct >= 50
+              ? `Complete the remaining required fields (marked with <span class="form-required">*</span>) before exporting.`
+              : `Fill in the required fields: Decision Title, Primary Finding, Rationale, and Key Risks.`}
         </div>
       `;
     }
@@ -2075,15 +2333,59 @@
     }
     
     function clearDecisionForm() {
-      if (confirm('Clear all form fields? This cannot be undone.')) {
-        document.querySelectorAll('#content input, #content textarea, #content select').forEach(el => {
-          if (el.type === 'date') el.value = new Date().toISOString().split('T')[0];
-          else if (el.tagName === 'SELECT') el.selectedIndex = 1;
-          else el.value = '';
-        });
+      if (confirm('Clear all form fields and saved data? This cannot be undone.')) {
+        // Clear localStorage
+        localStorage.removeItem('dbp-decision-state');
+        // Re-render the view to reset the form
+        renderView('decisionTemplate');
       }
     }
-    
+
+    function generateDecisionText() {
+      const d = getDecisionData();
+      let text = `DECISION DOCUMENT\n`;
+      text += `${'='.repeat(60)}\n\n`;
+      text += `Title: ${d.title || 'Untitled'}\n`;
+      text += `Decision Maker: ${d.maker || 'N/A'}\n`;
+      text += `Date: ${d.date || 'N/A'}\n`;
+      text += `Implementation: ${d.timeline || 'N/A'}\n`;
+      text += `Confidence Level: ${d.confidence}\n\n`;
+      text += `${'-'.repeat(40)}\n`;
+      text += `PRIMARY FINDING\n${'-'.repeat(40)}\n`;
+      text += `${d.finding || 'Not specified'}\n\n`;
+      text += `SUPPORTING EVIDENCE\n${'-'.repeat(40)}\n`;
+      text += `${d.evidence || 'Not specified'}\n\n`;
+      text += `DECISION RATIONALE\n${'-'.repeat(40)}\n`;
+      text += `${d.rationale || 'Not specified'}\n\n`;
+      text += `ALTERNATIVES CONSIDERED\n${'-'.repeat(40)}\n`;
+      text += `${d.alternatives || 'Not specified'}\n\n`;
+      text += `KEY RISKS\n${'-'.repeat(40)}\n`;
+      text += `${d.risks || 'Not specified'}\n\n`;
+      text += `MONITORING PLAN\n${'-'.repeat(40)}\n`;
+      text += `${d.monitoring || 'Not specified'}\n\n`;
+      text += `EXPECTED IMPACT\n${'-'.repeat(40)}\n`;
+      text += `${d.impact || 'Not specified'}\n\n`;
+      text += `${'='.repeat(60)}\n`;
+      text += `Generated by Data Best Practices Framework on ${new Date().toLocaleDateString()}\n`;
+      return text;
+    }
+
+    function copyDecisionToClipboard() {
+      const text = generateDecisionText();
+      navigator.clipboard.writeText(text).then(() => {
+        toast('Decision document copied to clipboard');
+      }).catch(() => {
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        toast('Decision document copied to clipboard');
+      });
+    }
+
     function exportDecisionMarkdown() {
       const d = getDecisionData();
       let md = `# Decision Document: ${d.title || 'Untitled'}\n\n`;
@@ -4422,6 +4724,11 @@
       // Initialize 5 Whys if on that page
       if (key === 'fiveWhys') {
         setTimeout(initFiveWhys, 50);
+      }
+
+      // Initialize Decision Template if on that page
+      if (key === 'decisionTemplate') {
+        setTimeout(initDecision, 50);
       }
 
       // Re-highlight search if active
