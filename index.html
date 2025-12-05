@@ -2185,7 +2185,7 @@
         <div style="margin-bottom: 16px;">
           <span class="muted" style="font-size: 12px;">Detected patterns in your input:</span>
           <div class="detected-patterns">
-            \${patterns.map(p => `<span class="pattern-tag"><i data-lucide="\${p.icon}" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;"></i>\${p.type.replace('-', ' ')}</span>`).join('')}
+            ${patterns.map(p => `<span class="pattern-tag"><i data-lucide="${p.icon}" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;"></i>${p.type.replace('-', ' ')}</span>`).join('')}
           </div>
         </div>
       ` : '';
@@ -2194,37 +2194,37 @@
         <div class="card warning">
           <h4 style="margin-top:0; display: flex; align-items: center; gap: 8px;">
             <i data-lucide="shield-alert" style="width:20px; height:20px; color:var(--amber);"></i>
-            Devil's Advocate Challenge (\${allChallenges.length} questions)
+            Devil's Advocate Challenge (${allChallenges.length} questions)
           </h4>
 
-          \${patternTags}
+          ${patternTags}
 
           <div class="challenge-progress">
             <span class="muted" style="font-size: 12px;">Progress:</span>
             <div class="challenge-progress-bar">
               <div class="challenge-progress-fill" id="challenge-progress-fill" style="width: 0%;"></div>
             </div>
-            <div class="challenge-progress-text" id="challenge-progress-text">0 / \${allChallenges.length}</div>
+            <div class="challenge-progress-text" id="challenge-progress-text">0 / ${allChallenges.length}</div>
           </div>
 
           <div id="challenge-cards">
-            \${allChallenges.map((c, i) => `
-              <div class="challenge-card" id="challenge-\${i}" data-index="\${i}">
+            ${allChallenges.map((c, i) => `
+              <div class="challenge-card" id="challenge-${i}" data-index="${i}">
                 <div class="challenge-card-header">
-                  <div class="challenge-card-icon \${c.type}">
-                    <i data-lucide="\${c.icon}"></i>
+                  <div class="challenge-card-icon ${c.type}">
+                    <i data-lucide="${c.icon}"></i>
                   </div>
                   <div class="challenge-card-content">
-                    <div class="challenge-card-category">\${c.cat}</div>
-                    <div class="challenge-card-question">\${c.q}</div>
-                    \${c.tool ? `<div class="challenge-card-context">💡 Use the <a href="#\${c.tool}" onclick="navigateTo('\${c.tool}')">\${getToolName(c.tool)}</a> to help answer this question.</div>` : ''}
+                    <div class="challenge-card-category">${c.cat}</div>
+                    <div class="challenge-card-question">${c.q}</div>
+                    ${c.tool ? `<div class="challenge-card-context">💡 Use the <a href="#${c.tool}" onclick="navigateTo('${c.tool}')">${getToolName(c.tool)}</a> to help answer this question.</div>` : ''}
                   </div>
                 </div>
                 <div class="challenge-card-actions">
-                  <button class="challenge-action-btn" onclick="markChallenge(\${i}, 'confident')">
+                  <button class="challenge-action-btn" onclick="markChallenge(${i}, 'confident')">
                     <i data-lucide="check"></i> I'm Confident
                   </button>
-                  <button class="challenge-action-btn" onclick="markChallenge(\${i}, 'needs-work')">
+                  <button class="challenge-action-btn" onclick="markChallenge(${i}, 'needs-work')">
                     <i data-lucide="alert-circle"></i> Needs Work
                   </button>
                 </div>
@@ -2242,7 +2242,7 @@
               <div class="stat-label">Needs Work</div>
             </div>
             <div class="challenge-summary-stat unanswered">
-              <div class="stat-value" id="summary-unanswered">\${allChallenges.length}</div>
+              <div class="stat-value" id="summary-unanswered">${allChallenges.length}</div>
               <div class="stat-label">Unanswered</div>
             </div>
           </div>
@@ -2268,7 +2268,7 @@
 
     function markChallenge(index, status) {
       challengeState.responses[index] = status;
-      const card = document.getElementById(`challenge-\${index}`);
+      const card = document.getElementById(`challenge-${index}`);
       card.classList.remove('answered', 'needs-work');
       card.classList.add(status === 'confident' ? 'answered' : 'needs-work');
 
@@ -2291,7 +2291,7 @@
 
       const percent = Math.round((answered / total) * 100);
       document.getElementById('challenge-progress-fill').style.width = percent + '%';
-      document.getElementById('challenge-progress-text').textContent = `\${answered} / \${total}`;
+      document.getElementById('challenge-progress-text').textContent = `${answered} / ${total}`;
 
       document.getElementById('summary-confident').textContent = confident;
       document.getElementById('summary-needs-work').textContent = needsWork;
@@ -2319,16 +2319,16 @@
       const needsWork = Object.values(challengeState.responses).filter(r => r === 'needs-work').length;
 
       let text = `ANALYSIS CHALLENGE WORKSHEET\n`;
-      text += `Generated: \${new Date().toLocaleDateString()} at \${new Date().toLocaleTimeString()}\n`;
-      text += `Intensity: \${challengeState.intensity.toUpperCase()}\n`;
-      text += `\${'='.repeat(60)}\n\n`;
-      text += `CONCLUSION UNDER REVIEW:\n\${conclusion || 'Not specified'}\n\n`;
-      text += `KEY METRICS: \${metrics || 'Not specified'}\n`;
-      text += `TIME PERIOD: \${period || 'Not specified'}\n`;
-      text += `SAMPLE SIZE: \${sample || 'Not specified'}\n\n`;
-      text += `\${'='.repeat(60)}\n\n`;
-      text += `SUMMARY: \${confident} Confident | \${needsWork} Needs Work | \${total - confident - needsWork} Unanswered\n\n`;
-      text += `\${'='.repeat(60)}\n\n`;
+      text += `Generated: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}\n`;
+      text += `Intensity: ${challengeState.intensity.toUpperCase()}\n`;
+      text += `${'='.repeat(60)}\n\n`;
+      text += `CONCLUSION UNDER REVIEW:\n${conclusion || 'Not specified'}\n\n`;
+      text += `KEY METRICS: ${metrics || 'Not specified'}\n`;
+      text += `TIME PERIOD: ${period || 'Not specified'}\n`;
+      text += `SAMPLE SIZE: ${sample || 'Not specified'}\n\n`;
+      text += `${'='.repeat(60)}\n\n`;
+      text += `SUMMARY: ${confident} Confident | ${needsWork} Needs Work | ${total - confident - needsWork} Unanswered\n\n`;
+      text += `${'='.repeat(60)}\n\n`;
       text += `CHALLENGE QUESTIONS:\n\n`;
 
       cards.forEach((card, i) => {
@@ -2337,8 +2337,8 @@
         const status = challengeState.responses[i] || 'unanswered';
         const statusEmoji = status === 'confident' ? '✅' : status === 'needs-work' ? '⚠️' : '⬜';
 
-        text += `\${i + 1}. [\${statusEmoji}] \${category}\n`;
-        text += `   \${question}\n\n`;
+        text += `${i + 1}. [${statusEmoji}] ${category}\n`;
+        text += `   ${question}\n\n`;
         text += `   YOUR RESPONSE:\n   _________________________________\n\n`;
       });
 
