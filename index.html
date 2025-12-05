@@ -374,7 +374,92 @@
     .traffic-light.red { background: var(--danger); color: var(--danger); }
     .traffic-light.yellow { background: var(--amber); color: var(--amber); }
     .traffic-light.green { background: var(--accent); color: var(--accent); }
-    
+
+    /* Bias Checker Enhancements */
+    .bias-last-saved {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .bias-last-saved.visible { opacity: 1; }
+    .bias-last-saved i { width: 12px; height: 12px; margin-right: 4px; vertical-align: -2px; }
+
+    .check-item-expanded { flex-direction: column; }
+    .check-item-header { display: flex; align-items: flex-start; gap: 12px; width: 100%; }
+    .check-item-body { width: 100%; margin-top: 0; max-height: 0; overflow: hidden; transition: all 0.3s ease; }
+    .check-item.expanded .check-item-body { max-height: 300px; margin-top: 12px; }
+
+    .check-why-toggle {
+      font-size: 12px;
+      color: var(--brand);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      opacity: 0.8;
+      transition: opacity 0.15s;
+    }
+    .check-why-toggle:hover { opacity: 1; }
+    .check-why-toggle i { width: 14px; height: 14px; transition: transform 0.2s; }
+    .check-item.expanded .check-why-toggle i { transform: rotate(180deg); }
+
+    .check-why-content {
+      background: rgba(59, 130, 246, 0.08);
+      border-left: 3px solid var(--brand);
+      padding: 10px 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .check-why-content i { width: 14px; height: 14px; margin-right: 6px; color: var(--brand); vertical-align: -2px; }
+
+    .check-notes-input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--bg);
+      color: var(--text);
+      resize: none;
+      min-height: 60px;
+      transition: border-color 0.15s;
+    }
+    .check-notes-input:focus { outline: none; border-color: var(--brand); }
+    .check-notes-input::placeholder { color: var(--muted); }
+    .check-notes-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; display: block; }
+
+    /* Completion celebration */
+    @keyframes celebratePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(20px) rotate(360deg); opacity: 0; }
+    }
+    .score-ring.complete { animation: celebratePulse 0.6s ease-out; }
+    .score-ring.complete .fill { filter: drop-shadow(0 0 8px var(--accent)); }
+    .completion-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 8px;
+      animation: fadeIn 0.4s ease;
+    }
+    .completion-badge i { width: 16px; height: 16px; }
+
     .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
     /* Animations */
@@ -1466,49 +1551,139 @@
     // INTERACTIVE TOOLS - BIAS CHECKER
     // ===============================
     const biasChecks = [
-      { id: 'cherry', title: 'Cherry-Picking Check', desc: 'Did I examine ALL relevant time periods and metrics, not just favorable ones?' },
-      { id: 'confirm', title: 'Confirmation Bias Check', desc: 'Did I define my hypothesis BEFORE seeing data and actively seek disconfirming evidence?' },
-      { id: 'sample', title: 'Sample Size Check', desc: 'Is my sample large enough for statistically valid conclusions?' },
-      { id: 'recency', title: 'Recency Bias Check', desc: 'Am I overweighting recent events while undervaluing historical patterns?' },
-      { id: 'anchor', title: 'Anchoring Bias Check', desc: 'Am I overly attached to historical baselines that may no longer apply?' },
-      { id: 'season', title: 'Seasonality Check', desc: 'Have I compared appropriate periods (YoY) and accounted for seasonal patterns?' }
+      {
+        id: 'cherry',
+        title: 'Cherry-Picking Check',
+        desc: 'Did I examine ALL relevant time periods and metrics, not just favorable ones?',
+        why: 'Cherry-picking data that supports a predetermined conclusion leads to flawed decisions. Always examine the full picture, including data that contradicts your initial hypothesis.'
+      },
+      {
+        id: 'confirm',
+        title: 'Confirmation Bias Check',
+        desc: 'Did I define my hypothesis BEFORE seeing data and actively seek disconfirming evidence?',
+        why: 'We naturally seek information that confirms what we already believe. Counter this by deliberately looking for evidence that proves you wrong before concluding you\'re right.'
+      },
+      {
+        id: 'sample',
+        title: 'Sample Size Check',
+        desc: 'Is my sample large enough for statistically valid conclusions?',
+        why: 'Small samples can show dramatic patterns that disappear with more data. Ensure your sample size provides sufficient statistical power for the conclusions you\'re drawing.'
+      },
+      {
+        id: 'recency',
+        title: 'Recency Bias Check',
+        desc: 'Am I overweighting recent events while undervaluing historical patterns?',
+        why: 'Recent events feel more important and memorable, but they may be outliers. Historical patterns often provide better predictive value than recent anomalies.'
+      },
+      {
+        id: 'anchor',
+        title: 'Anchoring Bias Check',
+        desc: 'Am I overly attached to historical baselines that may no longer apply?',
+        why: 'Past performance anchors our expectations, but markets, technology, and circumstances change. Validate that historical baselines still apply to current conditions.'
+      },
+      {
+        id: 'season',
+        title: 'Seasonality Check',
+        desc: 'Have I compared appropriate periods (YoY) and accounted for seasonal patterns?',
+        why: 'Comparing December to November ignores seasonal effects. Year-over-year comparisons and seasonal adjustments reveal true underlying trends.'
+      }
     ];
-    
+
+    // Bias checker state management with notes support
+    let biasAutoSaveTimer = null;
+    let biasExpandedItems = new Set();
+
     function getBiasState() {
-      try { return JSON.parse(localStorage.getItem('dbp-bias-state') || '{}'); } 
-      catch { return {}; }
+      try {
+        const state = JSON.parse(localStorage.getItem('dbp-bias-state') || '{}');
+        // Ensure notes object exists
+        if (!state.notes) state.notes = {};
+        return state;
+      } catch { return { notes: {} }; }
     }
     function setBiasState(state) {
       localStorage.setItem('dbp-bias-state', JSON.stringify(state));
     }
-    
+
+    function formatBiasLastSaved(timestamp) {
+      if (!timestamp) return '';
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+
+      if (diffMins < 1) return 'just now';
+      if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+
+    function updateBiasLastSavedDisplay() {
+      const state = getBiasState();
+      const el = document.getElementById('bias-last-saved');
+      if (el && state.lastSaved) {
+        el.textContent = `Auto-saved ${formatBiasLastSaved(state.lastSaved)}`;
+        el.classList.add('visible');
+      }
+    }
+
+    function saveBiasNotes(id) {
+      clearTimeout(biasAutoSaveTimer);
+      biasAutoSaveTimer = setTimeout(() => {
+        const state = getBiasState();
+        const textarea = document.getElementById(`bias-notes-${id}`);
+        if (textarea) {
+          if (!state.notes) state.notes = {};
+          state.notes[id] = textarea.value;
+          state.lastSaved = Date.now();
+          setBiasState(state);
+          updateBiasLastSavedDisplay();
+        }
+      }, 600);
+    }
+
+    function toggleBiasExpand(id, event) {
+      event.stopPropagation();
+      if (biasExpandedItems.has(id)) {
+        biasExpandedItems.delete(id);
+      } else {
+        biasExpandedItems.add(id);
+      }
+      renderView('biasChecker');
+    }
+
     function renderBiasChecker() {
       const state = getBiasState();
-      const checked = Object.values(state).filter(Boolean).length;
+      const checkedItems = biasChecks.filter(c => state[c.id]);
+      const checked = checkedItems.length;
       const total = biasChecks.length;
       const pct = Math.round((checked / total) * 100);
       const circumference = 2 * Math.PI * 52;
       const offset = circumference - (pct / 100) * circumference;
-      
+      const isComplete = pct === 100;
+
       let status, statusClass;
-      if (pct === 100) { status = 'Ready to Proceed'; statusClass = 'ok'; }
+      if (isComplete) { status = 'Ready to Proceed'; statusClass = 'ok'; }
       else if (pct >= 50) { status = 'Review Remaining'; statusClass = 'brand'; }
       else { status = 'Needs Attention'; statusClass = 'danger'; }
-      
+
+      const lastSavedText = state.lastSaved ? formatBiasLastSaved(state.lastSaved) : '';
+
       return `
         <div class="card tool">
           <h3>Interactive Bias Self-Check</h3>
-          <p>Complete each checkpoint before finalizing any analysis. Your progress is saved automatically.</p>
-          
+          <p>Complete each checkpoint before finalizing any analysis. Click any item to add notes.</p>
+
           <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-top: 20px;">
             <div style="text-align: center;">
-              <div class="score-ring">
+              <div class="score-ring ${isComplete ? 'complete' : ''}">
                 <svg viewBox="0 0 120 120">
                   <circle class="bg" cx="60" cy="60" r="52"/>
-                  <circle class="fill" cx="60" cy="60" r="52" 
-                    stroke-dasharray="${circumference}" 
+                  <circle class="fill" cx="60" cy="60" r="52"
+                    stroke-dasharray="${circumference}"
                     stroke-dashoffset="${offset}"
-                    style="stroke: ${pct === 100 ? 'var(--accent)' : pct >= 50 ? 'var(--brand)' : 'var(--danger)'}"/>
+                    style="stroke: ${isComplete ? 'var(--accent)' : pct >= 50 ? 'var(--brand)' : 'var(--danger)'}"/>
                 </svg>
                 <div class="score-text">
                   <span>${checked}/${total}</span>
@@ -1518,35 +1693,64 @@
               <div class="traffic" style="justify-content: center; margin-bottom: 8px;">
                 <div class="traffic-light red ${pct < 50 ? 'active' : ''}"></div>
                 <div class="traffic-light yellow ${pct >= 50 && pct < 100 ? 'active' : ''}"></div>
-                <div class="traffic-light green ${pct === 100 ? 'active' : ''}"></div>
+                <div class="traffic-light green ${isComplete ? 'active' : ''}"></div>
               </div>
-              <strong class="${statusClass}">${status}</strong>
+              ${isComplete
+                ? `<div class="completion-badge"><i data-lucide="shield-check"></i>All Clear</div>`
+                : `<strong class="${statusClass}">${status}</strong>`
+              }
+              <div id="bias-last-saved" class="bias-last-saved ${lastSavedText ? 'visible' : ''}">
+                <i data-lucide="save"></i>${lastSavedText ? `Auto-saved ${lastSavedText}` : ''}
+              </div>
             </div>
-            
+
             <ul class="check-list">
-              ${biasChecks.map(c => `
-                <li class="check-item ${state[c.id] ? 'checked' : ''}" onclick="toggleBiasCheck('${c.id}')">
-                  <input type="checkbox" ${state[c.id] ? 'checked' : ''} onchange="toggleBiasCheck('${c.id}')" onclick="event.stopPropagation()">
-                  <label>
-                    <span class="check-title">${c.title}</span>
-                    <span class="check-desc">${c.desc}</span>
-                  </label>
+              ${biasChecks.map(c => {
+                const isExpanded = biasExpandedItems.has(c.id);
+                const noteValue = state.notes?.[c.id] || '';
+                const hasNote = noteValue.trim().length > 0;
+                return `
+                <li class="check-item check-item-expanded ${state[c.id] ? 'checked' : ''} ${isExpanded ? 'expanded' : ''}">
+                  <div class="check-item-header" onclick="toggleBiasCheck('${c.id}')">
+                    <input type="checkbox" ${state[c.id] ? 'checked' : ''} onchange="toggleBiasCheck('${c.id}')" onclick="event.stopPropagation()">
+                    <label onclick="event.stopPropagation(); toggleBiasCheck('${c.id}')">
+                      <span class="check-title">${c.title}</span>
+                      <span class="check-desc">${c.desc}</span>
+                      <span class="check-why-toggle" onclick="toggleBiasExpand('${c.id}', event)">
+                        <i data-lucide="chevron-down"></i>
+                        ${isExpanded ? 'Hide details' : 'Why it matters'}${hasNote ? ' • Has notes' : ''}
+                      </span>
+                    </label>
+                  </div>
+                  <div class="check-item-body">
+                    <div class="check-why-content">
+                      <i data-lucide="lightbulb"></i>${c.why}
+                    </div>
+                    <label class="check-notes-label">Your notes (optional)</label>
+                    <textarea
+                      class="check-notes-input"
+                      id="bias-notes-${c.id}"
+                      placeholder="Document how you verified this check..."
+                      oninput="saveBiasNotes('${c.id}')"
+                      onclick="event.stopPropagation()"
+                    >${noteValue}</textarea>
+                  </div>
                 </li>
-              `).join('')}
+              `}).join('')}
             </ul>
           </div>
-          
+
           <div class="export-bar">
             <button class="btn" onclick="resetBiasCheck()"><i data-lucide="rotate-ccw"></i>Reset All</button>
             <button class="btn primary" onclick="exportBiasCheck()"><i data-lucide="download"></i>Export Summary</button>
           </div>
         </div>
-        
-        <div class="callout ${pct === 100 ? 'success' : pct >= 50 ? 'info' : ''}">
-          <strong>${pct === 100 ? '✓ All checks complete!' : pct >= 50 ? 'Making progress...' : '⚠️ Important:'}</strong> 
-          ${pct === 100 
-            ? 'Your analysis has passed all bias checks. Document your findings with confidence.' 
-            : pct >= 50 
+
+        <div class="callout ${isComplete ? 'success' : pct >= 50 ? 'info' : ''}">
+          <strong>${isComplete ? '✓ All checks complete!' : pct >= 50 ? 'Making progress...' : '⚠️ Important:'}</strong>
+          ${isComplete
+            ? 'Your analysis has passed all bias checks. Document your findings with confidence.'
+            : pct >= 50
               ? `${total - checked} check${total - checked > 1 ? 's' : ''} remaining. Review carefully before proceeding.`
               : 'If you cannot confidently check all items, consult an analyst before proceeding with your analysis.'}
         </div>
@@ -1556,17 +1760,19 @@
     function toggleBiasCheck(id) {
       const state = getBiasState();
       state[id] = !state[id];
+      state.lastSaved = Date.now();
       setBiasState(state);
       renderView('biasChecker');
     }
-    
+
     function resetBiasCheck() {
-      if (confirm('Reset all bias checks? This cannot be undone.')) {
-        setBiasState({});
+      if (confirm('Reset all bias checks and notes? This cannot be undone.')) {
+        setBiasState({ notes: {} });
+        biasExpandedItems.clear();
         renderView('biasChecker');
       }
     }
-    
+
     function exportBiasCheck() {
       const state = getBiasState();
       const date = new Date().toLocaleDateString();
@@ -1574,17 +1780,31 @@
       let text = `BIAS SELF-CHECK SUMMARY\n`;
       text += `Generated: ${date} at ${time}\n`;
       text += `${'='.repeat(50)}\n\n`;
-      
+
       biasChecks.forEach(c => {
-        text += `[${state[c.id] ? '✓' : ' '}] ${c.title}\n`;
-        text += `    ${c.desc}\n\n`;
+        const isChecked = state[c.id];
+        const note = state.notes?.[c.id]?.trim();
+        text += `[${isChecked ? '✓' : ' '}] ${c.title}\n`;
+        text += `    ${c.desc}\n`;
+        if (note) {
+          text += `\n    NOTES:\n`;
+          // Indent each line of the note
+          note.split('\n').forEach(line => {
+            text += `    ${line}\n`;
+          });
+        }
+        text += `\n`;
       });
-      
-      const checked = Object.values(state).filter(Boolean).length;
+
+      const checked = biasChecks.filter(c => state[c.id]).length;
+      const hasNotes = biasChecks.some(c => state.notes?.[c.id]?.trim());
       text += `${'='.repeat(50)}\n`;
       text += `RESULT: ${checked}/${biasChecks.length} checks passed\n`;
       text += checked === biasChecks.length ? 'STATUS: Ready to proceed\n' : 'STATUS: Review required\n';
-      
+      if (hasNotes) {
+        text += `\nThis summary includes analyst notes for documentation.\n`;
+      }
+
       downloadText(text, 'bias-check-summary.txt');
     }
 
