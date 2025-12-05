@@ -2540,58 +2540,227 @@
     // ===============================
     // INTERACTIVE TOOLS - 5 WHYS ANALYSIS (Lean Six Sigma)
     // ===============================
+    let fiveWhysAutoSaveTimer = null;
+
     function getFiveWhysState() {
       try { return JSON.parse(localStorage.getItem('dbp-5whys-state') || '{}'); }
       catch { return {}; }
     }
+
     function setFiveWhysState(state) {
       localStorage.setItem('dbp-5whys-state', JSON.stringify(state));
     }
 
+    function formatLastSaved(timestamp) {
+      if (!timestamp) return '';
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+
+      if (diffMins < 1) return 'just now';
+      if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+
+    function updateLastSavedDisplay() {
+      const state = getFiveWhysState();
+      const el = document.getElementById('whys-last-saved');
+      if (el && state.lastSaved) {
+        el.textContent = `Auto-saved ${formatLastSaved(state.lastSaved)}`;
+        el.style.opacity = '1';
+      }
+    }
+
+    function autoSaveFiveWhys() {
+      clearTimeout(fiveWhysAutoSaveTimer);
+      fiveWhysAutoSaveTimer = setTimeout(() => {
+        const state = {
+          problem: document.getElementById('whys-problem')?.value || '',
+          why1: document.getElementById('whys-1')?.value || '',
+          why2: document.getElementById('whys-2')?.value || '',
+          why3: document.getElementById('whys-3')?.value || '',
+          why4: document.getElementById('whys-4')?.value || '',
+          why5: document.getElementById('whys-5')?.value || '',
+          rootCauseLevel: document.querySelector('input[name="root-cause-level"]:checked')?.value || '',
+          category: document.getElementById('whys-category')?.value || '',
+          countermeasure: document.getElementById('whys-countermeasure')?.value || '',
+          verification: document.getElementById('whys-verification')?.value || '',
+          lastSaved: Date.now()
+        };
+        setFiveWhysState(state);
+        updateLastSavedDisplay();
+        updateWhysVisibility();
+      }, 800);
+    }
+
+    function updateWhysVisibility() {
+      const state = getFiveWhysState();
+      const rootLevel = parseInt(state.rootCauseLevel) || 0;
+
+      for (let i = 2; i <= 5; i++) {
+        const container = document.getElementById(`whys-${i}-container`);
+        const prevValue = document.getElementById(`whys-${i-1}`)?.value?.trim();
+
+        if (container) {
+          // Hide if previous Why is empty OR if a root cause is marked before this level
+          const shouldHide = !prevValue || (rootLevel > 0 && i > rootLevel);
+          container.style.display = shouldHide ? 'none' : 'block';
+          container.style.opacity = shouldHide ? '0' : '1';
+        }
+      }
+
+      // Update root cause indicators
+      for (let i = 1; i <= 5; i++) {
+        const indicator = document.getElementById(`whys-${i}-root-indicator`);
+        const radioContainer = document.getElementById(`whys-${i}-radio-container`);
+        if (indicator) {
+          indicator.style.display = (rootLevel === i) ? 'inline-flex' : 'none';
+        }
+        if (radioContainer) {
+          // Show radio only if this field has content
+          const hasContent = document.getElementById(`whys-${i}`)?.value?.trim();
+          radioContainer.style.display = hasContent ? 'flex' : 'none';
+        }
+      }
+    }
+
+    function markAsRootCause(level) {
+      const state = getFiveWhysState();
+      // Toggle: if already marked, unmark it
+      state.rootCauseLevel = (state.rootCauseLevel === String(level)) ? '' : String(level);
+      state.lastSaved = Date.now();
+      setFiveWhysState(state);
+      updateWhysVisibility();
+      updateLastSavedDisplay();
+    }
+
+    function renderWhyStep(num, color, prevColor, label, placeholder, value, rootCauseLevel, isFirst = false) {
+      const isRootCause = rootCauseLevel === String(num);
+      const hasValue = value && value.trim();
+
+      const stepStyle = isFirst ? '' : `
+        margin-left: ${(num - 1) * 16}px;
+        padding-left: 20px;
+        border-left: 3px solid var(--${prevColor});
+        position: relative;
+      `;
+
+      const containerStyle = isFirst ? '' : `
+        transition: opacity 0.3s ease, max-height 0.3s ease;
+      `;
+
+      return `
+        <div id="whys-${num}-container" style="${containerStyle}">
+          <div class="form-group" style="${stepStyle}">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <span style="
+                display:inline-flex;
+                align-items:center;
+                justify-content:center;
+                width:24px;
+                height:24px;
+                background:var(--${color});
+                color:white;
+                border-radius:50%;
+                font-size:12px;
+                font-weight:600;
+              ">${num}</span>
+              <label class="form-label" style="color:var(--${color}); margin-bottom:0; flex:1;">
+                ${label}
+              </label>
+              <span id="whys-${num}-root-indicator" style="
+                display:${isRootCause ? 'inline-flex' : 'none'};
+                align-items:center;
+                gap:4px;
+                background:var(--danger);
+                color:white;
+                padding:2px 8px;
+                border-radius:12px;
+                font-size:11px;
+                font-weight:600;
+              "><i data-lucide="target" style="width:12px;height:12px;"></i>ROOT CAUSE</span>
+            </div>
+            <textarea
+              class="form-textarea"
+              id="whys-${num}"
+              placeholder="${placeholder}"
+              oninput="autoSaveFiveWhys()"
+              style="${isRootCause ? 'border-color:var(--danger); box-shadow:0 0 0 3px rgba(239,68,68,.15);' : ''}"
+            >${value || ''}</textarea>
+            <div id="whys-${num}-radio-container" style="display:${hasValue ? 'flex' : 'none'}; align-items:center; gap:6px; margin-top:6px;">
+              <input
+                type="radio"
+                name="root-cause-level"
+                id="root-cause-${num}"
+                value="${num}"
+                ${isRootCause ? 'checked' : ''}
+                onchange="markAsRootCause(${num})"
+                style="margin:0; accent-color:var(--danger);"
+              >
+              <label for="root-cause-${num}" style="font-size:12px; color:var(--muted); cursor:pointer; margin:0;">
+                Mark as root cause
+              </label>
+            </div>
+          </div>
+          ${num < 5 ? `<div style="
+            margin-left: ${num * 16 + 10}px;
+            width: 2px;
+            height: 12px;
+            background: linear-gradient(to bottom, var(--${color}), var(--${getNextColor(num)}));
+            opacity: 0.5;
+          "></div>` : ''}
+        </div>
+      `;
+    }
+
+    function getNextColor(num) {
+      const colors = ['brand', 'brand-2', 'accent', 'amber', 'danger'];
+      return colors[num] || 'danger';
+    }
+
     function renderFiveWhys() {
       const state = getFiveWhysState();
+      const rootLevel = state.rootCauseLevel || '';
+
       return `
         <div class="card tool">
-          <h3>5 Whys Root Cause Analysis</h3>
-          <p>Use this Lean Six Sigma technique to drill down from symptoms to root causes. Ask "Why?" repeatedly until you reach the fundamental cause that, if addressed, would prevent recurrence.</p>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+            <div>
+              <h3 style="margin-bottom:4px;">5 Whys Root Cause Analysis</h3>
+              <p style="margin:0;">Use this Lean Six Sigma technique to drill down from symptoms to root causes.</p>
+            </div>
+            <span id="whys-last-saved" style="
+              font-size:12px;
+              color:var(--muted);
+              background:var(--bg);
+              padding:4px 10px;
+              border-radius:12px;
+              opacity:${state.lastSaved ? '1' : '0'};
+              transition: opacity 0.3s ease;
+            ">${state.lastSaved ? `Auto-saved ${formatLastSaved(state.lastSaved)}` : ''}</span>
+          </div>
 
           <div style="margin-top: 20px;">
             <div class="form-group">
               <label class="form-label">Problem Statement</label>
-              <textarea class="form-textarea" id="whys-problem" placeholder="e.g., 'TAT has increased from 23 days to 27 days over the past quarter'">${state.problem || ''}</textarea>
+              <textarea class="form-textarea" id="whys-problem" placeholder="e.g., 'TAT has increased from 23 days to 27 days over the past quarter'" oninput="autoSaveFiveWhys()">${state.problem || ''}</textarea>
               <p class="form-hint">Be specific about what is happening, when, and the magnitude</p>
             </div>
 
             <div style="background:var(--bg); border-radius:12px; padding:20px; margin-top:20px;">
-              <div class="form-group">
-                <label class="form-label" style="color:var(--brand);">Why #1: Why is this happening?</label>
-                <textarea class="form-textarea" id="whys-1" placeholder="First-level cause...">${state.why1 || ''}</textarea>
-              </div>
-
-              <div class="form-group" style="margin-left:20px; border-left:3px solid var(--brand); padding-left:16px;">
-                <label class="form-label" style="color:var(--brand-2);">Why #2: Why is that?</label>
-                <textarea class="form-textarea" id="whys-2" placeholder="Second-level cause...">${state.why2 || ''}</textarea>
-              </div>
-
-              <div class="form-group" style="margin-left:40px; border-left:3px solid var(--brand-2); padding-left:16px;">
-                <label class="form-label" style="color:var(--accent);">Why #3: Why is that?</label>
-                <textarea class="form-textarea" id="whys-3" placeholder="Third-level cause...">${state.why3 || ''}</textarea>
-              </div>
-
-              <div class="form-group" style="margin-left:60px; border-left:3px solid var(--accent); padding-left:16px;">
-                <label class="form-label" style="color:var(--amber);">Why #4: Why is that?</label>
-                <textarea class="form-textarea" id="whys-4" placeholder="Fourth-level cause...">${state.why4 || ''}</textarea>
-              </div>
-
-              <div class="form-group" style="margin-left:80px; border-left:3px solid var(--amber); padding-left:16px;">
-                <label class="form-label" style="color:var(--danger);">Why #5: Why is that? (Root Cause)</label>
-                <textarea class="form-textarea" id="whys-5" placeholder="Root cause - the fundamental reason...">${state.why5 || ''}</textarea>
-              </div>
+              ${renderWhyStep(1, 'brand', '', 'Why is this happening?', 'First-level cause...', state.why1, rootLevel, true)}
+              ${renderWhyStep(2, 'brand-2', 'brand', 'Why is that?', 'Second-level cause...', state.why2, rootLevel)}
+              ${renderWhyStep(3, 'accent', 'brand-2', 'Why is that?', 'Third-level cause...', state.why3, rootLevel)}
+              ${renderWhyStep(4, 'amber', 'accent', 'Why is that?', 'Fourth-level cause...', state.why4, rootLevel)}
+              ${renderWhyStep(5, 'danger', 'amber', 'Why is that?', 'The fundamental reason...', state.why5, rootLevel)}
             </div>
 
             <div class="form-group" style="margin-top:20px;">
               <label class="form-label">Root Cause Category</label>
-              <select class="form-select" id="whys-category">
+              <select class="form-select" id="whys-category" onchange="autoSaveFiveWhys()">
                 <option value="">Select category (Fishbone/Ishikawa)</option>
                 <option value="People" ${state.category === 'People' ? 'selected' : ''}>People - Skills, training, staffing</option>
                 <option value="Process" ${state.category === 'Process' ? 'selected' : ''}>Process - Workflow, procedures, handoffs</option>
@@ -2605,18 +2774,18 @@
 
             <div class="form-group">
               <label class="form-label">Proposed Countermeasure</label>
-              <textarea class="form-textarea" id="whys-countermeasure" placeholder="What action would address the root cause and prevent recurrence?">${state.countermeasure || ''}</textarea>
+              <textarea class="form-textarea" id="whys-countermeasure" placeholder="What action would address the root cause and prevent recurrence?" oninput="autoSaveFiveWhys()">${state.countermeasure || ''}</textarea>
             </div>
 
             <div class="form-group">
               <label class="form-label">Verification Method</label>
-              <textarea class="form-textarea" id="whys-verification" placeholder="How will you verify the countermeasure is effective?">${state.verification || ''}</textarea>
+              <textarea class="form-textarea" id="whys-verification" placeholder="How will you verify the countermeasure is effective?" oninput="autoSaveFiveWhys()">${state.verification || ''}</textarea>
             </div>
           </div>
 
           <div class="export-bar">
-            <button class="btn" onclick="saveFiveWhysState()"><i data-lucide="save"></i>Save Progress</button>
             <button class="btn" onclick="clearFiveWhysState()"><i data-lucide="trash-2"></i>Clear</button>
+            <button class="btn" onclick="copyFiveWhysToClipboard()"><i data-lucide="copy"></i>Copy</button>
             <button class="btn primary" onclick="exportFiveWhys()"><i data-lucide="download"></i>Export Analysis</button>
           </div>
         </div>
@@ -2626,7 +2795,7 @@
           <ul style="margin:8px 0 0 0;">
             <li>Focus on process and systems, not people or blame</li>
             <li>Each "why" should logically follow from the previous answer</li>
-            <li>You may need fewer or more than 5 whys - stop when you reach something actionable</li>
+            <li>You may need fewer or more than 5 whys - use "Mark as root cause" when you've found the actionable cause</li>
             <li>Consider multiple branches if there are multiple contributing causes</li>
           </ul>
         </div>
@@ -2648,6 +2817,15 @@
       `;
     }
 
+    function initFiveWhys() {
+      // Re-initialize Lucide icons for dynamically rendered content
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+      // Update visibility based on current state
+      setTimeout(updateWhysVisibility, 50);
+    }
+
     function saveFiveWhysState() {
       const state = {
         problem: document.getElementById('whys-problem')?.value || '',
@@ -2656,12 +2834,14 @@
         why3: document.getElementById('whys-3')?.value || '',
         why4: document.getElementById('whys-4')?.value || '',
         why5: document.getElementById('whys-5')?.value || '',
+        rootCauseLevel: document.querySelector('input[name="root-cause-level"]:checked')?.value || '',
         category: document.getElementById('whys-category')?.value || '',
         countermeasure: document.getElementById('whys-countermeasure')?.value || '',
-        verification: document.getElementById('whys-verification')?.value || ''
+        verification: document.getElementById('whys-verification')?.value || '',
+        lastSaved: Date.now()
       };
       setFiveWhysState(state);
-      toast('5 Whys progress saved');
+      updateLastSavedDisplay();
     }
 
     function clearFiveWhysState() {
@@ -2671,10 +2851,10 @@
       }
     }
 
-    function exportFiveWhys() {
-      saveFiveWhysState();
+    function generateFiveWhysText() {
       const s = getFiveWhysState();
       const date = new Date().toLocaleDateString();
+      const rootLevel = parseInt(s.rootCauseLevel) || 5;
 
       let text = `5 WHYS ROOT CAUSE ANALYSIS\n`;
       text += `Generated: ${date}\n`;
@@ -2684,12 +2864,25 @@
       text += `${s.problem || 'Not specified'}\n\n`;
       text += `ROOT CAUSE ANALYSIS\n`;
       text += `${'-'.repeat(40)}\n`;
-      text += `Why #1: ${s.why1 || '-'}\n`;
-      text += `  Why #2: ${s.why2 || '-'}\n`;
-      text += `    Why #3: ${s.why3 || '-'}\n`;
-      text += `      Why #4: ${s.why4 || '-'}\n`;
-      text += `        Why #5 (Root): ${s.why5 || '-'}\n\n`;
-      text += `ROOT CAUSE CATEGORY: ${s.category || 'Not categorized'}\n\n`;
+
+      const whys = [s.why1, s.why2, s.why3, s.why4, s.why5];
+      const indents = ['', '  ', '    ', '      ', '        '];
+
+      for (let i = 0; i < 5; i++) {
+        if (whys[i] && whys[i].trim()) {
+          const isRoot = (i + 1) === rootLevel;
+          const label = isRoot ? `Why #${i + 1} (ROOT CAUSE)` : `Why #${i + 1}`;
+          text += `${indents[i]}${label}: ${whys[i]}\n`;
+          if (isRoot) break;
+        } else if (i === 0) {
+          text += `Why #1: -\n`;
+          break;
+        } else {
+          break;
+        }
+      }
+
+      text += `\nROOT CAUSE CATEGORY: ${s.category || 'Not categorized'}\n\n`;
       text += `COUNTERMEASURE\n`;
       text += `${'-'.repeat(40)}\n`;
       text += `${s.countermeasure || 'Not specified'}\n\n`;
@@ -2699,7 +2892,30 @@
       text += `${'='.repeat(60)}\n`;
       text += `Use this analysis to inform your decision and monitoring plan.\n`;
 
+      return text;
+    }
+
+    function exportFiveWhys() {
+      saveFiveWhysState();
+      const text = generateFiveWhysText();
       downloadText(text, '5-whys-analysis.txt');
+    }
+
+    function copyFiveWhysToClipboard() {
+      saveFiveWhysState();
+      const text = generateFiveWhysText();
+      navigator.clipboard.writeText(text).then(() => {
+        toast('Analysis copied to clipboard');
+      }).catch(() => {
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        toast('Analysis copied to clipboard');
+      });
     }
 
     // ===============================
@@ -3583,7 +3799,12 @@
       if (key === 'sampleCalc') {
         setTimeout(calculateCI, 50);
       }
-      
+
+      // Initialize 5 Whys if on that page
+      if (key === 'fiveWhys') {
+        setTimeout(initFiveWhys, 50);
+      }
+
       // Re-highlight search if active
       const q = document.getElementById('q');
       if (q?.value) highlight(q.value.toLowerCase());
